@@ -1,0 +1,20 @@
+{
+  "name": "Seize the Day",
+  "short_name": "Seize",
+  "description": "Seize the day system — daily command, projects, habits, focus.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f1e8",
+  "theme_color": "#1a1614",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["productivity", "lifestyle"],
+  "shortcuts": [
+    { "name": "Today", "short_name": "Today", "url": "/?view=dashboard", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Calendar", "short_name": "Calendar", "url": "/?view=calendar", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
+    { "name": "Projects", "short_name": "Projects", "url": "/?view=projects", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
+  ]
+}
