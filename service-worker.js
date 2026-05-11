@@ -1,21 +1,27 @@
 /* ============================================================
-   Operations PWA — Service Worker
+   Seize the Day — Service Worker v1
    Handles: offline caching, push notifications, scheduled alerts
    ============================================================ */
 
-const CACHE_NAME = 'archie-ops-v3';
+const CACHE_NAME = 'seize-v1';
+const BASE = '/seize-app';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  BASE + '/',
+  BASE + '/index.html',
+  BASE + '/manifest.json',
+  BASE + '/icon-192.png',
+  BASE + '/icon-512.png',
+  BASE + '/icon-180.png'
 ];
 
 /* ---- Install: pre-cache shell assets ---- */
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(ASSETS).catch(err => {
+        console.warn('Cache addAll partial failure (ok):', err);
+      });
+    })
   );
   self.skipWaiting();
 });
@@ -30,38 +36,49 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-/* ---- Fetch: cache-first for shell, network-first for data ---- */
+/* ---- Fetch: cache-first, with iOS path redirect fix ---- */
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
+
+  const url = new URL(event.request.url);
+
+  // Redirect /seize-app (no trailing slash) to /seize-app/ — fixes iOS PWA 404
+  if (url.pathname === BASE) {
+    event.respondWith(Response.redirect(url.origin + BASE + '/', 301));
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;
       return fetch(event.request).then(response => {
-        if (response.ok) {
+        if (response.ok && response.type !== 'opaque') {
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
         }
         return response;
-      }).catch(() => caches.match('/index.html'));
+      }).catch(() => {
+        return caches.match(BASE + '/index.html');
+      });
     })
   );
 });
 
-/* ---- Push: receive push event and show notification ---- */
+/* ---- Push: show notification ---- */
 self.addEventListener('push', event => {
-  let data = { title: 'Operations', body: 'Time to check your schedule.' };
+  let data = { title: 'Seize the Day', body: 'Time to check your schedule.' };
   if (event.data) {
     try { data = event.data.json(); } catch(e) { data.body = event.data.text(); }
   }
   event.waitUntil(
-    self.registration.showNotification(data.title || 'Operations — Archie', {
+    self.registration.showNotification(data.title || 'Seize the Day', {
       body: data.body,
-      icon: '/icon-192.png',
-      badge: '/icon-192.png',
-      tag: data.tag || 'ops-reminder',
+      icon: BASE + '/icon-192.png',
+      badge: BASE + '/icon-192.png',
+      tag: data.tag || 'seize-reminder',
       renotify: true,
       vibrate: [200, 100, 200],
-      data: { url: data.url || '/' }
+      data: { url: data.url || BASE + '/' }
     })
   );
 });
@@ -69,14 +86,11 @@ self.addEventListener('push', event => {
 /* ---- Notification click: open/focus the app ---- */
 self.addEventListener('notificationclick', event => {
   event.notification.close();
-  const url = event.notification.data?.url || '/';
+  const url = (event.notification.data && event.notification.data.url) || BASE + '/';
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(windowClients => {
       for (const client of windowClients) {
-        if (client.url.includes(self.location.origin) && 'focus' in client) {
-          client.focus();
-          return;
-        }
+        if ('focus' in client) { client.focus(); return; }
       }
       if (clients.openWindow) return clients.openWindow(url);
     })
@@ -85,23 +99,17 @@ self.addEventListener('notificationclick', event => {
 
 /* ---- Message: receive reminder schedule from the app ---- */
 self.addEventListener('message', event => {
-  if (event.data?.type === 'SCHEDULE_REMINDERS') {
-    scheduleLocalReminders(event.data.reminders);
-  }
-  if (event.data?.type === 'CANCEL_REMINDERS') {
-    cancelAllReminders();
+  if (!event.data) return;
+  if (event.data.type === 'SCHEDULE_REMINDERS') scheduleLocalReminders(event.data.reminders);
+  if (event.data.type === 'CANCEL_REMINDERS') cancelAllReminders();
+  if (event.data.type === 'REQUEST_REMINDERS') {
+    clients.matchAll({ includeUncontrolled: true }).then(all => {
+      if (all[0]) all[0].postMessage({ type: 'REQUEST_REMINDERS' });
+    });
   }
 });
 
-/* ---- Local reminder scheduling via alarms ---- */
-/* 
-  The Web Alarms API isn't widely supported yet, so we use a 
-  periodic sync approach. The app sends reminders on each load;
-  the SW fires them via setTimeout within the SW lifetime, and 
-  re-schedules on next load. For iOS PWAs this means the app 
-  needs to be opened at least once per day — which is the intent.
-*/
-
+/* ---- Local reminder scheduling ---- */
 let scheduledTimers = [];
 
 function cancelAllReminders() {
@@ -112,47 +120,22 @@ function cancelAllReminders() {
 function scheduleLocalReminders(reminders) {
   cancelAllReminders();
   if (!reminders || !reminders.length) return;
-
   const now = new Date();
-
   reminders.forEach(reminder => {
     const [h, m] = reminder.time.split(':').map(Number);
     const target = new Date();
     target.setHours(h, m, 0, 0);
-
-    if (target <= now) {
-      target.setDate(target.getDate() + 1);
-    }
-
+    if (target <= now) target.setDate(target.getDate() + 1);
     const delay = target.getTime() - now.getTime();
-
-    const timer = setTimeout(() => {
-      self.registration.showNotification('Operations — Archie', {
+    scheduledTimers.push(setTimeout(() => {
+      self.registration.showNotification('Seize the Day', {
         body: reminder.text,
-        icon: '/icon-192.png',
-        badge: '/icon-192.png',
+        icon: BASE + '/icon-192.png',
+        badge: BASE + '/icon-192.png',
         tag: 'reminder-' + reminder.id,
         renotify: true,
-        vibrate: [200, 100, 200],
-        data: { url: '/' }
+        vibrate: [200, 100, 200]
       });
-    }, delay);
-
-    scheduledTimers.push(timer);
+    }, delay));
   });
-}
-
-/* ---- Periodic background sync (where supported) ---- */
-self.addEventListener('periodicsync', event => {
-  if (event.tag === 'ops-daily-sync') {
-    event.waitUntil(dailySync());
-  }
-});
-
-async function dailySync() {
-  /* Re-read reminders from storage and reschedule */
-  const allClients = await clients.matchAll({ includeUncontrolled: true });
-  if (allClients.length) {
-    allClients[0].postMessage({ type: 'REQUEST_REMINDERS' });
-  }
 }
