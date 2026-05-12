@@ -1183,13 +1183,15 @@ body {
 .sidebar-nav-action:hover { color: var(--paper); background: rgba(245,241,232,0.05); }
 .sidebar-nav-action.primary { color: var(--accent-glow); }
 
+/* Hamburger sidebar active on all screen sizes */
+.nav-hamburger { display: flex; }
+.nav-tabs { display: none; }
+.nav-right { display: none; }
+.sidebar-backdrop { display: block; }
+.nav-status { display: none; }
+
 @media (max-width: 760px) {
-  .nav-hamburger { display: flex; }
-  .nav-tabs { display: none; }
-  .nav-right { display: none; }
-  .sidebar-backdrop { display: block; }
   .nav-brand { padding: 0 14px; font-size: 15px; }
-  .nav-status { display: none; }
   .dashboard, .placeholder-view, .settings-view { padding: 16px 16px 60px; }
   .masthead-title { font-size: 38px; }
   .dash-masthead { grid-template-columns: 1fr; gap: 10px; }
