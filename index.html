@@ -1183,6 +1183,50 @@ body {
 .sidebar-nav-action:hover { color: var(--paper); background: rgba(245,241,232,0.05); }
 .sidebar-nav-action.primary { color: var(--accent-glow); }
 
+.sidebar-expandable { display: flex; flex-direction: column; }
+.sidebar-expand-toggle { justify-content: space-between; }
+.sidebar-chevron {
+  width: 10px; height: 6px;
+  color: rgba(245,241,232,0.35);
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.sidebar-expand-toggle.expanded .sidebar-chevron { transform: rotate(180deg); }
+
+.sidebar-sub {
+  display: none;
+  flex-direction: column;
+  background: rgba(0,0,0,0.15);
+}
+.sidebar-sub.open { display: flex; }
+.sidebar-sub-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 24px 10px 36px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(245,241,232,0.45);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  text-align: left;
+  transition: color 0.15s, background 0.15s;
+  width: 100%;
+  gap: 8px;
+}
+.sidebar-sub-item:hover { color: rgba(245,241,232,0.85); background: rgba(245,241,232,0.05); }
+.sidebar-sub-item .sub-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--ink-muted);
+}
+.sidebar-sub-item .sub-dot.active { background: var(--accent-glow); }
+.sidebar-sub-item.create-new { color: rgba(245,241,232,0.3); font-style: italic; border-top: 1px solid rgba(245,241,232,0.07); margin-top: 2px; }
+.sidebar-sub-item.create-new:hover { color: var(--accent-glow); }
+
 /* Hamburger sidebar active on all screen sizes */
 .nav-hamburger { display: flex; }
 .nav-tabs { display: none; }
@@ -1232,8 +1276,25 @@ body {
   <div class="sidebar-nav-tabs">
     <button class="sidebar-nav-tab active" data-sidebar-view="dashboard" onclick="switchView('dashboard');closeSidebar()">Today</button>
     <button class="sidebar-nav-tab" data-sidebar-view="calendar" onclick="switchView('calendar');closeSidebar()">Calendar</button>
-    <button class="sidebar-nav-tab" data-sidebar-view="projects" onclick="switchView('projects');closeSidebar()">Projects</button>
-    <button class="sidebar-nav-tab" data-sidebar-view="habits" onclick="switchView('habits');closeSidebar()">Habits &amp; Discipline</button>
+
+    <!-- Projects expandable -->
+    <div class="sidebar-expandable">
+      <button class="sidebar-nav-tab sidebar-expand-toggle" data-sidebar-view="projects" onclick="toggleSidebarSection('projects')">
+        <span>Projects</span>
+        <svg class="sidebar-chevron" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="sidebar-sub" id="sidebar-sub-projects"></div>
+    </div>
+
+    <!-- Habits expandable -->
+    <div class="sidebar-expandable">
+      <button class="sidebar-nav-tab sidebar-expand-toggle" data-sidebar-view="habits" onclick="toggleSidebarSection('habits')">
+        <span>Habits &amp; Discipline</span>
+        <svg class="sidebar-chevron" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="sidebar-sub" id="sidebar-sub-habits"></div>
+    </div>
+
     <button class="sidebar-nav-tab" data-sidebar-view="focus" onclick="switchView('focus');closeSidebar()">Focus</button>
     <button class="sidebar-nav-tab" data-sidebar-view="settings" onclick="switchView('settings');closeSidebar()">Settings</button>
   </div>
@@ -1774,6 +1835,7 @@ function toggleSidebar() {
   if (open) closeSidebar(); else openSidebar();
 }
 function openSidebar() {
+  renderSidebarSubs();
   document.getElementById('sidebar').classList.add('open');
   document.getElementById('sidebarBackdrop').classList.add('visible');
   document.getElementById('sidebarToggle').classList.add('open');
@@ -1784,6 +1846,67 @@ function closeSidebar() {
   document.getElementById('sidebarBackdrop').classList.remove('visible');
   document.getElementById('sidebarToggle').classList.remove('open');
   document.body.style.overflow = '';
+}
+
+function toggleSidebarSection(section) {
+  const sub = document.getElementById('sidebar-sub-' + section);
+  const toggle = sub.previousElementSibling;
+  const isOpen = sub.classList.contains('open');
+  if (isOpen) {
+    sub.classList.remove('open');
+    toggle.classList.remove('expanded');
+  } else {
+    sub.classList.add('open');
+    toggle.classList.add('expanded');
+  }
+}
+
+function renderSidebarSubs() {
+  // Projects
+  const projSub = document.getElementById('sidebar-sub-projects');
+  const projects = (state && state.projects) ? state.projects : [];
+  projSub.innerHTML = projects.map(p => `
+    <button class="sidebar-sub-item" onclick="switchView('projects');closeSidebar()">
+      <span class="sub-dot ${p.tagClass === 'tag-active' ? 'active' : ''}"></span>
+      ${p.name}
+    </button>
+  `).join('') + `
+    <button class="sidebar-sub-item create-new" onclick="sidebarCreateProject()">+ New project</button>
+  `;
+
+  // Habits
+  const habitSub = document.getElementById('sidebar-sub-habits');
+  const disciplines = (state && state.disciplines) ? state.disciplines : [];
+  habitSub.innerHTML = disciplines.map(d => `
+    <button class="sidebar-sub-item" onclick="switchView('habits');closeSidebar()">
+      <span class="sub-dot active"></span>
+      ${d.name}
+    </button>
+  `).join('') + `
+    <button class="sidebar-sub-item create-new" onclick="sidebarCreateHabit()">+ New habit</button>
+  `;
+}
+
+function sidebarCreateProject() {
+  const name = prompt('Project name:');
+  if (!name || !name.trim()) return;
+  const id = 'proj_' + Date.now();
+  state.projects.push({ id, name: name.trim(), sub: '', status: 'Active', tagClass: 'tag-active', tasks: [] });
+  save();
+  renderSidebarSubs();
+  switchView('projects');
+  closeSidebar();
+}
+
+function sidebarCreateHabit() {
+  const name = prompt('Habit name:');
+  if (!name || !name.trim()) return;
+  const id = 'habit_' + Date.now();
+  state.disciplines.push({ id, name: name.trim(), target: 3, unit: 'sessions', logged: 0 });
+  save();
+  renderSidebarSubs();
+  switchView('habits');
+  closeSidebar();
 }
 
 function setView(mode) {
