@@ -3,7 +3,7 @@
    Handles: offline caching, push notifications, scheduled alerts
    ============================================================ */
 
-const CACHE_NAME = 'seize-v2';
+const CACHE_NAME = 'seize-v3';
 const ASSETS = [
   '/seize-app/',
   '/seize-app/index.html',
@@ -20,14 +20,15 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-/* ---- Activate: clean old caches ---- */
+/* ---- Activate: clean old caches, then reload all clients ---- */
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
+      .then(() => self.clients.matchAll({ type: 'window' }))
+      .then(clients => clients.forEach(client => client.navigate(client.url)))
   );
-  self.clients.claim();
 });
 
 /* ---- Fetch: network-first for HTML, cache-first for assets ---- */
