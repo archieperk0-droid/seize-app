@@ -2136,7 +2136,7 @@ function getWeekEvents(weekKey) {
 function saveWeekEvents(weekKey, events) {
   if (!state.timetables) state.timetables = {};
   state.timetables[weekKey] = events;
-  save();
+  saveState();
 }
 
 function calNav(dir) {
@@ -2491,7 +2491,7 @@ function getDailyEvents() {
 }
 function saveDailyEvents(evts) {
   if(!state.timetables) state.timetables={};
-  state.timetables['daily']=evts; save();
+  state.timetables['daily']=evts; saveState();
 }
 function ttQuickAddDaily(time, slotEl) {
   ttCloseQA();
@@ -2567,7 +2567,7 @@ function durationSlots(start, end) {
 function saveDayNotes(dk, val) {
   if (!state.days[dk]) state.days[dk] = buildInitialDay(dk);
   state.days[dk].notes = val;
-  save();
+  saveState();
 }
 
 function esc(s) {
@@ -2899,7 +2899,7 @@ function sidebarCreateProject() {
   if (!name || !name.trim()) return;
   const id = 'proj_' + Date.now();
   state.projects.push({ id, name: name.trim(), sub: '', status: 'Active', tagClass: 'tag-active', tasks: [] });
-  save();
+  saveState();
   renderSidebarSubs();
   switchView('projects');
   closeSidebar();
@@ -2910,7 +2910,7 @@ function sidebarCreateHabit() {
   if (!name || !name.trim()) return;
   const id = 'habit_' + Date.now();
   state.disciplines.push({ id, name: name.trim(), target: 3, unit: 'sessions', logged: 0 });
-  save();
+  saveState();
   renderSidebarSubs();
   switchView('habits');
   closeSidebar();
