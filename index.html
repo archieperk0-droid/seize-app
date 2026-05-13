@@ -161,7 +161,8 @@ body {
   white-space: nowrap;
 }
 
-.page-wrap { padding-top: calc(var(--nav-h) + var(--safe-top)); min-height: 100vh; }
+.page-wrap { padding-top: calc(var(--nav-h) + var(--safe-top)); min-height: 100vh; visibility: hidden; }
+.page-wrap.ready { visibility: visible; }
 .view { display: none; }
 .view.active { display: block; }
 
@@ -2380,7 +2381,7 @@ function showQuoteOverlay(force) {
   const last = localStorage.getItem('quote_last_shown');
   if (!force && last) {
     const lastTime = parseInt(last);
-    if (Date.now() - lastTime < 30 * 60 * 1000) return;
+    if (Date.now() - lastTime < 30 * 60 * 1000) return false;
   }
 
   if (state.quotes.length === 0) state.quotes = QUOTES_SEED.slice();
@@ -2422,11 +2423,13 @@ function showQuoteOverlay(force) {
   document.getElementById('quoteOverlay').classList.add('show');
   localStorage.setItem('quote_last_shown', Date.now().toString());
   saveState();
+  return true;
 }
 
 function dismissQuoteOverlay(e) {
   if (e && e.target && e.target.closest('.quote-favourite')) return;
   document.getElementById('quoteOverlay').classList.remove('show');
+  document.querySelector('.page-wrap').classList.add('ready');
 }
 
 function toggleFavouriteQuote() {
@@ -2844,7 +2847,8 @@ window.addEventListener('beforeinstallprompt', e => {
   scheduleReminders();
   handleDeepLink();
   await registerServiceWorker();
-  setTimeout(() => showQuoteOverlay(false), 400);
+  const overlayShown = showQuoteOverlay(false);
+  if (!overlayShown) document.querySelector('.page-wrap').classList.add('ready');
 })();
 
 </script>
