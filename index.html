@@ -3854,8 +3854,11 @@ window.addEventListener('beforeinstallprompt', e => {
   scheduleReminders();
   handleDeepLink();
   await registerServiceWorker();
-  const overlayShown = showQuoteOverlay(false);
+  let overlayShown = false;
+  try { overlayShown = showQuoteOverlay(false); } catch(e) { console.warn('Quote overlay error', e); }
   if (!overlayShown) document.querySelector('.page-wrap').classList.add('ready');
+  // Failsafe: always show page after 1.5s regardless
+  setTimeout(() => document.querySelector('.page-wrap').classList.add('ready'), 1500);
 })();
 
 </script>
