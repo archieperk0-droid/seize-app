@@ -3,13 +3,13 @@
    Handles: offline caching, push notifications, scheduled alerts
    ============================================================ */
 
-const CACHE_NAME = 'archie-ops-v3';
+const CACHE_NAME = 'seize-v2';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/seize-app/',
+  '/seize-app/index.html',
+  '/seize-app/manifest.json',
+  '/seize-app/icon-192.png',
+  '/seize-app/icon-512.png'
 ];
 
 /* ---- Install: pre-cache shell assets ---- */
@@ -30,21 +30,37 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-/* ---- Fetch: cache-first for shell, network-first for data ---- */
+/* ---- Fetch: network-first for HTML, cache-first for assets ---- */
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
+  const url = new URL(event.request.url);
+  const isHTML = url.pathname.endsWith('.html') || url.pathname.endsWith('/');
+
+  if (isHTML) {
+    // Always try network first for HTML so updates appear immediately
+    event.respondWith(
+      fetch(event.request).then(response => {
         if (response.ok) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
         }
         return response;
-      }).catch(() => caches.match('/index.html'));
-    })
-  );
+      }).catch(() => caches.match(event.request))
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request).then(cached => {
+        if (cached) return cached;
+        return fetch(event.request).then(response => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          }
+          return response;
+        }).catch(() => caches.match('/seize-app/index.html'));
+      })
+    );
+  }
 });
 
 /* ---- Push: receive push event and show notification ---- */
