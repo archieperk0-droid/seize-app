@@ -1378,6 +1378,69 @@ body {
   background-size: 28px 28px;
 }
 
+/* ===== ORIGIN STORY ===== */
+.origin-card {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 36px 40px 40px;
+  margin-bottom: 36px;
+  position: relative;
+}
+.origin-card::before {
+  content: '';
+  position: absolute;
+  top: 6px; left: 6px; right: 6px; bottom: 6px;
+  border: 1px solid rgba(245,241,232,0.1);
+  pointer-events: none;
+}
+.origin-stamp {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #f4a78c;
+  margin-bottom: 20px;
+}
+.origin-title {
+  font-family: var(--display);
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-bottom: 32px;
+  line-height: 1.1;
+}
+.origin-title em { color: #f4a78c; }
+.origin-body { display: flex; flex-direction: column; gap: 20px; }
+.origin-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(245,241,232,0.08);
+}
+.origin-row:last-child { border-bottom: none; padding-bottom: 0; }
+.origin-key {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(245,241,232,0.35);
+  padding-top: 3px;
+}
+.origin-val {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(245,241,232,0.85);
+}
+.origin-word {
+  font-family: var(--display);
+  font-size: 28px;
+  font-style: italic;
+  font-weight: 500;
+  color: #f4a78c;
+  letter-spacing: -0.02em;
+}
+
 /* ===== AUTH OVERLAY ===== */
 #authOverlay {
   position: fixed; inset: 0;
@@ -1441,6 +1504,7 @@ body {
 }
 
 /* ===== ONBOARDING OVERLAY ===== */
+/* ===== ONBOARDING ===== */
 #onboardOverlay {
   position: fixed; inset: 0;
   background: var(--ink);
@@ -1448,72 +1512,232 @@ body {
   display: none;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
-.onboard-box {
-  max-width: 480px;
+.onboard-wrap {
   width: 100%;
-  padding: 0 32px;
+  max-width: 560px;
+  padding: 0 40px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 0;
 }
-.onboard-step { display: none; flex-direction: column; gap: 20px; }
+.onboard-progress {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 52px;
+}
+.onboard-pip {
+  height: 2px;
+  flex: 1;
+  background: rgba(245,241,232,0.15);
+  transition: background 0.3s;
+}
+.onboard-pip.done { background: #f4a78c; }
+.onboard-step { display: none; flex-direction: column; gap: 24px; animation: obFadeIn 0.35s ease; }
 .onboard-step.active { display: flex; }
-.onboard-label {
+@keyframes obFadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+.onboard-counter {
   font-family: var(--mono);
   font-size: 9px;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(245,241,232,0.4);
+  color: rgba(245,241,232,0.3);
 }
 .onboard-q {
   font-family: var(--display);
-  font-size: 28px;
+  font-size: 34px;
   font-style: italic;
   font-weight: 500;
   color: var(--paper);
   letter-spacing: -0.02em;
-  line-height: 1.2;
+  line-height: 1.15;
+}
+.onboard-hint {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: rgba(245,241,232,0.3);
+  margin-top: -12px;
 }
 .onboard-input {
   background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(245,241,232,0.3);
+  border-bottom: 1px solid rgba(245,241,232,0.2);
+  color: var(--paper);
+  font-family: var(--body);
+  font-size: 18px;
+  padding: 12px 0;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+.onboard-input::placeholder { color: rgba(245,241,232,0.18); }
+.onboard-input:focus { border-bottom-color: #f4a78c; }
+.onboard-textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(245,241,232,0.2);
   color: var(--paper);
   font-family: var(--body);
   font-size: 16px;
-  padding: 10px 0;
+  padding: 12px 0;
   outline: none;
   width: 100%;
+  resize: none;
+  min-height: 80px;
+  transition: border-color 0.2s;
+  line-height: 1.55;
 }
-.onboard-input::placeholder { color: rgba(245,241,232,0.25); }
-.onboard-input:focus { border-bottom-color: #f4a78c; }
-.onboard-actions { display: flex; gap: 12px; justify-content: flex-end; }
-.onboard-btn {
+.onboard-textarea::placeholder { color: rgba(245,241,232,0.18); }
+.onboard-textarea:focus { border-bottom-color: #f4a78c; }
+.onboard-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+.onboard-back {
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  padding: 10px 20px;
-  border: 1px solid rgba(245,241,232,0.25);
+  color: rgba(245,241,232,0.3);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 10px 0;
+  transition: color 0.15s;
+}
+.onboard-back:hover { color: rgba(245,241,232,0.6); }
+.onboard-next {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 12px 28px;
+  border: 1px solid #f4a78c;
   background: transparent;
-  color: var(--paper);
+  color: #f4a78c;
   cursor: pointer;
   transition: all 0.15s;
+  margin-left: auto;
 }
-.onboard-btn:hover { border-color: var(--paper); background: rgba(245,241,232,0.06); }
-.onboard-btn.primary { background: #f4a78c; border-color: #f4a78c; color: var(--ink); }
-.onboard-btn.primary:hover { background: #f2906e; border-color: #f2906e; }
-.onboard-progress {
-  display: flex;
-  gap: 6px;
+.onboard-next:hover { background: #f4a78c; color: var(--ink); }
+
+/* ===== WELCOME SCREEN ===== */
+#welcomeOverlay {
+  position: fixed; inset: 0;
+  background: var(--ink);
+  z-index: 9997;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+  cursor: pointer;
 }
-.onboard-pip {
-  width: 24px; height: 2px;
-  background: rgba(245,241,232,0.2);
-  transition: background 0.2s;
+.welcome-name {
+  font-family: var(--display);
+  font-size: clamp(40px, 8vw, 72px);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--paper);
+  letter-spacing: -0.03em;
+  text-align: center;
+  animation: wFadeIn 0.8s ease forwards;
+  opacity: 0;
 }
-.onboard-pip.done { background: #f4a78c; }
+.welcome-slogan {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #f4a78c;
+  text-align: center;
+  animation: wFadeIn 0.8s ease 0.5s forwards;
+  opacity: 0;
+}
+.welcome-tap {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(245,241,232,0.2);
+  text-align: center;
+  margin-top: 48px;
+  animation: wFadeIn 0.8s ease 1.2s forwards;
+  opacity: 0;
+}
+@keyframes wFadeIn { to { opacity: 1; } }
+
+/* ===== QUOTE SCREEN ===== */
+#quoteOverlay {
+  position: fixed; inset: 0;
+  background: var(--paper);
+  z-index: 9996;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 40px;
+}
+.quote-mark {
+  font-family: var(--display);
+  font-size: 80px;
+  font-style: italic;
+  color: rgba(26,22,20,0.08);
+  line-height: 0.8;
+  align-self: flex-start;
+  margin-left: calc(50% - 280px);
+}
+.quote-text {
+  font-family: var(--display);
+  font-size: clamp(20px, 3.5vw, 32px);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  max-width: 560px;
+  text-align: center;
+  animation: wFadeIn 0.6s ease forwards;
+  opacity: 0;
+}
+.quote-attr {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-top: 24px;
+  text-align: center;
+  animation: wFadeIn 0.6s ease 0.4s forwards;
+  opacity: 0;
+}
+.quote-brand {
+  position: absolute;
+  bottom: 32px;
+  right: 40px;
+  font-family: var(--display);
+  font-size: 13px;
+  font-style: italic;
+  color: rgba(26,22,20,0.2);
+}
+.quote-load-wrap {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: rgba(26,22,20,0.08);
+}
+.quote-load-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width 0.06s linear;
+}
 
 /* ===== USER PILL ===== */
 .user-pill {
@@ -1570,41 +1794,119 @@ body {
 
 <!-- ===== ONBOARDING OVERLAY ===== -->
 <div id="onboardOverlay">
-  <div class="onboard-box">
-    <div class="onboard-progress">
-      <div class="onboard-pip done" id="pip0"></div>
-      <div class="onboard-pip" id="pip1"></div>
-      <div class="onboard-pip" id="pip2"></div>
-    </div>
+  <div class="onboard-wrap">
+    <div class="onboard-progress" id="obProgress"></div>
 
+    <!-- Q0: Name -->
     <div class="onboard-step active" id="obStep0">
-      <div class="onboard-label">Step 1 of 3</div>
+      <div class="onboard-counter">01 — 08</div>
       <div class="onboard-q">What should we call you?</div>
-      <input class="onboard-input" id="obName" placeholder="Your first name" maxlength="40">
+      <input class="onboard-input" id="obName" placeholder="Your name" maxlength="40" onkeydown="if(event.key==='Enter')_obNext(1)">
       <div class="onboard-actions">
-        <button class="onboard-btn primary" onclick="_obNext(1)">Next →</button>
+        <span></span>
+        <button class="onboard-next" onclick="_obNext(1)">Continue →</button>
       </div>
     </div>
 
+    <!-- Q1: Age -->
     <div class="onboard-step" id="obStep1">
-      <div class="onboard-label">Step 2 of 3</div>
-      <div class="onboard-q">What's your role?</div>
-      <input class="onboard-input" id="obRole" placeholder="e.g. Founder, Designer, Engineer" maxlength="60">
+      <div class="onboard-counter">02 — 08</div>
+      <div class="onboard-q">How old are you?</div>
+      <input class="onboard-input" id="obAge" placeholder="Your age" type="number" min="10" max="120" onkeydown="if(event.key==='Enter')_obNext(2)">
       <div class="onboard-actions">
-        <button class="onboard-btn" onclick="_obBack(0)">← Back</button>
-        <button class="onboard-btn primary" onclick="_obNext(2)">Next →</button>
+        <button class="onboard-back" onclick="_obGoto(0)">← Back</button>
+        <button class="onboard-next" onclick="_obNext(2)">Continue →</button>
       </div>
     </div>
 
+    <!-- Q2: Role -->
     <div class="onboard-step" id="obStep2">
-      <div class="onboard-label">Step 3 of 3</div>
-      <div class="onboard-q">What are you working on?</div>
-      <input class="onboard-input" id="obVentures" placeholder="e.g. Klayr, Oswin (comma separated)" maxlength="120">
+      <div class="onboard-counter">03 — 08</div>
+      <div class="onboard-q">What's your role?</div>
+      <div class="onboard-hint">What you do day to day</div>
+      <input class="onboard-input" id="obRole" placeholder="e.g. Founder, Student, Designer, Athlete" maxlength="80" onkeydown="if(event.key==='Enter')_obNext(3)">
       <div class="onboard-actions">
-        <button class="onboard-btn" onclick="_obBack(1)">← Back</button>
-        <button class="onboard-btn primary" onclick="_obFinish()">Let's go →</button>
+        <button class="onboard-back" onclick="_obGoto(1)">← Back</button>
+        <button class="onboard-next" onclick="_obNext(3)">Continue →</button>
       </div>
     </div>
+
+    <!-- Q3: Passion -->
+    <div class="onboard-step" id="obStep3">
+      <div class="onboard-counter">04 — 08</div>
+      <div class="onboard-q">What is your passion?</div>
+      <div class="onboard-hint">Projects, hobbies, crafts — what lights you up</div>
+      <textarea class="onboard-textarea" id="obPassion" placeholder="e.g. building apps, martial arts, music production, learning Spanish…" maxlength="300"></textarea>
+      <div class="onboard-actions">
+        <button class="onboard-back" onclick="_obGoto(2)">← Back</button>
+        <button class="onboard-next" onclick="_obNext(4)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Q4: Winning -->
+    <div class="onboard-step" id="obStep4">
+      <div class="onboard-counter">05 — 08</div>
+      <div class="onboard-q">What does winning look like in 12 months?</div>
+      <div class="onboard-hint">Be specific — paint the picture</div>
+      <textarea class="onboard-textarea" id="obWinning" placeholder="Where are you, what have you achieved, how do you feel?" maxlength="500"></textarea>
+      <div class="onboard-actions">
+        <button class="onboard-back" onclick="_obGoto(3)">← Back</button>
+        <button class="onboard-next" onclick="_obNext(5)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Q5: Obstacle -->
+    <div class="onboard-step" id="obStep5">
+      <div class="onboard-counter">06 — 08</div>
+      <div class="onboard-q">What's your biggest obstacle right now?</div>
+      <div class="onboard-hint">Be honest — this is just for you</div>
+      <textarea class="onboard-textarea" id="obObstacle" placeholder="What's standing between you and where you want to be?" maxlength="500"></textarea>
+      <div class="onboard-actions">
+        <button class="onboard-back" onclick="_obGoto(4)">← Back</button>
+        <button class="onboard-next" onclick="_obNext(6)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Q6: Drive -->
+    <div class="onboard-step" id="obStep6">
+      <div class="onboard-counter">07 — 08</div>
+      <div class="onboard-q">What gets you out of bed in the morning?</div>
+      <div class="onboard-hint">Your why</div>
+      <textarea class="onboard-textarea" id="obDrive" placeholder="What drives you?" maxlength="500"></textarea>
+      <div class="onboard-actions">
+        <button class="onboard-back" onclick="_obGoto(5)">← Back</button>
+        <button class="onboard-next" onclick="_obNext(7)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Q7: One word -->
+    <div class="onboard-step" id="obStep7">
+      <div class="onboard-counter">08 — 08</div>
+      <div class="onboard-q">One word for the person you're becoming.</div>
+      <input class="onboard-input" id="obOneWord" placeholder="One word" maxlength="30" onkeydown="if(event.key==='Enter')_obFinish()">
+      <div class="onboard-actions">
+        <button class="onboard-back" onclick="_obGoto(6)">← Back</button>
+        <button class="onboard-next" onclick="_obFinish()">Let's go →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== WELCOME SCREEN ===== -->
+<div id="welcomeOverlay" onclick="_showQuoteScreen()">
+  <div class="welcome-name" id="welcomeName">Welcome.</div>
+  <div class="welcome-slogan">Execute with intention.</div>
+  <div class="welcome-tap">Tap to continue</div>
+</div>
+
+<!-- ===== QUOTE SCREEN ===== -->
+<div id="quoteOverlay">
+  <div class="quote-mark">"</div>
+  <div class="quote-text" id="quoteText"></div>
+  <div class="quote-attr" id="quoteAttr"></div>
+  <div class="quote-brand">Seize the Day</div>
+  <div class="quote-load-wrap">
+    <div class="quote-load-bar" id="loadBar"></div>
   </div>
 </div>
 
@@ -1801,6 +2103,7 @@ body {
       <div class="section-title">Archive</div>
       <div class="section-meta">All Weeks Filed</div>
     </div>
+    <div id="originStoryCard"></div>
     <div class="archive-grid" id="archiveGrid"></div>
     <div class="archive-detail" id="archiveDetail"></div>
   </div>
@@ -2007,36 +2310,134 @@ _auth.onAuthStateChanged(async (user) => {
 // ==============================================================
 // ONBOARDING
 // ==============================================================
+// ==============================================================
+// ONBOARDING
+// ==============================================================
+const _OB_TOTAL = 8;
+const _OB_INPUTS = ['obName','obAge','obRole','obPassion','obWinning','obObstacle','obDrive','obOneWord'];
 let _obStep = 0;
+
 function _showOnboarding() {
   const nameInput = document.getElementById('obName');
   if (_currentUser?.displayName) nameInput.value = _currentUser.displayName.split(' ')[0];
+  // Build progress pips
+  const prog = document.getElementById('obProgress');
+  prog.innerHTML = Array.from({length:_OB_TOTAL}, (_,i) => `<div class="onboard-pip" id="pip${i}"></div>`).join('');
   document.getElementById('onboardOverlay').style.display = 'flex';
   _obGoto(0);
 }
+
 function _obGoto(n) {
   _obStep = n;
   document.querySelectorAll('.onboard-step').forEach((el,i) => el.classList.toggle('active', i===n));
   document.querySelectorAll('.onboard-pip').forEach((el,i) => el.classList.toggle('done', i<=n));
-  const inputs = ['obName','obRole','obVentures'];
-  const el = document.getElementById(inputs[n]);
-  if (el) setTimeout(() => el.focus(), 50);
+  const el = document.getElementById(_OB_INPUTS[n]);
+  if (el) setTimeout(() => el.focus(), 80);
 }
+
 function _obNext(n) {
-  const inputs = ['obName','obRole','obVentures'];
-  const val = document.getElementById(inputs[_obStep])?.value.trim();
-  if (!val) { document.getElementById(inputs[_obStep]).focus(); return; }
+  const el = document.getElementById(_OB_INPUTS[_obStep]);
+  const val = el?.value?.trim();
+  if (!val) { el?.focus(); el?.classList.add('ob-shake'); setTimeout(()=>el?.classList.remove('ob-shake'),400); return; }
   _obGoto(n);
 }
-function _obBack(n) { _obGoto(n); }
+
 async function _obFinish() {
-  const name = document.getElementById('obName').value.trim();
-  const role = document.getElementById('obRole').value.trim();
-  const ventures = document.getElementById('obVentures').value.trim();
-  if (!name) { _obGoto(0); return; }
-  state.profile = { name, role, ventures };
+  const oneWord = document.getElementById('obOneWord').value.trim();
+  if (!oneWord) { document.getElementById('obOneWord').focus(); return; }
+  const name = document.getElementById('obName').value.trim() || _currentUser?.displayName?.split(' ')[0] || 'You';
+  state.profile = {
+    name,
+    age:      document.getElementById('obAge').value.trim(),
+    role:     document.getElementById('obRole').value.trim(),
+    passion:  document.getElementById('obPassion').value.trim(),
+    winning:  document.getElementById('obWinning').value.trim(),
+    obstacle: document.getElementById('obObstacle').value.trim(),
+    drive:    document.getElementById('obDrive').value.trim(),
+    oneWord,
+    joinedAt: new Date().toISOString()
+  };
   await saveState();
   document.getElementById('onboardOverlay').style.display = 'none';
+  _showWelcome();
+}
+
+// ==============================================================
+// WELCOME SCREEN
+// ==============================================================
+function _showWelcome() {
+  const name = state?.profile?.name || 'You';
+  document.getElementById('welcomeName').textContent = `Welcome, ${name}.`;
+  document.getElementById('welcomeOverlay').style.display = 'flex';
+  setTimeout(_showQuoteScreen, 3500);
+}
+
+// ==============================================================
+// QUOTE SCREEN + LOADING BAR
+// ==============================================================
+const _QUOTES = [
+  { text: "The secret of getting ahead is getting started.", attr: "Mark Twain" },
+  { text: "Do what you can, with what you have, where you are.", attr: "Theodore Roosevelt" },
+  { text: "It does not matter how slowly you go as long as you do not stop.", attr: "Confucius" },
+  { text: "You don't have to be great to start, but you have to start to be great.", attr: "Zig Ziglar" },
+  { text: "Discipline is the bridge between goals and accomplishment.", attr: "Jim Rohn" },
+  { text: "Hard work beats talent when talent doesn't work hard.", attr: "Tim Notke" },
+  { text: "Success is the sum of small efforts repeated day in and day out.", attr: "Robert Collier" },
+  { text: "The man who moves a mountain begins by carrying away small stones.", attr: "Confucius" },
+  { text: "Energy and persistence conquer all things.", attr: "Benjamin Franklin" },
+  { text: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.", attr: "Aristotle" },
+  { text: "Motivation gets you going. Discipline keeps you growing.", attr: "John C. Maxwell" },
+  { text: "Don't watch the clock; do what it does — keep going.", attr: "Sam Levenson" },
+  { text: "The future depends on what you do today.", attr: "Mahatma Gandhi" },
+  { text: "If you're going through hell, keep going.", attr: "Winston Churchill" },
+  { text: "Start where you are. Use what you have. Do what you can.", attr: "Arthur Ashe" },
+  { text: "You miss 100% of the shots you don't take.", attr: "Wayne Gretzky" },
+  { text: "A year from now you may wish you had started today.", attr: "Karen Lamb" },
+  { text: "Little by little, a little becomes a lot.", attr: "Tanzanian Proverb" },
+  { text: "Champions aren't made in gyms. Champions are made from something deep inside.", attr: "Muhammad Ali" },
+  { text: "The only way to do great work is to love what you do.", attr: "Steve Jobs" },
+  { text: "Act as if what you do makes a difference. It does.", attr: "William James" },
+  { text: "Push yourself, because no one else is going to do it for you.", attr: "Anonymous" },
+  { text: "Dream it. Believe it. Build it.", attr: "Anonymous" },
+  { text: "Be so good they can't ignore you.", attr: "Steve Martin" },
+  { text: "Progress, not perfection.", attr: "Anonymous" },
+  { text: "Fall seven times, stand up eight.", attr: "Japanese Proverb" },
+  { text: "The harder the conflict, the greater the triumph.", attr: "Thomas Paine" },
+  { text: "Small daily improvements are the key to staggering long-term results.", attr: "Robin Sharma" },
+  { text: "You are never too old to set another goal or to dream a new dream.", attr: "C.S. Lewis" },
+  { text: "The most common way people give up their power is by thinking they don't have any.", attr: "Alice Walker" }
+];
+
+function _getDailyQuote() {
+  const day = Math.floor(Date.now() / 86400000);
+  return _QUOTES[day % _QUOTES.length];
+}
+
+function _showQuoteScreen() {
+  document.getElementById('welcomeOverlay').style.display = 'none';
+  const q = _getDailyQuote();
+  document.getElementById('quoteText').textContent = q.text;
+  document.getElementById('quoteAttr').textContent = '— ' + q.attr;
+  const overlay = document.getElementById('quoteOverlay');
+  overlay.style.display = 'flex';
+  // Start loading bar — fires _enterApp when done
+  _startLoadBar();
+}
+
+function _startLoadBar() {
+  const bar = document.getElementById('loadBar');
+  if (!bar) return;
+  bar.style.width = '0%';
+  let pct = 0;
+  const interval = setInterval(() => {
+    pct += (100 - pct) * 0.04 + 0.3;
+    if (pct >= 100) { pct = 100; clearInterval(interval); setTimeout(_enterApp, 200); }
+    bar.style.width = pct + '%';
+  }, 60);
+}
+
+function _enterApp() {
+  document.getElementById('quoteOverlay').style.display = 'none';
   _updateUserUI();
   render();
   scheduleReminders();
@@ -2061,9 +2462,8 @@ async function _boot() {
     _showOnboarding();
     return;
   }
-  _updateUserUI();
-  render();
-  scheduleReminders();
+  // Returning user — show quote/loading screen then enter app
+  _showQuoteScreen();
 }
 
 // ==============================================================
@@ -3168,7 +3568,30 @@ Be direct, practical, and specific. No fluff. Format as plain text with clear se
 // ==============================================================
 // ARCHIVE
 // ==============================================================
+function renderOriginStory() {
+  const el = document.getElementById('originStoryCard');
+  if (!el) return;
+  const p = state.profile;
+  if (!p || !p.joinedAt) { el.innerHTML = ''; return; }
+  const joined = new Date(p.joinedAt).toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+  el.innerHTML = `
+    <div class="origin-card">
+      <div class="origin-stamp">The Origin Story — Filed ${joined}</div>
+      <div class="origin-title">The Beginning of <em>${p.name || 'You'}</em></div>
+      <div class="origin-body">
+        ${p.age ? `<div class="origin-row"><span class="origin-key">Age</span><span class="origin-val">${p.age}</span></div>` : ''}
+        ${p.role ? `<div class="origin-row"><span class="origin-key">Role</span><span class="origin-val">${p.role}</span></div>` : ''}
+        ${p.passion ? `<div class="origin-row"><span class="origin-key">Passion</span><span class="origin-val">${p.passion}</span></div>` : ''}
+        ${p.winning ? `<div class="origin-row"><span class="origin-key">Winning in 12 months looks like</span><span class="origin-val">${p.winning}</span></div>` : ''}
+        ${p.obstacle ? `<div class="origin-row"><span class="origin-key">Biggest obstacle</span><span class="origin-val">${p.obstacle}</span></div>` : ''}
+        ${p.drive ? `<div class="origin-row"><span class="origin-key">What gets me out of bed</span><span class="origin-val">${p.drive}</span></div>` : ''}
+        ${p.oneWord ? `<div class="origin-row"><span class="origin-key">Becoming</span><span class="origin-val origin-word">${p.oneWord}</span></div>` : ''}
+      </div>
+    </div>
+  `;
+}
 function renderArchive() {
+  renderOriginStory();
   const grid = document.getElementById('archiveGrid');
   const ids = Object.keys(state.weeks).sort().reverse();
   grid.innerHTML = ids.map(id => {
