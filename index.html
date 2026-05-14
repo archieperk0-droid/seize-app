@@ -791,68 +791,103 @@ body {
    ======================== */
 #ttMonthView { display: none; }
 .month-grid {
-  border-top: 2px solid var(--ink);
-  border-left: 1px solid var(--rule);
+  border: 2px solid var(--ink);
+  overflow: hidden;
 }
 .month-header {
   display: grid;
   grid-template-columns: repeat(7,1fr);
-  background: var(--paper-2);
-  border-bottom: 2px solid var(--ink);
+  background: var(--ink);
+  border-bottom: 2px solid rgba(245,241,232,0.1);
   position: sticky;
   top: 0;
   z-index: 10;
 }
 .month-header-day {
-  padding: 8px 10px;
+  padding: 10px 10px;
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--ink-muted);
-  border-right: 1px solid var(--rule);
+  color: rgba(245,241,232,0.4);
+  border-right: 1px solid rgba(245,241,232,0.08);
+  text-align: center;
 }
 .month-header-day:last-child { border-right: none; }
 .month-week-row {
   display: grid;
   grid-template-columns: repeat(7,1fr);
-  border-bottom: 1px solid var(--rule-soft);
-  min-height: 110px;
+  border-bottom: 1px solid rgba(26,22,20,0.1);
+  min-height: 120px;
 }
 .month-cell {
-  border-right: 1px solid var(--rule-soft);
+  border-right: 1px solid rgba(26,22,20,0.08);
   padding: 6px 8px;
   cursor: pointer;
   transition: background 0.1s;
   overflow: hidden;
   position: relative;
+  background: var(--paper);
 }
 .month-cell:last-child { border-right: none; }
 .month-cell:hover { background: var(--paper-2); }
-.month-cell.today { background: var(--paper-3); }
-.month-cell.other-month { opacity: 0.35; }
+.month-cell.today { background: var(--paper); }
+.month-cell.other-month { background: var(--paper-2); opacity: 0.5; }
 .month-cell-date {
   font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
+  font-size: 11px;
+  letter-spacing: 0.04em;
   color: var(--ink-muted);
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 4px;
 }
-.month-cell.today .month-cell-date { color: var(--accent); font-weight: 600; }
-.month-note-icon { font-size: 10px; opacity: 0.5; }
+.month-cell-date .date-num {
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  font-weight: 500;
+}
+.month-cell.today .month-cell-date .date-num {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+.month-note-icon { font-size: 9px; opacity: 0.4; margin-right: auto; }
 .month-event-chip {
   font-family: var(--body);
   font-size: 10px;
-  padding: 2px 5px;
+  padding: 2px 6px 2px 4px;
   border-radius: 2px;
   margin-bottom: 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-left: 3px solid rgba(0,0,0,0.2);
+  background: transparent !important;
+  color: var(--ink) !important;
+}
+.month-event-chip .chip-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.month-event-chip .chip-time {
+  font-family: var(--mono);
+  font-size: 9px;
+  opacity: 0.55;
+  flex-shrink: 0;
+}
+.month-event-chip .chip-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .month-more {
   font-family: var(--mono);
@@ -860,6 +895,7 @@ body {
   letter-spacing: 0.08em;
   color: var(--ink-muted);
   margin-top: 2px;
+  padding-left: 4px;
 }
 .month-note-text {
   font-family: var(--body);
@@ -870,6 +906,61 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-left: 4px;
+}
+
+/* ========================
+   TIMESPAN BAR
+   ======================== */
+.tt-timespan-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0 4px;
+  border-bottom: 1px dotted var(--rule);
+  margin-bottom: 4px;
+}
+.tt-timespan-bar.hidden { display: none; }
+.tt-timespan-select {
+  font-family: var(--mono);
+  font-size: 10px;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  padding: 3px 6px;
+  border-radius: 2px;
+}
+
+/* ========================
+   PRESET TEMPLATES
+   ======================== */
+.preset-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.preset-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: var(--paper-2);
+}
+.preset-item-info { flex: 1; }
+.preset-item-name {
+  font-family: var(--display);
+  font-size: 15px;
+  font-style: italic;
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+.preset-item-desc {
+  font-family: var(--body);
+  font-size: 11px;
+  color: var(--ink-muted);
 }
 
 /* ========================
@@ -2343,7 +2434,18 @@ body {
       <button class="btn" id="btnAddEvent" onclick="openTokenEditor()">+ Add Event</button>
       <button class="btn" onclick="importTimetableFromCSV()">Import CSV</button>
       <button class="btn" onclick="openCatModal()">Categories</button>
+      <button class="btn" onclick="openPresetModal()">Templates</button>
+      <button class="btn" style="color:var(--accent);border-color:var(--accent-soft)" onclick="clearTimetable()">Clear Week</button>
       <div class="tt-legend" id="ttLegend"></div>
+    </div>
+    <!-- Time span controls (week view only) -->
+    <div class="tt-timespan-bar" id="ttTimespanBar">
+      <span style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted)">Time span</span>
+      <select class="tt-timespan-select" id="ttStartHour" onchange="applyTimeSpan()">
+      </select>
+      <span style="font-family:var(--mono);font-size:9px;color:var(--ink-muted)">→</span>
+      <select class="tt-timespan-select" id="ttEndHour" onchange="applyTimeSpan()">
+      </select>
     </div>
 
     <!-- WEEK VIEW -->
@@ -2374,6 +2476,32 @@ body {
     <div class="day-note-actions">
       <button class="btn" onclick="closeDayNote()">Cancel</button>
       <button class="btn primary" onclick="saveDayNote()">Save Note</button>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAP CONFIRM MODAL -->
+<div class="day-note-modal" id="overlapModal">
+  <div class="day-note-box" style="max-width:380px">
+    <div class="day-note-title">Overlap Detected</div>
+    <div style="font-family:var(--body);font-size:13px;color:var(--ink-soft);margin:12px 0 18px">
+      This slot already has an event. Move here anyway?
+    </div>
+    <div class="day-note-actions">
+      <button class="btn" onclick="overlapCancel()">Cancel</button>
+      <button class="btn primary" style="background:var(--accent);color:#fff;border-color:var(--accent)" onclick="overlapConfirm()">Move Anyway</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRESET TEMPLATES MODAL -->
+<div class="day-note-modal" id="presetModal">
+  <div class="day-note-box" style="max-width:540px">
+    <div class="day-note-title">Week Templates</div>
+    <div style="font-family:var(--body);font-size:12px;color:var(--ink-muted);margin:6px 0 16px">Apply a starter schedule to the current week. Replaces existing events.</div>
+    <div class="preset-list" id="presetList"></div>
+    <div class="day-note-actions" style="margin-top:18px">
+      <button class="btn" onclick="closePresetModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -2458,7 +2586,8 @@ body {
         </div>
         <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn primary" onclick="requestNotificationPermission()">Enable Push Notifications</button>
-          <button class="btn" onclick="exportToICS()">Export to .ics Calendar</button>
+          <button class="btn" onclick="exportToICS()">Export .ics (current week)</button>
+          <button class="btn" onclick="importFromICS()">Import .ics</button>
           <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:6px 12px;border:1px solid var(--rule);color:var(--ink-muted)" id="notifStatus">Permission: unknown</div>
         </div>
       </div>
@@ -2559,8 +2688,16 @@ body {
         <input type="time" class="form-input" id="teEnd" value="10:00">
       </div>
     </div>
+    <div class="form-row" style="margin-top:14px">
+      <label class="form-label">Event Reminder (optional)</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="time" class="form-input" id="teReminder" style="width:130px">
+        <span style="font-family:var(--mono);font-size:9px;color:var(--ink-muted)">Leave blank for no reminder</span>
+      </div>
+    </div>
     <div class="form-actions">
       <button class="btn primary" onclick="saveToken()">Save Event</button>
+      <button class="btn" id="teDuplicateBtn" onclick="duplicateEvent()" style="display:none">Duplicate</button>
       <button class="btn" onclick="closeTokenEditor()">Cancel</button>
     </div>
   </div>
@@ -2758,6 +2895,8 @@ function _enterApp() {
   _updateUserUI();
   render();
   scheduleReminders();
+  initTimeSpanControls();
+  scheduleEventReminders();
 }
 
 // ==============================================================
@@ -2783,6 +2922,9 @@ async function _boot() {
   }
   if (!state.customCategories) state.customCategories = [];
   if (!state.dayNotes) state.dayNotes = {};
+  if (!state.settings) state.settings = {};
+  if (state.settings.ttStart != null) TT_START_HOUR = state.settings.ttStart;
+  if (state.settings.ttEnd != null) TT_END_HOUR = state.settings.ttEnd;
   calMonthDate = new Date();
 
   if (!state.profile || !state.profile.name) {
@@ -2796,8 +2938,8 @@ async function _boot() {
 // CONSTANTS & STATE
 // ==============================================================
 const STORAGE_KEY = 'archie_ops_v3';
-const TT_START_HOUR = 5;
-const TT_END_HOUR = 23;
+let TT_START_HOUR = 5;
+let TT_END_HOUR = 23;
 const SLOT_HEIGHT = 18; // px per 30min — compact so full day fits on screen
 
 const DAYS_SHORT = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -3105,7 +3247,7 @@ function switchView(name) {
   document.querySelector(`.sidebar-item[data-view="${name}"]`)?.classList.add('active');
   if (name === 'archive') renderArchive();
   if (name === 'settings') renderSettings();
-  if (name === 'timetable') renderTimetable();
+  if (name === 'timetable') { renderTimetable(); initTimeSpanControls(); }
   if (name === 'projects') renderProjects();
   _closeSidebar();
 }
@@ -3132,6 +3274,8 @@ function setCalView(v) {
   document.getElementById('btnWeekView').classList.toggle('active', v === 'week');
   document.getElementById('btnMonthView').classList.toggle('active', v === 'month');
   document.getElementById('btnAddEvent').style.display = v === 'week' ? '' : 'none';
+  const tsBar = document.getElementById('ttTimespanBar');
+  if (tsBar) tsBar.classList.toggle('hidden', v === 'month');
   if (v === 'week') renderTimetable();
   else renderMonthView();
 }
@@ -3564,6 +3708,7 @@ function ttDragOver(e) {
 function ttDragLeave(e) {
   e.currentTarget.classList.remove('drag-over');
 }
+let _pendingDrop = null;
 function ttDrop(e, day, time) {
   e.preventDefault();
   e.currentTarget.classList.remove('drag-over');
@@ -3571,17 +3716,43 @@ function ttDrop(e, day, time) {
   const tokens = state.timetables[currentWeekId];
   const token = tokens.find(t=>t.id===dragToken);
   if (!token) return;
-  // Calculate duration and shift
   const duration = timeDurationSlots(token.start, token.end);
-  token.day = day;
-  token.start = time;
-  // Calculate new end time
   const [h,m] = time.split(':').map(Number);
   const endMins = h*60 + m + duration*30;
-  token.end = `${String(Math.floor(endMins/60)).padStart(2,'0')}:${String(endMins%60).padStart(2,'0')}`;
+  const newEnd = `${String(Math.floor(endMins/60)).padStart(2,'0')}:${String(endMins%60).padStart(2,'0')}`;
+  // Check for overlapping events
+  const overlap = tokens.some(t => {
+    if (t.id === dragToken) return false;
+    if (t.day !== day) return false;
+    return t.start < newEnd && t.end > time;
+  });
+  if (overlap) {
+    _pendingDrop = { token, day, time, newEnd };
+    document.getElementById('overlapModal').classList.add('open');
+    return;
+  }
+  _applyDrop(token, day, time, newEnd);
+}
+function _applyDrop(token, day, time, newEnd) {
+  token.day = day;
+  token.start = time;
+  token.end = newEnd;
   dragToken = null;
   saveState(); renderTimetable();
   showToast('Event moved');
+}
+function overlapConfirm() {
+  if (!_pendingDrop) return;
+  const { token, day, time, newEnd } = _pendingDrop;
+  _pendingDrop = null;
+  document.getElementById('overlapModal').classList.remove('open');
+  _applyDrop(token, day, time, newEnd);
+}
+function overlapCancel() {
+  _pendingDrop = null;
+  dragToken = null;
+  document.getElementById('overlapModal').classList.remove('open');
+  renderTimetable();
 }
 
 function deleteToken(id) {
@@ -3649,9 +3820,13 @@ function renderMonthView() {
 
       const note = state.dayNotes[dateStr] || '';
       const chips = tokens.slice(0, 3).map(t => {
-        const bg = getCatBg(t.cat || 'cat-routine');
-        const col = getCatColor(t.cat || 'cat-routine');
-        return `<div class="month-event-chip" style="background:${bg};color:${col}" title="${t.title}">${t.title}</div>`;
+        const dotColor = getCatBg(t.cat || 'cat-routine');
+        const borderColor = getCatColor(t.cat || 'cat-routine');
+        return `<div class="month-event-chip" style="border-left-color:${borderColor}" title="${t.title}">
+          <span class="chip-dot" style="background:${dotColor};border:1px solid ${borderColor}"></span>
+          <span class="chip-time">${t.start}</span>
+          <span class="chip-title">${t.title}</span>
+        </div>`;
       }).join('');
       const more = tokens.length > 3 ? `<div class="month-more">+${tokens.length-3} more</div>` : '';
       const noteHtml = note ? `<div class="month-note-text">${note}</div>` : '';
@@ -3660,8 +3835,8 @@ function renderMonthView() {
         <div class="month-cell${isToday?' today':''}${otherMonth?' other-month':''}"
              onclick="monthCellClick('${dateStr}','${cellDate.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}')">
           <div class="month-cell-date">
-            <span>${cellDate.getDate()}</span>
             ${note ? '<span class="month-note-icon">✏</span>' : ''}
+            <span class="date-num">${cellDate.getDate()}</span>
           </div>
           ${chips}${more}${noteHtml}
         </div>`;
@@ -3774,6 +3949,8 @@ function openTokenEditor(day=0, time='09:00') {
   document.getElementById('teStart').value = time;
   document.getElementById('teEnd').value = addOneHour(time);
   document.getElementById('teCat').value = 'cat-routine';
+  document.getElementById('teReminder').value = '';
+  document.getElementById('teDuplicateBtn').style.display = 'none';
   document.getElementById('tokenEditor').classList.add('show');
   setTimeout(()=>document.getElementById('teTitle').focus(),100);
 }
@@ -3781,6 +3958,7 @@ function openTokenEditorForEdit(id) {
   const token = state.timetables[currentWeekId]?.find(t=>t.id===id);
   if (!token) return;
   editingTokenId = id;
+  rebuildCatDropdown();
   document.getElementById('tokenEditorTitle').textContent = 'Edit Event';
   document.getElementById('teTitle').value = token.title;
   document.getElementById('teSub').value = token.sub || '';
@@ -3788,6 +3966,8 @@ function openTokenEditorForEdit(id) {
   document.getElementById('teStart').value = token.start;
   document.getElementById('teEnd').value = token.end;
   document.getElementById('teCat').value = token.cat || 'cat-routine';
+  document.getElementById('teReminder').value = token.reminder || '';
+  document.getElementById('teDuplicateBtn').style.display = '';
   document.getElementById('tokenEditor').classList.add('show');
 }
 function closeTokenEditor() {
@@ -3797,6 +3977,7 @@ function closeTokenEditor() {
 function saveToken() {
   const title = document.getElementById('teTitle').value.trim();
   if (!title) { alert('Title required'); return; }
+  const reminder = document.getElementById('teReminder').value || '';
   const token = {
     id: editingTokenId || 'tt-'+Date.now(),
     day: parseInt(document.getElementById('teDay').value),
@@ -3804,7 +3985,8 @@ function saveToken() {
     end: document.getElementById('teEnd').value,
     title: title,
     sub: document.getElementById('teSub').value.trim(),
-    cat: document.getElementById('teCat').value
+    cat: document.getElementById('teCat').value,
+    reminder: reminder
   };
   if (!state.timetables[currentWeekId]) state.timetables[currentWeekId] = [];
   if (editingTokenId) {
@@ -3814,6 +3996,7 @@ function saveToken() {
     state.timetables[currentWeekId].push(token);
   }
   saveState(); closeTokenEditor(); renderTimetable();
+  scheduleEventReminders();
   showToast(editingTokenId ? 'Event updated' : 'Event added');
 }
 function addOneHour(time) {
@@ -3835,6 +4018,234 @@ function importTimetableFromCSV() {
     showToast(`Imported ${tokens.length} events`);
   };
   input.click();
+}
+
+// ==============================================================
+// CLEAR WEEK
+// ==============================================================
+function clearTimetable() {
+  if (!confirm('Clear all events from this week? This cannot be undone.')) return;
+  state.timetables[currentWeekId] = [];
+  saveState(); renderTimetable();
+  showToast('Week cleared');
+}
+
+// ==============================================================
+// DUPLICATE EVENT
+// ==============================================================
+function duplicateEvent() {
+  if (!editingTokenId) return;
+  const token = state.timetables[currentWeekId]?.find(t=>t.id===editingTokenId);
+  if (!token) return;
+  const copy = { ...token, id: 'tt-'+Date.now() };
+  // Push to next available slot same day (add 1 hour)
+  const [h,m] = copy.end.split(':').map(Number);
+  const newStart = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  const duration = timeDurationSlots(token.start, token.end);
+  const endMins = h*60+m+duration*30;
+  copy.start = newStart;
+  copy.end = `${String(Math.floor(endMins/60)).padStart(2,'0')}:${String(endMins%60).padStart(2,'0')}`;
+  state.timetables[currentWeekId].push(copy);
+  saveState(); closeTokenEditor(); renderTimetable();
+  showToast('Event duplicated');
+}
+
+// ==============================================================
+// ADJUSTABLE TIME SPAN
+// ==============================================================
+function initTimeSpanControls() {
+  const startSel = document.getElementById('ttStartHour');
+  const endSel = document.getElementById('ttEndHour');
+  if (!startSel || !endSel) return;
+  startSel.innerHTML = '';
+  endSel.innerHTML = '';
+  for (let h = 0; h <= 23; h++) {
+    const label = `${String(h).padStart(2,'0')}:00`;
+    startSel.innerHTML += `<option value="${h}">${label}</option>`;
+    endSel.innerHTML += `<option value="${h}">${label}</option>`;
+  }
+  const saved = state.settings || {};
+  startSel.value = String(saved.ttStart ?? 5);
+  endSel.value = String(saved.ttEnd ?? 23);
+  TT_START_HOUR = parseInt(startSel.value);
+  TT_END_HOUR = parseInt(endSel.value);
+}
+function applyTimeSpan() {
+  const s = parseInt(document.getElementById('ttStartHour').value);
+  const e = parseInt(document.getElementById('ttEndHour').value);
+  if (e <= s) { showToast('End must be after start'); return; }
+  TT_START_HOUR = s;
+  TT_END_HOUR = e;
+  if (!state.settings) state.settings = {};
+  state.settings.ttStart = s;
+  state.settings.ttEnd = e;
+  saveState(); renderTimetable();
+}
+
+// ==============================================================
+// EVENT SUB-NOTIFICATIONS
+// ==============================================================
+let _eventReminderTimers = [];
+function scheduleEventReminders() {
+  _eventReminderTimers.forEach(t => clearTimeout(t));
+  _eventReminderTimers = [];
+  if (Notification.permission !== 'granted') return;
+  const tokens = state.timetables[currentWeekId] || [];
+  const weekDates = getWeekDates(currentWeekId);
+  const now = new Date();
+  tokens.forEach(token => {
+    if (!token.reminder) return;
+    const date = weekDates[token.day];
+    if (!date) return;
+    const dateStr = date.toISOString().slice(0,10);
+    const fireTime = new Date(`${dateStr}T${token.reminder}:00`);
+    if (fireTime <= now) return;
+    const delay = fireTime - now;
+    const t = setTimeout(() => {
+      new Notification('Seize the Day — Reminder', {
+        body: `${token.title}${token.sub ? ' — ' + token.sub : ''} — starts at ${token.start}`,
+        icon: '/seize-app/icon-192.png'
+      });
+    }, delay);
+    _eventReminderTimers.push(t);
+  });
+}
+
+// ==============================================================
+// PRESET WEEK TEMPLATES
+// ==============================================================
+const PRESETS = [
+  {
+    id: 'founder',
+    name: 'Founder Week',
+    desc: 'Early rise, deep work blocks, comms, gym, wind-down — standard 5-day founder cadence.',
+    events: [
+      // Mon–Fri
+      ...[0,1,2,3,4].flatMap(d => [
+        { day:d, start:'06:00', end:'07:00', title:'Morning Routine', cat:'cat-routine' },
+        { day:d, start:'07:00', end:'09:30', title:'Deep Work Block', cat:'cat-work' },
+        { day:d, start:'09:30', end:'10:00', title:'Inbox / Comms', cat:'cat-work' },
+        { day:d, start:'12:30', end:'13:30', title:'Lunch Break', cat:'cat-personal' },
+        { day:d, start:'17:00', end:'18:00', title:'Gym', cat:'cat-gym' },
+        { day:d, start:'22:00', end:'06:00', title:'Sleep', cat:'cat-sleep' },
+      ]),
+    ]
+  },
+  {
+    id: 'klayr_focus',
+    name: 'Klayr Sprint',
+    desc: 'Mornings on Klayr outreach and product, afternoons for CRM and admin.',
+    events: [
+      ...[0,1,2,3,4].flatMap(d => [
+        { day:d, start:'07:00', end:'09:30', title:'Klayr Deep Work', cat:'cat-klayr' },
+        { day:d, start:'09:30', end:'11:00', title:'CRM & Outreach', cat:'cat-crm' },
+        { day:d, start:'14:00', end:'16:00', title:'Klayr — Afternoon Block', cat:'cat-klayr' },
+        { day:d, start:'18:00', end:'19:00', title:'Gym / Muay Thai', cat:'cat-muaythai' },
+      ]),
+    ]
+  },
+  {
+    id: 'balanced',
+    name: 'Balanced Week',
+    desc: 'Work, Oswin brand time, sport, and social balance across 7 days.',
+    events: [
+      ...[0,1,2,3,4].flatMap(d => [
+        { day:d, start:'08:00', end:'10:30', title:'Work Block', cat:'cat-work' },
+        { day:d, start:'10:30', end:'12:00', title:'Oswin Creative', cat:'cat-oswin' },
+        { day:d, start:'17:30', end:'19:00', title:'Sport', cat:'cat-gym' },
+      ]),
+      { day:5, start:'10:00', end:'12:00', title:'Football', cat:'cat-football' },
+      { day:5, start:'15:00', end:'17:00', title:'Social / Errands', cat:'cat-social' },
+      { day:6, start:'10:00', end:'12:00', title:'Weekly Review', cat:'cat-work' },
+    ]
+  }
+];
+
+function openPresetModal() {
+  const list = document.getElementById('presetList');
+  list.innerHTML = PRESETS.map(p => `
+    <div class="preset-item">
+      <div class="preset-item-info">
+        <div class="preset-item-name">${p.name}</div>
+        <div class="preset-item-desc">${p.desc}</div>
+      </div>
+      <button class="btn primary" onclick="applyPreset('${p.id}')">Apply</button>
+    </div>
+  `).join('');
+  document.getElementById('presetModal').classList.add('open');
+}
+function closePresetModal() {
+  document.getElementById('presetModal').classList.remove('open');
+}
+function applyPreset(id) {
+  const preset = PRESETS.find(p=>p.id===id);
+  if (!preset) return;
+  if (!confirm(`Apply "${preset.name}" to this week? Current events will be replaced.`)) return;
+  state.timetables[currentWeekId] = preset.events.map((e,i) => ({
+    ...e, id: 'tt-preset-'+Date.now()+'-'+i, sub: '', reminder: ''
+  }));
+  saveState(); closePresetModal(); renderTimetable();
+  showToast(`"${preset.name}" applied`);
+}
+
+// ==============================================================
+// ICS IMPORT
+// ==============================================================
+function importFromICS() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.ics,.ical';
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const text = await file.text();
+    const tokens = parseICSToTokens(text);
+    if (!tokens.length) { alert('No events found in .ics file for the current week.'); return; }
+    if (!state.timetables[currentWeekId]) state.timetables[currentWeekId] = [];
+    state.timetables[currentWeekId].push(...tokens);
+    saveState(); renderTimetable();
+    showToast(`Imported ${tokens.length} events from .ics`);
+  };
+  input.click();
+}
+function parseICSToTokens(icsText) {
+  const tokens = [];
+  const weekDates = getWeekDates(currentWeekId);
+  const weekStart = weekDates[0];
+  const weekEnd = weekDates[6];
+  const events = icsText.split('BEGIN:VEVENT').slice(1);
+  events.forEach(block => {
+    const get = (key) => {
+      const m = block.match(new RegExp(key+'(?:;[^:]*)?:([^\\r\\n]+)'));
+      return m ? m[1].trim() : '';
+    };
+    const summary = get('SUMMARY');
+    const dtStartRaw = get('DTSTART');
+    const dtEndRaw = get('DTEND');
+    if (!summary || !dtStartRaw) return;
+    // Parse YYYYMMDDTHHMMSS or YYYYMMDD
+    const parseICSDate = (s) => {
+      s = s.replace(/Z$/,'');
+      if (s.includes('T')) {
+        const y=s.slice(0,4), mo=s.slice(4,6), d=s.slice(6,8);
+        const h=s.slice(9,11), m2=s.slice(11,13);
+        return new Date(`${y}-${mo}-${d}T${h}:${m2}:00`);
+      } else {
+        return new Date(`${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}`);
+      }
+    };
+    const dtStart = parseICSDate(dtStartRaw);
+    const dtEnd = dtEndRaw ? parseICSDate(dtEndRaw) : new Date(dtStart.getTime()+3600000);
+    if (dtStart < weekStart || dtStart > weekEnd) return;
+    const dayOfWeek = (dtStart.getDay() + 6) % 7;
+    const start = `${String(dtStart.getHours()).padStart(2,'0')}:${String(dtStart.getMinutes()).padStart(2,'0')}`;
+    const end = `${String(dtEnd.getHours()).padStart(2,'0')}:${String(dtEnd.getMinutes()).padStart(2,'0')}`;
+    tokens.push({
+      id: 'tt-ics-'+Date.now()+'-'+tokens.length,
+      day: dayOfWeek, start, end,
+      title: summary, sub: '', cat: 'cat-routine', reminder: ''
+    });
+  });
+  return tokens;
 }
 
 function parseCSVToTokens(csv) {
