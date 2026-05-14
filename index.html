@@ -3784,6 +3784,7 @@ async function registerServiceWorker() {
 
 function sendRemindersToSW() {
   if (!navigator.serviceWorker || !navigator.serviceWorker.controller) return;
+  if (!state) return;
   navigator.serviceWorker.controller.postMessage({
     type: 'SCHEDULE_REMINDERS',
     reminders: state.reminders || []
