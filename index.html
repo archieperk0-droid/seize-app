@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Operations — Archie</title>
+<title>Seize the Day</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,300;9..144,0,500;9..144,1,400;9..144,1,500;9..144,1,600&family=JetBrains+Mono:wght@400;500;600&family=Inter+Tight:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -44,8 +44,8 @@ body {
   overflow-x: hidden;
 }
 
-/* ===== NAV ===== */
-.nav {
+/* ===== TOPBAR ===== */
+.topbar {
   position: fixed;
   top: 0; left: 0; right: 0;
   height: var(--nav-h);
@@ -53,97 +53,242 @@ body {
   z-index: 500;
   display: flex;
   align-items: center;
-  gap: 0;
-  padding: 0;
+  padding: 0 0 0 4px;
   border-bottom: 2px solid rgba(245,241,232,0.12);
 }
-.nav-brand {
+.topbar-hamburger {
+  width: 52px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 5px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.topbar-hamburger:hover { background: rgba(245,241,232,0.08); }
+.topbar-hamburger span {
+  display: block;
+  width: 20px; height: 1.5px;
+  background: rgba(245,241,232,0.7);
+  transition: all 0.2s;
+}
+.topbar-brand {
   font-family: var(--display);
   font-size: 17px;
   font-style: italic;
   font-weight: 500;
   color: #f4a78c;
-  padding: 0 22px;
-  white-space: nowrap;
   letter-spacing: -0.01em;
-  border-right: 1px solid rgba(245,241,232,0.12);
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
-.nav-tabs {
-  display: flex;
-  gap: 0;
+  margin-left: 4px;
   flex: 1;
-  height: 100%;
-  overflow-x: auto;
-  scrollbar-width: none;
 }
-.nav-tabs::-webkit-scrollbar { display: none; }
-.nav-tab {
+.topbar-right {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 0 18px;
   height: 100%;
+  gap: 0;
+}
+.topbar-week {
   font-family: var(--mono);
   font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(245,241,232,0.5);
-  cursor: pointer;
-  border-right: 1px solid rgba(245,241,232,0.07);
-  transition: color 0.15s, background 0.15s;
+  letter-spacing: 0.08em;
+  color: rgba(245,241,232,0.4);
+  padding: 0 14px;
   white-space: nowrap;
-  position: relative;
-  user-select: none;
 }
-.nav-tab:hover { color: rgba(245,241,232,0.85); background: rgba(245,241,232,0.05); }
-.nav-tab.active { color: var(--paper); background: rgba(245,241,232,0.1); }
-.nav-tab.active::after {
+.topbar-btn {
+  display: flex; align-items: center;
+  padding: 0 12px;
+  height: 100%;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(245,241,232,0.45);
+  cursor: pointer;
+  border-left: 1px solid rgba(245,241,232,0.07);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.topbar-btn:hover { color: var(--paper); background: rgba(245,241,232,0.08); }
+
+/* ===== SIDEBAR ===== */
+.sidebar-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 800;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.sidebar-backdrop.open { display: block; opacity: 1; }
+.sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: 260px;
+  background: var(--ink);
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(-100%);
+  transition: transform 0.25s ease;
+  border-right: 1px solid rgba(245,241,232,0.1);
+}
+.sidebar.open { transform: translateX(0); }
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: var(--nav-h);
+  border-bottom: 1px solid rgba(245,241,232,0.1);
+  flex-shrink: 0;
+}
+.sidebar-logo {
+  font-family: var(--display);
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 500;
+  color: #f4a78c;
+  letter-spacing: -0.01em;
+}
+.sidebar-close {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: rgba(245,241,232,0.4);
+  font-size: 20px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.sidebar-close:hover { color: var(--paper); }
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 0;
+  overflow-y: auto;
+}
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 22px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(245,241,232,0.45);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  position: relative;
+}
+.sidebar-item:hover { color: rgba(245,241,232,0.85); background: rgba(245,241,232,0.05); }
+.sidebar-item.active { color: var(--paper); background: rgba(245,241,232,0.08); }
+.sidebar-item.active::before {
   content: '';
   position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 2px;
+  left: 0; top: 6px; bottom: 6px;
+  width: 2px;
   background: #f4a78c;
 }
-.nav-tab .dot {
+.sidebar-dot {
   width: 7px; height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
 }
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  height: 100%;
-  border-left: 1px solid rgba(245,241,232,0.12);
+.sidebar-divider {
+  height: 1px;
+  background: rgba(245,241,232,0.08);
+  margin: 10px 22px;
 }
-.nav-action {
+.sidebar-action {
   display: flex;
   align-items: center;
-  padding: 0 14px;
-  height: 100%;
+  gap: 12px;
+  padding: 9px 22px;
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(245,241,232,0.5);
+  color: rgba(245,241,232,0.35);
   cursor: pointer;
-  border-right: 1px solid rgba(245,241,232,0.07);
-  transition: all 0.15s;
-  white-space: nowrap;
+  transition: color 0.15s;
 }
-.nav-action:hover { color: var(--paper); background: rgba(245,241,232,0.08); }
-.nav-action.primary { color: #f4a78c; }
-.nav-week {
-  padding: 0 16px;
+.sidebar-action:hover { color: rgba(245,241,232,0.7); }
+.sidebar-action.accent { color: rgba(244,167,140,0.7); }
+.sidebar-action.accent:hover { color: #f4a78c; }
+.sidebar-status {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: rgba(245,241,232,0.25);
+  padding: 8px 22px;
+}
+.sidebar-footer {
+  padding: 16px 22px;
+  border-top: 1px solid rgba(245,241,232,0.08);
+  flex-shrink: 0;
+}
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: opacity 0.15s;
+}
+.sidebar-user:hover { opacity: 0.75; }
+.sidebar-user-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(244,167,140,0.2);
+  display: flex; align-items: center; justify-content: center;
   font-family: var(--mono);
   font-size: 10px;
-  letter-spacing: 0.1em;
-  color: rgba(245,241,232,0.45);
-  white-space: nowrap;
+  color: #f4a78c;
+  overflow: hidden;
+  flex-shrink: 0;
 }
+.sidebar-user-avatar img { width:100%; height:100%; object-fit:cover; }
+.sidebar-user-info { flex: 1; min-width: 0; }
+.sidebar-user-name {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: rgba(245,241,232,0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-user-role {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  color: rgba(245,241,232,0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-week-nav {
+  display: flex;
+  gap: 0;
+  margin: 8px 0 4px;
+}
+.sidebar-week-btn {
+  flex: 1;
+  padding: 7px 0;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(245,241,232,0.4);
+  cursor: pointer;
+  border: 1px solid rgba(245,241,232,0.1);
+  transition: all 0.15s;
+}
+.sidebar-week-btn:not(:first-child) { border-left: none; }
+.sidebar-week-btn:hover { color: var(--paper); background: rgba(245,241,232,0.08); }
 
 /* ===== LAYOUT ===== */
 .page-wrap { padding-top: var(--nav-h); min-height: 100vh; }
@@ -646,16 +791,19 @@ body {
 .tt-token-del:hover { opacity: 1 !important; }
 
 /* Token colours */
-.cat-work { background: #ccdaed; color: #1a3a5c; }
-.cat-signify { background: #d1dcc8; color: #2a4a22; }
-.cat-oswin { background: #f4d8c4; color: #7a3010; }
-.cat-crm { background: #e0d4ed; color: #3a1a5c; }
-.cat-gym { background: #d4ddc9; color: #2a4222; }
-.cat-personal { background: var(--amber-soft); color: #7a4e10; }
-.cat-sleep { background: #d6d0e0; color: #3a3050; }
-.cat-travel { background: #e8e0d0; color: #4a4030; }
-.cat-social { background: #fce0dc; color: #6a2018; }
-.cat-routine { background: #e6e6e6; color: #444; }
+.cat-work     { background: #ccdaed; color: #1a3a5c; }
+.cat-klayr    { background: #b8341c22; background: #f5d0c8; color: #7a1a0a; }
+.cat-oswin    { background: #f4d8c4; color: #7a3010; }
+.cat-signify  { background: #d1dcc8; color: #2a4a22; }
+.cat-crm      { background: #e0d4ed; color: #3a1a5c; }
+.cat-gym      { background: #d4ddc9; color: #2a4222; }
+.cat-muaythai { background: #fcd8c0; color: #7a2800; }
+.cat-football { background: #c8dcc8; color: #1a3a1a; }
+.cat-personal { background: #ecdbbd; color: #7a4e10; }
+.cat-sleep    { background: #d6d0e0; color: #3a3050; }
+.cat-travel   { background: #e8e0d0; color: #4a4030; }
+.cat-social   { background: #fce0dc; color: #6a2018; }
+.cat-routine  { background: #e6e6e6; color: #444; }
 
 .tt-add-token {
   position: absolute;
@@ -1410,7 +1558,7 @@ body {
 <!-- ===== AUTH OVERLAY ===== -->
 <div id="authOverlay">
   <div class="auth-box">
-    <div class="auth-logo">Operations</div>
+    <div class="auth-logo">Seize the Day</div>
     <div class="auth-sub">Your personal daily OS</div>
     <button class="auth-btn" onclick="_signIn()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
@@ -1460,40 +1608,70 @@ body {
   </div>
 </div>
 
-<!-- ===== NAV ===== -->
-<nav class="nav">
-  <div class="nav-brand">Operations</div>
-  <div class="nav-tabs" id="navTabs">
-    <div class="nav-tab active" data-view="dashboard" onclick="switchView('dashboard')">
-      <span class="dot" style="background:#f4a78c"></span>Dashboard
+<!-- ===== SIDEBAR BACKDROP ===== -->
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="_closeSidebar()"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">Seize the Day</div>
+    <div class="sidebar-close" onclick="_closeSidebar()">×</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-item active" data-view="dashboard" onclick="switchView('dashboard')">
+      <span class="sidebar-dot" style="background:#f4a78c"></span>Dashboard
     </div>
-    <div class="nav-tab" data-view="timetable" onclick="switchView('timetable')">
-      <span class="dot" style="background:#b8d4f4"></span>Timetable
+    <div class="sidebar-item" data-view="timetable" onclick="switchView('timetable')">
+      <span class="sidebar-dot" style="background:#b8d4f4"></span>Timetable
     </div>
-    <div class="nav-tab" data-view="projects" onclick="switchView('projects')">
-      <span class="dot" style="background:#b8f4c0"></span>Projects
+    <div class="sidebar-item" data-view="projects" onclick="switchView('projects')">
+      <span class="sidebar-dot" style="background:#b8f4c0"></span>Projects
     </div>
-    <div class="nav-tab" data-view="archive" onclick="switchView('archive')">
-      <span class="dot" style="background:#d4b8f4"></span>Archive
+    <div class="sidebar-item" data-view="archive" onclick="switchView('archive')">
+      <span class="sidebar-dot" style="background:#d4b8f4"></span>Archive
     </div>
-    <div class="nav-tab" data-view="settings" onclick="switchView('settings')">
-      <span class="dot" style="background:#f4d4b8"></span>Reminders &amp; Settings
+    <div class="sidebar-item" data-view="settings" onclick="switchView('settings')">
+      <span class="sidebar-dot" style="background:#f4d4b8"></span>Settings
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-week-nav">
+      <div class="sidebar-week-btn" onclick="navigateWeek(-1)">‹ Prev</div>
+      <div class="sidebar-week-btn" onclick="goToCurrentWeek()">Today</div>
+      <div class="sidebar-week-btn" onclick="navigateWeek(1)">Next ›</div>
+    </div>
+    <div class="sidebar-status" id="navWeekLabel">—</div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-action accent" onclick="runSundayReview()">Sunday Review</div>
+    <div class="sidebar-action" onclick="exportAll()">Backup</div>
+    <div class="sidebar-action" onclick="document.getElementById('importInput').click()">Import</div>
+    <input type="file" id="importInput" accept=".json" style="display:none" onchange="importBackup(event)">
+    <div class="sidebar-status" id="saveStatus">Loaded</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user" onclick="_signOut()" title="Sign out">
+      <div class="sidebar-user-avatar" id="userAvatar">—</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="userNameLabel"></div>
+        <div class="sidebar-user-role" id="userRoleLabel"></div>
+      </div>
     </div>
   </div>
-  <div class="nav-right">
-    <div class="nav-week" id="navWeekLabel">—</div>
-    <div class="nav-action" onclick="navigateWeek(-1)">‹ Prev</div>
-    <div class="nav-action" onclick="navigateWeek(1)">Next ›</div>
-    <div class="nav-action" onclick="goToCurrentWeek()">Today</div>
-    <div class="nav-action primary" onclick="runSundayReview()">Sunday Review</div>
-    <div class="nav-action" onclick="exportAll()">Backup</div>
-    <div class="nav-action" onclick="document.getElementById('importInput').click()">Import</div>
-    <input type="file" id="importInput" accept=".json" style="display:none" onchange="importBackup(event)">
-    <div class="nav-action" id="saveStatus" style="color:rgba(245,241,232,0.35)">Loaded</div>
-    <div class="user-pill" id="userPill" onclick="_signOut()" title="Sign out">
-      <div class="user-avatar" id="userAvatar">—</div>
-      <div class="user-name" id="userNameLabel"></div>
-    </div>
+</div>
+
+<!-- ===== TOPBAR ===== -->
+<nav class="topbar">
+  <div class="topbar-hamburger" onclick="_openSidebar()">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="topbar-brand">Seize the Day</div>
+  <div class="topbar-right">
+    <div class="topbar-week" id="topbarWeek">—</div>
+    <div class="topbar-btn" onclick="navigateWeek(-1)">‹</div>
+    <div class="topbar-btn" onclick="navigateWeek(1)">›</div>
   </div>
 </nav>
 
@@ -1508,7 +1686,7 @@ body {
         Volume I<br>
         <span id="issueMonth">May 2026</span>
       </div>
-      <div class="masthead-title">The <em>Operations</em> Sheet</div>
+      <div class="masthead-title">The <em>Seize the Day</em> Sheet</div>
       <div class="masthead-right" id="mastheadRight">
         —<br>—<br>Single source of truth
       </div>
@@ -1735,11 +1913,14 @@ body {
       <div class="form-row" style="margin-bottom:0">
         <label class="form-label">Category</label>
         <select class="form-input" id="teCat">
-          <option value="cat-work">Work / Signify</option>
-          <option value="cat-signify">Signify</option>
-          <option value="cat-crm">CRM / Trades</option>
+          <option value="cat-work">Work</option>
+          <option value="cat-klayr">Klayr</option>
           <option value="cat-oswin">Oswin</option>
-          <option value="cat-gym">Gym / Fitness</option>
+          <option value="cat-signify">Signify</option>
+          <option value="cat-crm">CRM</option>
+          <option value="cat-gym">Gym</option>
+          <option value="cat-muaythai">Muay Thai</option>
+          <option value="cat-football">Football</option>
           <option value="cat-personal">Personal</option>
           <option value="cat-social">Social</option>
           <option value="cat-travel">Travel</option>
@@ -1800,12 +1981,14 @@ function _updateUserUI() {
   const photo = _currentUser.photoURL;
   const avatar = document.getElementById('userAvatar');
   const nameLabel = document.getElementById('userNameLabel');
+  const roleLabel = document.getElementById('userRoleLabel');
   const masthead = document.getElementById('mastheadRight');
   if (avatar) {
     if (photo) avatar.innerHTML = `<img src="${photo}" alt="${name}">`;
     else avatar.textContent = name[0].toUpperCase();
   }
   if (nameLabel) nameLabel.textContent = name;
+  if (roleLabel) roleLabel.textContent = role;
   if (masthead) masthead.innerHTML = `${name}<br>${role}<br>Single source of truth`;
 }
 
@@ -1895,16 +2078,19 @@ const DAYS_SHORT = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DAYS_FULL  = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 
 const CAT_LABELS = {
-  'cat-work': 'Work',
-  'cat-signify': 'Signify',
-  'cat-crm': 'CRM',
-  'cat-oswin': 'Oswin',
-  'cat-gym': 'Gym',
+  'cat-work':     'Work',
+  'cat-klayr':    'Klayr',
+  'cat-oswin':    'Oswin',
+  'cat-signify':  'Signify',
+  'cat-crm':      'CRM',
+  'cat-gym':      'Gym',
+  'cat-muaythai': 'Muay Thai',
+  'cat-football': 'Football',
   'cat-personal': 'Personal',
-  'cat-social': 'Social',
-  'cat-travel': 'Travel',
-  'cat-sleep': 'Sleep',
-  'cat-routine': 'Routine'
+  'cat-social':   'Social',
+  'cat-travel':   'Travel',
+  'cat-sleep':    'Sleep',
+  'cat-routine':  'Routine'
 };
 
 let state = null;
@@ -2172,14 +2358,24 @@ function buildInitialTimetable() {
 // ==============================================================
 function switchView(name) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(t => t.classList.remove('active'));
   const v = document.getElementById('view-'+name);
   if (v) v.classList.add('active');
-  document.querySelector(`[data-view="${name}"]`)?.classList.add('active');
+  document.querySelector(`.sidebar-item[data-view="${name}"]`)?.classList.add('active');
   if (name === 'archive') renderArchive();
   if (name === 'settings') renderSettings();
   if (name === 'timetable') renderTimetable();
   if (name === 'projects') renderProjects();
+  _closeSidebar();
+}
+
+function _openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sidebarBackdrop').classList.add('open');
+}
+function _closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarBackdrop').classList.remove('open');
 }
 
 // ==============================================================
@@ -2226,9 +2422,11 @@ function render() {
   const week = state.weeks[currentWeekId];
   if (!week) return;
 
-  // Update nav week label
+  // Update week labels
   const range = getWeekRange(currentWeekId);
   document.getElementById('navWeekLabel').textContent = currentWeekId;
+  const topbarWeek = document.getElementById('topbarWeek');
+  if (topbarWeek) topbarWeek.textContent = range;
 
   // Dashboard
   renderDashboard(week);
