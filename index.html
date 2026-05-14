@@ -1515,8 +1515,44 @@ body {
   .decision-row { grid-template-columns: 70px 1fr 24px; padding: 10px 16px; gap: 8px; }
 }
 </style>
+<!-- Firebase SDKs (compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
+
+<!-- ===== AUTH OVERLAY ===== -->
+<div id="authOverlay" style="
+  position:fixed;inset:0;z-index:2000;
+  background:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:0;
+">
+  <div style="
+    background:var(--paper);
+    width:380px;max-width:calc(100vw - 40px);
+    padding:48px 44px 40px;
+    border:1px solid var(--rule);
+    text-align:center;
+  ">
+    <div style="font-family:var(--display);font-size:13px;letter-spacing:0.25em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:10px">Operations</div>
+    <div style="font-family:var(--display);font-size:52px;font-style:italic;font-weight:500;letter-spacing:-0.03em;line-height:0.9;color:var(--ink);margin-bottom:8px">Seize<br><em style="color:var(--accent)">the Day</em></div>
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-muted);margin:18px 0 32px;padding-top:14px;border-top:1px solid var(--rule)">Your personal operating system</div>
+    <button onclick="signInWithGoogle()" style="
+      width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
+      padding:13px 20px;background:var(--ink);color:var(--paper);
+      border:none;cursor:pointer;font-family:var(--mono);
+      font-size:10px;letter-spacing:0.14em;text-transform:uppercase;
+      transition:background 0.15s;
+    " onmouseover="this.style.background='#2a2420'" onmouseout="this.style.background='var(--ink)'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      Continue with Google
+    </button>
+    <div id="authError" style="margin-top:12px;font-family:var(--mono);font-size:9px;color:var(--accent);letter-spacing:0.1em;display:none"></div>
+  </div>
+  <div style="margin-top:20px;font-family:var(--mono);font-size:8px;letter-spacing:0.1em;color:rgba(245,241,232,0.25)">Your data is private and stored securely in the cloud</div>
+</div>
 
 <nav class="nav">
   <button class="nav-hamburger" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Menu"><span></span></button>
@@ -1533,6 +1569,11 @@ body {
     <button class="nav-action primary" onclick="showQuoteOverlay(true)">Quote</button>
     <button class="nav-action" onclick="exportAll()">Backup</button>
     <span class="nav-status" id="saveStatus">Loaded</span>
+    <div id="navUserPill" style="display:none;align-items:center;gap:7px;padding:0 12px;height:100%;border-left:1px solid rgba(245,241,232,0.12)">
+      <img id="navUserAvatar" src="" alt="" width="22" height="22" style="border-radius:50%;object-fit:cover">
+      <span id="navUserName" style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:rgba(245,241,232,0.7);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+      <button onclick="signOutUser()" style="background:none;border:none;cursor:pointer;font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:rgba(245,241,232,0.4);padding:0;transition:color 0.15s" onmouseover="this.style.color='rgba(245,241,232,0.9)'" onmouseout="this.style.color='rgba(245,241,232,0.4)'">Sign out</button>
+    </div>
   </div>
 </nav>
 
@@ -1566,6 +1607,16 @@ body {
   <div class="sidebar-nav-actions">
     <button class="sidebar-nav-action primary" onclick="showQuoteOverlay(true);closeSidebar()">Quote</button>
     <button class="sidebar-nav-action" onclick="exportAll();closeSidebar()">Backup</button>
+  </div>
+  <div id="sidebarUserBlock" style="display:none;padding:14px 18px;border-top:1px solid rgba(245,241,232,0.08);margin-top:auto">
+    <div style="display:flex;align-items:center;gap:9px">
+      <img id="sidebarUserAvatar" src="" alt="" width="28" height="28" style="border-radius:50%;object-fit:cover;flex-shrink:0">
+      <div style="flex:1;min-width:0">
+        <div id="sidebarUserName" style="font-family:var(--body);font-size:12px;color:rgba(245,241,232,0.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+        <div id="sidebarUserEmail" style="font-family:var(--mono);font-size:8px;letter-spacing:0.06em;color:rgba(245,241,232,0.35);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+      </div>
+    </div>
+    <button onclick="signOutUser();closeSidebar()" style="margin-top:10px;width:100%;background:none;border:1px solid rgba(245,241,232,0.12);padding:6px;font-family:var(--mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(245,241,232,0.4);cursor:pointer;transition:all 0.15s" onmouseover="this.style.borderColor='rgba(245,241,232,0.4)';this.style.color='rgba(245,241,232,0.8)'" onmouseout="this.style.borderColor='rgba(245,241,232,0.12)';this.style.color='rgba(245,241,232,0.4)'">Sign out</button>
   </div>
 </aside>
 
@@ -1821,6 +1872,87 @@ body {
 
 <script>
 // ==============================================================
+// ==============================================================
+// FIREBASE INIT
+// ==============================================================
+const _fbConfig = {
+  apiKey: "AIzaSyDho1aE4-GTeDOe809m9eoBZftnwlIOg18",
+  authDomain: "seize-app-595cf.firebaseapp.com",
+  projectId: "seize-app-595cf",
+  storageBucket: "seize-app-595cf.firebasestorage.app",
+  messagingSenderId: "985556445115",
+  appId: "1:985556445115:web:3cad59f78eab9cae89c69e"
+};
+firebase.initializeApp(_fbConfig);
+const _auth = firebase.auth();
+const _db   = firebase.firestore();
+let _currentUser = null;
+
+function signInWithGoogle() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  _auth.signInWithPopup(provider).catch(err => {
+    const el = document.getElementById('authError');
+    if (el) { el.textContent = err.message; el.style.display = ''; }
+  });
+}
+
+function signOutUser() {
+  _auth.signOut();
+}
+
+function _updateUserUI(user) {
+  const pill  = document.getElementById('navUserPill');
+  const sBlock = document.getElementById('sidebarUserBlock');
+  if (user) {
+    // Nav pill
+    document.getElementById('navUserAvatar').src = user.photoURL || '';
+    document.getElementById('navUserName').textContent = user.displayName || user.email;
+    pill.style.display = 'flex';
+    // Sidebar block
+    document.getElementById('sidebarUserAvatar').src = user.photoURL || '';
+    document.getElementById('sidebarUserName').textContent = user.displayName || '';
+    document.getElementById('sidebarUserEmail').textContent = user.email || '';
+    sBlock.style.display = '';
+  } else {
+    pill.style.display = 'none';
+    sBlock.style.display = 'none';
+  }
+}
+
+// Auth state drives the entire app boot
+_auth.onAuthStateChanged(async (user) => {
+  const overlay = document.getElementById('authOverlay');
+  if (user) {
+    _currentUser = user;
+    _updateUserUI(user);
+    overlay.style.display = 'none';
+    await _bootApp();
+  } else {
+    _currentUser = null;
+    _updateUserUI(null);
+    overlay.style.display = 'flex';
+  }
+});
+
+async function _bootApp() {
+  await loadState();
+  const todayKey = dateKey(new Date());
+  if (!state.days[todayKey]) { state.days[todayKey] = buildInitialDay(todayKey); await saveState(); }
+  if (!state.firstWeek) {
+    const allKeys = Object.keys(state.days).sort();
+    state.firstWeek = startOfWeek(new Date(allKeys[0] || todayKey)).toISOString();
+    await saveState();
+  }
+  renderDashboard();
+  scheduleReminders();
+  handleDeepLink();
+  let overlayShown = false;
+  try { overlayShown = showQuoteOverlay(false); } catch(e) { console.warn('Quote overlay error', e); }
+  if (!overlayShown) document.querySelector('.page-wrap').classList.add('ready');
+  setTimeout(() => document.querySelector('.page-wrap').classList.add('ready'), 1500);
+}
+
+// ==============================================================
 // CONSTANTS & SEED DATA
 // ==============================================================
 const STORAGE_KEY = 'seize_v1';
@@ -1898,16 +2030,30 @@ const CAT = {
 // PERSISTENCE
 // ==============================================================
 async function loadState() {
+  // 1. Try Firestore (source of truth)
+  if (_currentUser) {
+    try {
+      const doc = await _db.collection('users').doc(_currentUser.uid).collection('data').doc('appState').get();
+      if (doc.exists) {
+        state = doc.data().state;
+        migrate();
+        // Also cache locally
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+        return;
+      }
+    } catch(e) { console.warn('Firestore load failed, falling back', e); }
+  }
+  // 2. Fallback: localStorage / window.storage
   try {
     if (window.storage) {
       const r = await window.storage.get(STORAGE_KEY);
       if (r && r.value) { state = JSON.parse(r.value); migrate(); return; }
     }
-  } catch(e) { console.warn('storage.get failed', e); }
+  } catch(e) {}
   try {
     const ls = localStorage.getItem(STORAGE_KEY);
     if (ls) { state = JSON.parse(ls); migrate(); return; }
-  } catch(e) { console.warn('localStorage failed', e); }
+  } catch(e) {}
   state = buildInitialState();
   await saveState();
 }
@@ -1916,10 +2062,17 @@ async function saveState() {
   setStatus('Saving…');
   try {
     const json = JSON.stringify(state);
-    if (window.storage) {
-      try { await window.storage.set(STORAGE_KEY, json); } catch(e) {}
-    }
+    // Always write to localStorage as local cache
     localStorage.setItem(STORAGE_KEY, json);
+    if (window.storage) { try { await window.storage.set(STORAGE_KEY, json); } catch(e) {} }
+    // Write to Firestore if signed in
+    if (_currentUser) {
+      await _db.collection('users').doc(_currentUser.uid).collection('data').doc('appState').set({
+        state,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        version: APP_VERSION
+      });
+    }
     setStatus('Saved');
   } catch(e) {
     setStatus('Save failed');
@@ -3704,34 +3857,9 @@ window.addEventListener('beforeinstallprompt', e => {
 // ==============================================================
 // INIT
 // ==============================================================
-(async () => {
-  await loadState();
-
-  // Make sure today's day exists
-  const todayKey = dateKey(new Date());
-  if (!state.days[todayKey]) {
-    state.days[todayKey] = buildInitialDay(todayKey);
-    await saveState();
-  }
-
-  // Set firstWeek if not set (for issue numbering on existing data)
-  if (!state.firstWeek) {
-    const allKeys = Object.keys(state.days).sort();
-    const firstKey = allKeys[0] || todayKey;
-    state.firstWeek = startOfWeek(new Date(firstKey)).toISOString();
-    await saveState();
-  }
-
-  renderDashboard();
-  scheduleReminders();
-  handleDeepLink();
-  await registerServiceWorker();
-  let overlayShown = false;
-  try { overlayShown = showQuoteOverlay(false); } catch(e) { console.warn('Quote overlay error', e); }
-  if (!overlayShown) document.querySelector('.page-wrap').classList.add('ready');
-  // Failsafe: always show page after 1.5s regardless
-  setTimeout(() => document.querySelector('.page-wrap').classList.add('ready'), 1500);
-})();
+// App boot is driven by _auth.onAuthStateChanged → _bootApp() above.
+// registerServiceWorker still runs immediately for offline caching.
+registerServiceWorker();
 
 </script>
 </body>
