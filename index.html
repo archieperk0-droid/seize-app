@@ -2037,7 +2037,6 @@ async function loadState() {
       if (doc.exists) {
         state = doc.data().state;
         migrate();
-        // Also cache locally
         try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
         return;
       }
@@ -2047,12 +2046,12 @@ async function loadState() {
   try {
     if (window.storage) {
       const r = await window.storage.get(STORAGE_KEY);
-      if (r && r.value) { state = JSON.parse(r.value); migrate(); return; }
+      if (r && r.value) { state = JSON.parse(r.value); migrate(); await saveState(); return; }
     }
   } catch(e) {}
   try {
     const ls = localStorage.getItem(STORAGE_KEY);
-    if (ls) { state = JSON.parse(ls); migrate(); return; }
+    if (ls) { state = JSON.parse(ls); migrate(); await saveState(); return; }
   } catch(e) {}
   state = buildInitialState();
   await saveState();
