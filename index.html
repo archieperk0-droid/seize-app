@@ -80,6 +80,9 @@ body {
   letter-spacing: -0.01em;
   margin-left: 4px;
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .topbar-right {
   display: flex;
@@ -150,7 +153,11 @@ body {
   font-weight: 500;
   color: #f4a78c;
   letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
+.brand-sun { height: 26px; width: 26px; flex-shrink: 0; }
 .sidebar-close {
   width: 32px; height: 32px;
   display: flex; align-items: center; justify-content: center;
@@ -634,10 +641,7 @@ body {
   flex-wrap: wrap;
 }
 .tt-view-toggle {
-  display: flex;
-  border: 1px solid var(--rule);
-  overflow: hidden;
-  flex-shrink: 0;
+  display: none;
 }
 .tt-view-btn {
   background: var(--paper);
@@ -654,6 +658,23 @@ body {
 }
 .tt-view-btn:last-child { border-right: none; }
 .tt-view-btn.active { background: var(--ink); color: var(--paper); }
+.cal-day-tabs { display:flex; gap:2px; flex-wrap:wrap; }
+.cal-day-tab { font-family:var(--mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; padding:5px 10px; border:1px solid var(--rule); background:transparent; color:var(--ink-muted); cursor:pointer; border-radius:2px; transition:all 0.15s; }
+.cal-day-tab:hover { background:var(--paper-2); color:var(--ink); }
+.cal-day-tab.active { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.cal-day-tab-month { border-left:2px solid var(--rule); margin-left:4px; }
+.day-view-empty { text-align:center; padding:60px 20px; }
+.day-view-header { padding:18px 0 14px; border-bottom:2px solid var(--ink); margin-bottom:16px; }
+.day-view-header.today .day-view-name { color:var(--accent); }
+.day-view-name { font-family:var(--display); font-size:28px; font-style:italic; font-weight:500; }
+.day-view-date { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; color:var(--ink-muted); margin-top:4px; }
+.day-view-note { font-family:var(--body); font-size:12px; font-style:italic; color:var(--ink-muted); margin-top:8px; }
+.day-view-events { display:flex; flex-direction:column; gap:8px; padding-bottom:24px; }
+.day-view-event { position:relative; padding:12px 40px 12px 14px; border-left:3px solid var(--rule); border-radius:2px; }
+.day-view-event-time { font-family:var(--mono); font-size:10px; letter-spacing:0.05em; color:var(--ink-muted); margin-bottom:4px; }
+.day-view-event-title { font-family:var(--display); font-size:16px; font-style:italic; font-weight:500; }
+.day-view-event-sub { font-family:var(--body); font-size:11px; color:var(--ink-muted); margin-top:2px; }
+.day-view-event-cat { display:inline-block; font-family:var(--mono); font-size:8px; letter-spacing:0.1em; text-transform:uppercase; padding:2px 6px; border-radius:2px; margin-top:6px; }
 .tt-week-nav {
   display: flex;
   gap: 0;
@@ -1008,6 +1029,48 @@ body {
 .day-note-textarea:focus { border-color: var(--ink); }
 .day-note-actions { display: flex; gap: 10px; justify-content: flex-end; }
 
+.day-refl-stars { display:flex; gap:12px; font-size:22px; cursor:pointer; margin:4px 0 8px; }
+.day-refl-star { color:var(--ink-muted); transition:color 0.1s; user-select:none; }
+.day-refl-star.active { color:var(--accent); }
+
+/* ========================
+   ARCHIVED PROJECTS
+   ======================== */
+.archived-proj-card { border:1px solid var(--rule); padding:16px; margin-bottom:12px; background:var(--paper-2); }
+.archived-proj-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+.archived-proj-name { font-family:var(--display); font-size:18px; font-style:italic; font-weight:500; }
+.archived-proj-sub { font-family:var(--mono); font-size:9px; letter-spacing:0.08em; color:var(--ink-muted); margin-top:3px; }
+.archived-proj-stage { font-family:var(--mono); font-size:9px; letter-spacing:0.08em; color:var(--accent); margin-top:3px; }
+.archived-proj-detail { font-family:var(--body); font-size:12px; color:var(--ink-soft); padding:4px 0; border-top:1px dotted var(--rule); }
+.archived-proj-key { font-family:var(--mono); font-size:9px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-muted); margin-right:8px; }
+
+/* ========================
+   PIPELINE STAGES
+   ======================== */
+.pipeline-stages { display:flex; align-items:center; gap:4px; flex-wrap:wrap; margin-bottom:8px; }
+.pipeline-stage { display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 12px; border:1px solid var(--rule); background:var(--paper-2); cursor:pointer; transition:all 0.15s; border-radius:2px; min-width:70px; }
+.pipeline-stage:hover { background:var(--paper-3); }
+.pipeline-stage.active { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.pipeline-stage-icon { font-size:16px; line-height:1; }
+.pipeline-stage-name { font-family:var(--mono); font-size:9px; letter-spacing:0.08em; text-transform:uppercase; }
+.pipeline-arrow { color:var(--ink-muted); font-family:var(--mono); font-size:14px; }
+.pipeline-indicator { display:flex; align-items:center; gap:4px; flex-wrap:wrap; margin-bottom:16px; padding:10px 0; border-bottom:1px solid var(--rule); }
+.pipeline-ind-stage { font-family:var(--mono); font-size:9px; letter-spacing:0.08em; text-transform:uppercase; padding:4px 10px; border:1px solid var(--rule); color:var(--ink-muted); border-radius:2px; }
+.pipeline-ind-stage.current { background:var(--accent); color:var(--paper); border-color:var(--accent); }
+.pipeline-ind-arrow { color:var(--ink-muted); font-size:10px; font-family:var(--mono); }
+.stale-banner { background:var(--amber-soft); border:1px solid var(--amber); padding:12px 16px; margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+.stale-banner-text { font-family:var(--body); font-size:12px; color:var(--amber); flex:1; }
+.stale-banner-label { font-family:var(--mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber); }
+
+/* ========================
+   DAY REFLECTIONS IN ARCHIVE
+   ======================== */
+.refl-card { border:1px solid var(--rule); padding:14px 16px; margin-bottom:8px; background:var(--paper-2); display:flex; gap:16px; align-items:flex-start; }
+.refl-card-date { font-family:var(--mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-muted); white-space:nowrap; }
+.refl-card-word { font-family:var(--display); font-size:18px; font-style:italic; font-weight:500; margin-bottom:4px; }
+.refl-card-stars { color:var(--accent); font-size:12px; margin-bottom:6px; }
+.refl-card-detail { font-family:var(--body); font-size:11px; color:var(--ink-soft); }
+
 /* ========================
    CUSTOM CATEGORIES MODAL
    ======================== */
@@ -1244,6 +1307,26 @@ input[type="color"].cat-color-input {
 .cat-swatch.selected { border-color: var(--ink); }
 .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .form-actions { display: flex; gap: 8px; margin-top: 20px; }
+
+/* ========================
+   FOCUS VIEW
+   ======================== */
+.focus-view { padding: 24px; max-width: 900px; }
+.focus-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 20px; }
+.focus-insight-card { background: var(--paper-2); border: 1px solid var(--rule); padding: 20px; }
+.focus-card-title { font-family:var(--mono); font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:14px; }
+.focus-bar-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.focus-bar-label { font-family:var(--body); font-size:11px; width:80px; flex-shrink:0; }
+.focus-bar-track { flex:1; height:6px; background:var(--paper-3); border-radius:3px; overflow:hidden; }
+.focus-bar-fill { height:100%; border-radius:3px; transition:width 0.4s; }
+.focus-bar-val { font-family:var(--mono); font-size:9px; color:var(--ink-muted); width:36px; text-align:right; }
+.focus-priority-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px dotted var(--rule); }
+.focus-priority-num { font-family:var(--mono); font-size:10px; color:var(--ink-muted); width:20px; }
+.focus-priority-name { font-family:var(--display); font-size:15px; font-style:italic; font-weight:500; }
+.focus-priority-status { font-family:var(--mono); font-size:8px; letter-spacing:0.1em; text-transform:uppercase; padding:2px 6px; border:1px solid var(--rule); color:var(--ink-muted); margin-left:auto; }
+.focus-sleep-stat { display:flex; justify-content:space-between; align-items:baseline; padding:8px 0; border-bottom:1px dotted var(--rule); }
+.focus-sleep-label { font-family:var(--body); font-size:12px; color:var(--ink-soft); }
+.focus-sleep-val { font-family:var(--display); font-size:22px; font-style:italic; font-weight:500; }
 
 /* ========================
    PROJECT TABS VIEW
@@ -2272,7 +2355,19 @@ body {
 <!-- ===== SIDEBAR ===== -->
 <div class="sidebar" id="sidebar">
   <div class="sidebar-header">
-    <div class="sidebar-logo">Seize the Day</div>
+    <div class="sidebar-logo"><svg class="brand-sun" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <path d="M18 2 L20.2 9 L18 7.2 L15.8 9 Z" fill="currentColor"/>
+  <path d="M34 18 L27 20.2 L28.8 18 L27 15.8 Z" fill="currentColor"/>
+  <path d="M18 34 L15.8 27 L18 28.8 L20.2 27 Z" fill="currentColor"/>
+  <path d="M2 18 L9 15.8 L7.2 18 L9 20.2 Z" fill="currentColor"/>
+  <path d="M30.1 5.9 L25.2 12.8 L27.4 10.6 L25.2 8.4 Z" fill="currentColor"/>
+  <path d="M30.1 30.1 L23.2 25.2 L25.4 27.4 L23.2 29.6 Z" fill="currentColor"/>
+  <path d="M5.9 30.1 L10.8 23.2 L8.6 25.4 L10.8 27.6 Z" fill="currentColor"/>
+  <path d="M5.9 5.9 L12.8 10.8 L10.6 8.6 L8.4 10.8 Z" fill="currentColor"/>
+  <circle cx="18" cy="18" r="13" fill="none" stroke="currentColor" stroke-width="1.2"/>
+  <circle cx="18" cy="18" r="9" fill="none" stroke="currentColor" stroke-width="0.7" stroke-dasharray="1.5 2"/>
+  <circle cx="18" cy="18" r="5" fill="currentColor"/>
+</svg>Seize the Day</div>
     <div class="sidebar-close" onclick="_closeSidebar()">×</div>
   </div>
   <nav class="sidebar-nav">
@@ -2281,6 +2376,9 @@ body {
     </div>
     <div class="sidebar-item" data-view="timetable" onclick="switchView('timetable')">
       <span class="sidebar-dot" style="background:#b8d4f4"></span>Calendar
+    </div>
+    <div class="sidebar-item" data-view="focus" onclick="switchView('focus')">
+      <span class="sidebar-dot" style="background:#fcd8a0"></span>Focus
     </div>
     <div class="sidebar-item" data-view="projects" onclick="switchView('projects')">
       <span class="sidebar-dot" style="background:#b8f4c0"></span>Projects
@@ -2325,7 +2423,19 @@ body {
   <div class="topbar-hamburger" onclick="_openSidebar()">
     <span></span><span></span><span></span>
   </div>
-  <div class="topbar-brand">Seize the Day</div>
+  <div class="topbar-brand"><svg class="brand-sun" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <path d="M18 2 L20.2 9 L18 7.2 L15.8 9 Z" fill="currentColor"/>
+  <path d="M34 18 L27 20.2 L28.8 18 L27 15.8 Z" fill="currentColor"/>
+  <path d="M18 34 L15.8 27 L18 28.8 L20.2 27 Z" fill="currentColor"/>
+  <path d="M2 18 L9 15.8 L7.2 18 L9 20.2 Z" fill="currentColor"/>
+  <path d="M30.1 5.9 L25.2 12.8 L27.4 10.6 L25.2 8.4 Z" fill="currentColor"/>
+  <path d="M30.1 30.1 L23.2 25.2 L25.4 27.4 L23.2 29.6 Z" fill="currentColor"/>
+  <path d="M5.9 30.1 L10.8 23.2 L8.6 25.4 L10.8 27.6 Z" fill="currentColor"/>
+  <path d="M5.9 5.9 L12.8 10.8 L10.6 8.6 L8.4 10.8 Z" fill="currentColor"/>
+  <circle cx="18" cy="18" r="13" fill="none" stroke="currentColor" stroke-width="1.2"/>
+  <circle cx="18" cy="18" r="9" fill="none" stroke="currentColor" stroke-width="0.7" stroke-dasharray="1.5 2"/>
+  <circle cx="18" cy="18" r="5" fill="currentColor"/>
+</svg>Seize the Day</div>
   <div class="topbar-right">
     <div class="topbar-week" id="topbarWeek">—</div>
     <div class="topbar-btn" onclick="navigateWeek(-1)">‹</div>
@@ -2425,6 +2535,17 @@ body {
         <button class="tt-view-btn active" id="btnWeekView" onclick="setCalView('week')">Week</button>
         <button class="tt-view-btn" id="btnMonthView" onclick="setCalView('month')">Month</button>
       </div>
+      <div class="cal-day-tabs" id="calDayTabs">
+        <button class="cal-day-tab" data-day="0" onclick="setCalDay(0)">Mon</button>
+        <button class="cal-day-tab" data-day="1" onclick="setCalDay(1)">Tue</button>
+        <button class="cal-day-tab" data-day="2" onclick="setCalDay(2)">Wed</button>
+        <button class="cal-day-tab" data-day="3" onclick="setCalDay(3)">Thu</button>
+        <button class="cal-day-tab" data-day="4" onclick="setCalDay(4)">Fri</button>
+        <button class="cal-day-tab" data-day="5" onclick="setCalDay(5)">Sat</button>
+        <button class="cal-day-tab" data-day="6" onclick="setCalDay(6)">Sun</button>
+        <button class="cal-day-tab cal-day-tab-month" id="calMonthTab" onclick="setCalView('month')">Month</button>
+        <button class="cal-day-tab" id="calWeekTab" onclick="setCalView('week')">Week</button>
+      </div>
       <div class="tt-week-nav">
         <button class="tt-week-btn" onclick="calNavPrev()">‹</button>
         <span class="tt-week-label" id="ttWeekDisplay">—</span>
@@ -2465,6 +2586,9 @@ body {
         <div id="monthBody"></div>
       </div>
     </div>
+
+    <!-- DAY VIEW -->
+    <div id="ttDayView" style="display:none;padding:0 0 40px"></div>
   </div>
 </div>
 
@@ -2506,6 +2630,100 @@ body {
   </div>
 </div>
 
+<!-- HOW WAS YOUR DAY MODAL -->
+<div class="day-note-modal" id="dayReflectionModal">
+  <div class="day-note-box" style="max-width:480px">
+    <div class="day-note-title">How was your day?</div>
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:16px" id="dayReflDate"></div>
+    <div class="day-refl-stars" id="dayReflStars">
+      <span class="day-refl-star" data-v="1" onclick="setReflStar(1)">○</span>
+      <span class="day-refl-star" data-v="2" onclick="setReflStar(2)">○</span>
+      <span class="day-refl-star" data-v="3" onclick="setReflStar(3)">○</span>
+      <span class="day-refl-star" data-v="4" onclick="setReflStar(4)">○</span>
+      <span class="day-refl-star" data-v="5" onclick="setReflStar(5)">○</span>
+    </div>
+    <div class="form-row" style="margin-top:14px">
+      <label class="form-label">What went well today?</label>
+      <textarea class="day-note-textarea" id="dayReflWell" placeholder="Wins, progress, moments…" style="min-height:70px"></textarea>
+    </div>
+    <div class="form-row">
+      <label class="form-label">What would you do differently?</label>
+      <textarea class="day-note-textarea" id="dayReflDiff" placeholder="Lessons, adjustments…" style="min-height:60px"></textarea>
+    </div>
+    <div class="form-row">
+      <label class="form-label">One word for today</label>
+      <input type="text" class="form-input" id="dayReflWord" placeholder="e.g. Momentum" maxlength="30">
+    </div>
+    <div class="day-note-actions">
+      <button class="btn" onclick="closeDayReflection()">Skip</button>
+      <button class="btn primary" onclick="saveDayReflection()">File It</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW PROJECT PIPELINE MODAL -->
+<div class="day-note-modal" id="pipelineModal">
+  <div class="day-note-box" style="max-width:600px;max-height:90vh;overflow-y:auto">
+    <div class="day-note-title">New Project</div>
+    <div class="form-row">
+      <label class="form-label">Project Name</label>
+      <input type="text" class="form-input" id="pjName" placeholder="e.g. Klayr CRM">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Subtitle</label>
+      <input type="text" class="form-input" id="pjSub" placeholder="e.g. Phase 1 · Active">
+    </div>
+    <div class="form-row">
+      <label class="form-label">What problem does this solve?</label>
+      <textarea class="day-note-textarea" id="pjProblem" placeholder="The core problem or opportunity…" style="min-height:60px"></textarea>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Success looks like</label>
+      <input type="text" class="form-input" id="pjSuccess" placeholder="What does done look like?">
+    </div>
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-muted);margin:18px 0 10px">Pipeline Stage</div>
+    <div class="pipeline-stages" id="pipelineStages">
+      <div class="pipeline-stage" data-stage="Idea" onclick="selectPipelineStage(this)">
+        <div class="pipeline-stage-icon">💡</div>
+        <div class="pipeline-stage-name">Idea</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-stage" data-stage="Discovery" onclick="selectPipelineStage(this)">
+        <div class="pipeline-stage-icon">🔍</div>
+        <div class="pipeline-stage-name">Discovery</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-stage active" data-stage="Building" onclick="selectPipelineStage(this)">
+        <div class="pipeline-stage-icon">🔨</div>
+        <div class="pipeline-stage-name">Building</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-stage" data-stage="Testing" onclick="selectPipelineStage(this)">
+        <div class="pipeline-stage-icon">🧪</div>
+        <div class="pipeline-stage-name">Testing</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-stage" data-stage="Launched" onclick="selectPipelineStage(this)">
+        <div class="pipeline-stage-icon">🚀</div>
+        <div class="pipeline-stage-name">Launched</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-stage" data-stage="Scaling" onclick="selectPipelineStage(this)">
+        <div class="pipeline-stage-icon">📈</div>
+        <div class="pipeline-stage-name">Scaling</div>
+      </div>
+    </div>
+    <div class="form-row" style="margin-top:18px">
+      <label class="form-label">Target date</label>
+      <input type="date" class="form-input" id="pjTarget" style="max-width:180px">
+    </div>
+    <div class="day-note-actions">
+      <button class="btn" onclick="closePipelineModal()">Cancel</button>
+      <button class="btn primary" onclick="savePipelineProject()">Create Project</button>
+    </div>
+  </div>
+</div>
+
 <!-- CUSTOM CATEGORIES MODAL -->
 <div class="cat-modal" id="catModal">
   <div class="cat-modal-box">
@@ -2524,6 +2742,18 @@ body {
     <div style="display:flex;justify-content:flex-end">
       <button class="btn" onclick="closeCatModal()">Done</button>
     </div>
+  </div>
+</div>
+
+<!-- ======================== FOCUS ======================== -->
+<div class="view" id="view-focus">
+  <div class="focus-view">
+    <div class="section-head">
+      <div class="section-num">§ 00</div>
+      <div class="section-title">Focus Intelligence</div>
+      <div class="section-meta">Time · Energy · Priorities</div>
+    </div>
+    <div id="focusContent"></div>
   </div>
 </div>
 
@@ -2551,6 +2781,8 @@ body {
     <div id="originStoryCard"></div>
     <div class="archive-grid" id="archiveGrid"></div>
     <div class="archive-detail" id="archiveDetail"></div>
+    <div id="dayReflectionsSection"></div>
+    <div id="archivedProjectsSection"></div>
   </div>
 </div>
 
@@ -2625,7 +2857,7 @@ body {
       <div class="settings-section-title">Add / Manage Projects</div>
       <div id="projectManagerList"></div>
       <div style="margin-top:14px">
-        <button class="btn ghost" onclick="addNewProject()">+ Add Project</button>
+        <button class="btn ghost" onclick="openPipelineModal()">+ Add Project</button>
       </div>
     </div>
   </div>
@@ -2729,7 +2961,7 @@ function _signIn() {
 }
 function _signOut() {
   if (!confirm('Sign out?')) return;
-  _auth.signOut();
+  promptDayReflection(() => { _auth.signOut(); });
 }
 function _updateUserUI() {
   if (!_currentUser) return;
@@ -2897,6 +3129,7 @@ function _enterApp() {
   scheduleReminders();
   initTimeSpanControls();
   scheduleEventReminders();
+  checkStaleProjects();
 }
 
 // ==============================================================
@@ -2923,6 +3156,8 @@ async function _boot() {
   if (!state.customCategories) state.customCategories = [];
   if (!state.dayNotes) state.dayNotes = {};
   if (!state.settings) state.settings = {};
+  if (!state.archivedProjects) state.archivedProjects = [];
+  if (!state.dayReflections) state.dayReflections = {};
   if (state.settings.ttStart != null) TT_START_HOUR = state.settings.ttStart;
   if (state.settings.ttEnd != null) TT_END_HOUR = state.settings.ttEnd;
   calMonthDate = new Date();
@@ -2975,14 +3210,20 @@ const CAT_LABELS = Object.fromEntries(Object.entries(BUILTIN_CATS).map(([k,v]) =
 
 let state = null;
 let currentWeekId = null;
-let calView = 'week';       // 'week' | 'month'
+let calView = 'week';       // 'week' | 'month' | 'day'
 let calMonthDate = null;    // Date object for current month view
+let calDayTab = 0;          // 0-6 for Mon-Sun
 let _dayNoteTarget = null;  // 'YYYY-MM-DD' being edited
 let activeProjectTab = null;
 let editingTokenId = null;
 let dragToken = null;
 let notifPermission = 'default';
 let notifTimers = [];
+// Day reflection
+let _dayReflStar = 0;
+let _dayReflCallback = null;
+// Pipeline
+let _selectedPipelineStage = 'Building';
 
 // ==============================================================
 // STORAGE
@@ -3245,10 +3486,18 @@ function switchView(name) {
   const v = document.getElementById('view-'+name);
   if (v) v.classList.add('active');
   document.querySelector(`.sidebar-item[data-view="${name}"]`)?.classList.add('active');
-  if (name === 'archive') renderArchive();
   if (name === 'settings') renderSettings();
   if (name === 'timetable') { renderTimetable(); initTimeSpanControls(); }
   if (name === 'projects') renderProjects();
+  if (name === 'focus') renderFocus();
+  if (name === 'archive') {
+    const hour = new Date().getHours();
+    if (hour >= 17) {
+      promptDayReflection(() => renderArchive());
+    } else {
+      renderArchive();
+    }
+  }
   _closeSidebar();
 }
 
@@ -3271,24 +3520,93 @@ function setCalView(v) {
   calView = v;
   document.getElementById('ttWeekView').style.display = v === 'week' ? '' : 'none';
   document.getElementById('ttMonthView').style.display = v === 'month' ? '' : 'none';
+  const dayView = document.getElementById('ttDayView');
+  if (dayView) dayView.style.display = v === 'day' ? '' : 'none';
   document.getElementById('btnWeekView').classList.toggle('active', v === 'week');
   document.getElementById('btnMonthView').classList.toggle('active', v === 'month');
   document.getElementById('btnAddEvent').style.display = v === 'week' ? '' : 'none';
   const tsBar = document.getElementById('ttTimespanBar');
   if (tsBar) tsBar.classList.toggle('hidden', v === 'month');
+  // Update day tab active states
+  document.querySelectorAll('.cal-day-tab').forEach(t => t.classList.remove('active'));
+  if (v === 'month') document.getElementById('calMonthTab')?.classList.add('active');
+  if (v === 'week') document.getElementById('calWeekTab')?.classList.add('active');
   if (v === 'week') renderTimetable();
-  else renderMonthView();
+  else if (v === 'month') renderMonthView();
+}
+function setCalDay(day) {
+  calDayTab = day;
+  calView = 'day';
+  document.getElementById('ttWeekView').style.display = 'none';
+  document.getElementById('ttMonthView').style.display = 'none';
+  const dayView = document.getElementById('ttDayView');
+  if (dayView) dayView.style.display = '';
+  document.getElementById('btnAddEvent').style.display = '';
+  const tsBar = document.getElementById('ttTimespanBar');
+  if (tsBar) tsBar.classList.remove('hidden');
+  // Update tab active states
+  document.querySelectorAll('.cal-day-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.cal-day-tab[data-day="${day}"]`)?.classList.add('active');
+  document.getElementById('calMonthTab')?.classList.remove('active');
+  document.getElementById('calWeekTab')?.classList.remove('active');
+  renderDayView();
+}
+function renderDayView() {
+  if (!state.timetables) return;
+  const tokens = (state.timetables[currentWeekId] || []).filter(t => t.day === calDayTab);
+  tokens.sort((a,b) => a.start.localeCompare(b.start));
+  const dates = getWeekDates(currentWeekId);
+  const dateObj = dates[calDayTab];
+  const todayStr = new Date().toISOString().slice(0,10);
+  const dateStr = dateObj.toISOString().slice(0,10);
+  const isToday = dateStr === todayStr;
+  const label = DAYS_FULL[calDayTab] + ' — ' + dateObj.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('ttWeekLabel').textContent = label;
+  document.getElementById('ttWeekDisplay').textContent = label;
+  const note = state.dayNotes?.[dateStr] || '';
+  const el = document.getElementById('ttDayView');
+  if (!tokens.length && !note) {
+    el.innerHTML = `<div class="day-view-empty">
+      <div style="font-family:var(--display);font-size:22px;font-style:italic;font-weight:500;margin-bottom:8px">${DAYS_FULL[calDayTab]}</div>
+      <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;color:var(--ink-muted)">No events scheduled</div>
+      <button class="btn" style="margin-top:16px" onclick="openTokenEditor(${calDayTab},'09:00')">+ Add Event</button>
+    </div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="day-view-header${isToday?' today':''}">
+      <div class="day-view-name">${DAYS_FULL[calDayTab]}</div>
+      <div class="day-view-date">${dateObj.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</div>
+      ${note ? `<div class="day-view-note">"${note}"</div>` : ''}
+    </div>
+    <div class="day-view-events">
+      ${tokens.map(t => {
+        const bg = getCatBg(t.cat||'cat-routine');
+        const col = getCatColor(t.cat||'cat-routine');
+        return `<div class="day-view-event" style="border-left-color:${col};background:${bg}20">
+          <div class="day-view-event-time">${t.start} – ${t.end}</div>
+          <div class="day-view-event-title">${t.title}</div>
+          ${t.sub ? `<div class="day-view-event-sub">${t.sub}</div>` : ''}
+          <div class="day-view-event-cat" style="background:${bg};color:${col}">${getAllCats()[t.cat||'cat-routine']?.label||t.cat}</div>
+          <button class="tt-token-del" style="position:absolute;top:8px;right:8px;opacity:0.6" onclick="openTokenEditorForEdit('${t.id}')">✎</button>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
 }
 function calNavPrev() {
-  if (calView === 'week') navigateWeek(-1);
+  if (calView === 'day') { navigateWeek(-1); renderDayView(); }
+  else if (calView === 'week') navigateWeek(-1);
   else { calMonthDate.setMonth(calMonthDate.getMonth()-1); renderMonthView(); }
 }
 function calNavNext() {
-  if (calView === 'week') navigateWeek(1);
+  if (calView === 'day') { navigateWeek(1); renderDayView(); }
+  else if (calView === 'week') navigateWeek(1);
   else { calMonthDate.setMonth(calMonthDate.getMonth()+1); renderMonthView(); }
 }
 function calNavToday() {
-  if (calView === 'week') goToCurrentWeek();
+  if (calView === 'day') { goToCurrentWeek(); renderDayView(); }
+  else if (calView === 'week') goToCurrentWeek();
   else { calMonthDate = new Date(); renderMonthView(); }
 }
 
@@ -4344,9 +4662,25 @@ function renderProjects() {
   }
   bar.innerHTML = projects.map(p => `
     <div class="proj-tab${p.id===activeProjectTab?' active':''}" onclick="switchProjTab('${p.id}')">${p.name}</div>
-  `).join('') + `<div class="proj-tab" onclick="addNewProject()">+ Add Project</div>`;
+  `).join('') + `<div class="proj-tab" onclick="openPipelineModal()">+ Add Project</div>`;
 
-  panes.innerHTML = projects.map(p => `
+  // Stale banner
+  const STALE_MS = 7 * 24 * 60 * 60 * 1000;
+  const staleProjects = projects.filter(p => {
+    const last = p.lastTouched ? new Date(p.lastTouched).getTime() : (p.createdAt ? new Date(p.createdAt).getTime() : 0);
+    return p.status === 'Active' && last && (Date.now() - last) > STALE_MS;
+  });
+  let staleBanner = '';
+  if (staleProjects.length) {
+    staleBanner = `<div class="stale-banner">
+      <div>
+        <div class="stale-banner-label">Stale Projects</div>
+        <div class="stale-banner-text">${staleProjects.map(p=>p.name).join(', ')} — not touched in over a week. Are ${staleProjects.length > 1 ? 'they' : 'it'} still live?</div>
+      </div>
+    </div>`;
+  }
+
+  panes.innerHTML = staleBanner + projects.map(p => `
     <div class="proj-tab-pane${p.id===activeProjectTab?' active':''}" id="proj-pane-${p.id}">
       ${renderProjectPane(p)}
     </div>
@@ -4361,7 +4695,21 @@ function switchProjTab(id) {
 function renderProjectPane(p) {
   const done = p.tasks.filter(t=>t.done).length;
   const total = p.tasks.length;
+  const PIPELINE_STAGES = ['Idea','Discovery','Building','Testing','Launched','Scaling'];
+  const pipelineBar = p.pipeline ? `
+    <div class="pipeline-indicator">
+      ${PIPELINE_STAGES.map((s,i) => `
+        ${i > 0 ? '<span class="pipeline-ind-arrow">→</span>' : ''}
+        <span class="pipeline-ind-stage${s === p.pipeline ? ' current' : ''}">${s}</span>
+      `).join('')}
+    </div>
+  ` : '';
+  const problemBlock = p.problem ? `<div style="font-family:var(--body);font-size:12px;color:var(--ink-soft);padding:8px 0;border-bottom:1px dotted var(--rule);margin-bottom:8px"><span style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-right:8px">Problem</span>${p.problem}</div>` : '';
+  const successBlock = p.successCriteria ? `<div style="font-family:var(--body);font-size:12px;color:var(--ink-soft);padding:8px 0;border-bottom:1px dotted var(--rule);margin-bottom:12px"><span style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-right:8px">Success</span>${p.successCriteria}</div>` : '';
   return `
+    ${pipelineBar}
+    ${problemBlock}
+    ${successBlock}
     <div class="agent-panel" id="agent-${p.id}">
       <div class="agent-header">
         <div class="agent-label"><div class="agent-pulse"></div>AI Priority Agent — ${p.name}</div>
@@ -4417,6 +4765,7 @@ function renderProjectPane(p) {
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn" onclick="markAllDone('${p.id}')">Mark All Done</button>
           <button class="btn" onclick="clearDone('${p.id}')">Clear Done</button>
+          <button class="btn" style="color:var(--ink-muted)" onclick="archiveProject('${p.id}')">Archive Project</button>
         </div>
       </div>
     </div>
@@ -4427,7 +4776,7 @@ function toggleProjectTask(pid, tid) {
   const week = state.weeks[currentWeekId];
   const p = week.projects.find(x=>x.id===pid);
   const t = p?.tasks.find(x=>x.id===tid);
-  if (t) { t.done = !t.done; saveState(); renderProjects(); renderProjCards(week); }
+  if (t) { t.done = !t.done; p.lastTouched = new Date().toISOString(); saveState(); renderProjects(); renderProjCards(week); }
 }
 function saveTaskText(pid, tid, text) {
   const week = state.weeks[currentWeekId];
@@ -4446,6 +4795,7 @@ function addProjectTask(pid) {
   const week = state.weeks[currentWeekId];
   const p = week.projects.find(x=>x.id===pid);
   p.tasks.push({ id:'t-'+Date.now(), text, tag:'New', done:false, rolled:false, priority:false });
+  p.lastTouched = new Date().toISOString();
   saveState(); renderProjects();
 }
 function saveProjFocus(pid, text) {
@@ -4476,24 +4826,7 @@ function clearDone(pid) {
   saveState(); renderProjects();
 }
 function addNewProject() {
-  const name = prompt('Project name:');
-  if (!name) return;
-  const sub = prompt('Subtitle (e.g. "Phase 1 · Active"):') || '';
-  const week = state.weeks[currentWeekId];
-  const id = 'proj-'+Date.now();
-  week.projects.push({
-    id, name, sub, color: '#4a6b3e',
-    priority: 1, status: 'Active', tagClass: 'tag-active',
-    stats: [
-      { label: 'Stage', value: 'Planning', accent: false },
-      { label: 'Started', value: new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short'}), accent: false },
-      { label: 'Target', value: 'TBC', accent: true }
-    ],
-    focus: 'Define focus for this week…',
-    blocker: 'No blockers yet.',
-    tasks: []
-  });
-  saveState(); renderProjects(); showToast('Project added');
+  openPipelineModal();
 }
 
 // ==============================================================
@@ -4600,6 +4933,47 @@ function renderArchive() {
       </div>
     `;
   }).join('');
+
+  // Day reflections section
+  const reflSect = document.getElementById('dayReflectionsSection');
+  if (reflSect) {
+    const refls = Object.values(state.dayReflections || {}).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,7);
+    if (refls.length) {
+      const stars = r => Array.from({length:5},(_,i)=>i<r?'●':'○').join('');
+      reflSect.innerHTML = `
+        <div class="section-head" style="margin-top:32px;margin-bottom:14px">
+          <div class="section-num">§ DR</div>
+          <div class="section-title">Day Reflections</div>
+          <div class="section-meta">Last 7 entries</div>
+        </div>
+        ${refls.map(r => `
+          <div class="refl-card">
+            <div class="refl-card-date">${new Date(r.date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}</div>
+            <div style="flex:1">
+              ${r.word ? `<div class="refl-card-word">${r.word}</div>` : ''}
+              ${r.rating ? `<div class="refl-card-stars">${stars(r.rating)}</div>` : ''}
+              ${r.well ? `<div class="refl-card-detail"><strong>Went well:</strong> ${r.well}</div>` : ''}
+              ${r.diff ? `<div class="refl-card-detail"><strong>Differently:</strong> ${r.diff}</div>` : ''}
+            </div>
+          </div>
+        `).join('')}
+      `;
+    } else {
+      reflSect.innerHTML = '';
+    }
+  }
+
+  // Archived projects section
+  const archProjSect = document.getElementById('archivedProjectsSection');
+  if (archProjSect) {
+    archProjSect.innerHTML = `
+      <div class="section-head" style="margin-top:32px;margin-bottom:14px">
+        <div class="section-num">§ AP</div>
+        <div class="section-title">Archived Projects</div>
+      </div>
+      ${renderArchivedProjects()}
+    `;
+  }
 }
 function loadArchiveWeek(id) {
   currentWeekId = id;
@@ -4791,6 +5165,252 @@ function clearAllData() {
   state = buildInitialState();
   currentWeekId = getCurrentWeekId();
   saveState(); render(); showToast('Data cleared');
+}
+
+// ==============================================================
+// FOCUS VIEW
+// ==============================================================
+function renderFocus() {
+  const el = document.getElementById('focusContent');
+  if (!el) return;
+  const tokens = state.timetables?.[currentWeekId] || [];
+  const week = state.weeks[currentWeekId];
+  if (!week) return;
+
+  // Compute hours per category
+  const catHours = {};
+  tokens.forEach(t => {
+    const cat = t.cat || 'cat-routine';
+    const [sh, sm] = t.start.split(':').map(Number);
+    const [eh, em] = t.end.split(':').map(Number);
+    const hours = ((eh * 60 + em) - (sh * 60 + sm)) / 60;
+    if (hours > 0) catHours[cat] = (catHours[cat] || 0) + hours;
+  });
+  const maxH = Math.max(...Object.values(catHours), 1);
+  const totalH = Object.values(catHours).reduce((a,b)=>a+b, 0);
+  const allCats = getAllCats();
+
+  // Sleep stats
+  const sleepH = catHours['cat-sleep'] || 0;
+  const awakeH = sleepH > 0 ? (7 * 24 - sleepH) : 0;
+  const avgSleep = sleepH > 0 ? (sleepH / 7).toFixed(1) : '—';
+
+  const catBars = Object.entries(catHours).sort((a,b)=>b[1]-a[1]).map(([id, h]) => {
+    const cat = allCats[id] || { label: id, bg: '#e6e6e6', color: '#444' };
+    const pct = Math.round(h / maxH * 100);
+    return `<div class="focus-bar-row">
+      <div class="focus-bar-label">${cat.label}</div>
+      <div class="focus-bar-track"><div class="focus-bar-fill" style="width:${pct}%;background:${cat.bg}"></div></div>
+      <div class="focus-bar-val">${h.toFixed(1)}h</div>
+    </div>`;
+  }).join('');
+
+  const projects = week.projects || [];
+  const priorityItems = projects.map((p,i) => `
+    <div class="focus-priority-item">
+      <div class="focus-priority-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="focus-priority-name">${p.name}</div>
+      <div class="focus-priority-status">${p.status || 'Active'}</div>
+    </div>
+  `).join('');
+
+  el.innerHTML = `
+    <div class="focus-grid">
+      <div class="focus-insight-card">
+        <div class="focus-card-title">⟳ Time Intelligence — This Week</div>
+        ${catBars || '<div style="font-family:var(--mono);font-size:10px;color:var(--ink-muted)">No events scheduled yet.</div>'}
+        <div style="font-family:var(--mono);font-size:9px;color:var(--ink-muted);margin-top:10px">Total scheduled: ${totalH.toFixed(1)}h / 168h this week</div>
+      </div>
+      <div class="focus-insight-card">
+        <div class="focus-card-title">◑ Sleep &amp; Energy</div>
+        <div class="focus-sleep-stat">
+          <div class="focus-sleep-label">Total sleep this week</div>
+          <div class="focus-sleep-val">${sleepH > 0 ? sleepH.toFixed(1)+'h' : '—'}</div>
+        </div>
+        <div class="focus-sleep-stat">
+          <div class="focus-sleep-label">Avg per night</div>
+          <div class="focus-sleep-val">${avgSleep !== '—' ? avgSleep+'h' : '—'}</div>
+        </div>
+        <div class="focus-sleep-stat">
+          <div class="focus-sleep-label">Awake hours</div>
+          <div class="focus-sleep-val">${awakeH > 0 ? awakeH.toFixed(1)+'h' : '—'}</div>
+        </div>
+        ${sleepH === 0 ? '<div style="font-family:var(--mono);font-size:9px;color:var(--ink-muted);margin-top:8px">Add sleep events with the "Sleep" category to track rest.</div>' : ''}
+      </div>
+      <div class="focus-insight-card">
+        <div class="focus-card-title">↑ Priority Stack</div>
+        ${priorityItems || '<div style="font-family:var(--mono);font-size:10px;color:var(--ink-muted)">No projects this week.</div>'}
+      </div>
+    </div>
+  `;
+}
+
+// ==============================================================
+// DAY REFLECTION
+// ==============================================================
+function promptDayReflection(callback) {
+  if (!state.dayReflections) state.dayReflections = {};
+  const today = new Date().toISOString().slice(0,10);
+  if (state.dayReflections[today]) { if(callback) callback(); return; }
+  _dayReflCallback = callback || null;
+  _dayReflStar = 0;
+  document.getElementById('dayReflDate').textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('dayReflWell').value = '';
+  document.getElementById('dayReflDiff').value = '';
+  document.getElementById('dayReflWord').value = '';
+  document.querySelectorAll('.day-refl-star').forEach(s=>s.classList.remove('active'));
+  document.getElementById('dayReflectionModal').classList.add('open');
+}
+function setReflStar(v) {
+  _dayReflStar = v;
+  document.querySelectorAll('.day-refl-star').forEach(s => {
+    s.classList.toggle('active', parseInt(s.dataset.v) <= v);
+  });
+}
+function saveDayReflection() {
+  if (!state.dayReflections) state.dayReflections = {};
+  const today = new Date().toISOString().slice(0,10);
+  state.dayReflections[today] = {
+    date: today,
+    rating: _dayReflStar,
+    well: document.getElementById('dayReflWell').value.trim(),
+    diff: document.getElementById('dayReflDiff').value.trim(),
+    word: document.getElementById('dayReflWord').value.trim()
+  };
+  saveState();
+  closeDayReflection();
+  showToast('Day filed ✓');
+}
+function closeDayReflection() {
+  document.getElementById('dayReflectionModal').classList.remove('open');
+  if (_dayReflCallback) { const cb = _dayReflCallback; _dayReflCallback = null; cb(); }
+}
+
+// ==============================================================
+// PIPELINE MODAL
+// ==============================================================
+function openPipelineModal() {
+  document.getElementById('pjName').value = '';
+  document.getElementById('pjSub').value = '';
+  document.getElementById('pjProblem').value = '';
+  document.getElementById('pjSuccess').value = '';
+  document.getElementById('pjTarget').value = '';
+  _selectedPipelineStage = 'Building';
+  document.querySelectorAll('.pipeline-stage').forEach(s => s.classList.toggle('active', s.dataset.stage === 'Building'));
+  document.getElementById('pipelineModal').classList.add('open');
+  setTimeout(()=>document.getElementById('pjName').focus(), 100);
+}
+function closePipelineModal() {
+  document.getElementById('pipelineModal').classList.remove('open');
+}
+function selectPipelineStage(el) {
+  document.querySelectorAll('.pipeline-stage').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  _selectedPipelineStage = el.dataset.stage;
+}
+function savePipelineProject() {
+  const name = document.getElementById('pjName').value.trim();
+  if (!name) { alert('Project name required'); return; }
+  const sub = document.getElementById('pjSub').value.trim();
+  const problem = document.getElementById('pjProblem').value.trim();
+  const success = document.getElementById('pjSuccess').value.trim();
+  const target = document.getElementById('pjTarget').value;
+  const week = state.weeks[currentWeekId];
+  const id = 'proj-'+Date.now();
+  week.projects.push({
+    id, name, sub, color: '#4a6b3e',
+    priority: week.projects.length + 1,
+    status: 'Active', tagClass: 'tag-active',
+    pipeline: _selectedPipelineStage,
+    problem, successCriteria: success,
+    createdAt: new Date().toISOString(),
+    lastTouched: new Date().toISOString(),
+    stats: [
+      { label: 'Stage', value: _selectedPipelineStage, accent: false },
+      { label: 'Started', value: new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short'}), accent: false },
+      { label: 'Target', value: target ? new Date(target).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : 'TBC', accent: true }
+    ],
+    focus: success || 'Define focus for this week…',
+    blocker: 'No blockers yet.',
+    tasks: []
+  });
+  saveState(); closePipelineModal(); renderProjects();
+  showToast(`"${name}" created — ${_selectedPipelineStage} stage`);
+}
+
+// ==============================================================
+// ARCHIVE PROJECTS
+// ==============================================================
+function archiveProject(pid) {
+  if (!confirm('Archive this project? You can restore it from the Archive tab.')) return;
+  const week = state.weeks[currentWeekId];
+  const idx = week.projects.findIndex(p=>p.id===pid);
+  if (idx < 0) return;
+  const p = week.projects.splice(idx, 1)[0];
+  if (!state.archivedProjects) state.archivedProjects = [];
+  p.archivedAt = new Date().toISOString();
+  p.archivedFromWeek = currentWeekId;
+  state.archivedProjects.push(p);
+  activeProjectTab = week.projects[0]?.id;
+  saveState(); renderProjects();
+  showToast(`"${p.name}" archived`);
+}
+function restoreProject(pid) {
+  if (!state.archivedProjects) return;
+  const idx = state.archivedProjects.findIndex(p=>p.id===pid);
+  if (idx < 0) return;
+  const p = state.archivedProjects.splice(idx, 1)[0];
+  delete p.archivedAt;
+  delete p.archivedFromWeek;
+  p.lastTouched = new Date().toISOString();
+  if (!state.weeks[currentWeekId]) return;
+  state.weeks[currentWeekId].projects.push(p);
+  saveState(); renderArchive(); renderProjects();
+  showToast(`"${p.name}" restored`);
+}
+function renderArchivedProjects() {
+  const archived = state.archivedProjects || [];
+  if (!archived.length) return '<div style="font-family:var(--mono);font-size:10px;color:var(--ink-muted)">No archived projects.</div>';
+  return archived.map(p => `
+    <div class="archived-proj-card">
+      <div class="archived-proj-header">
+        <div>
+          <div class="archived-proj-name">${p.name}</div>
+          <div class="archived-proj-sub">${p.sub || ''} · Archived ${p.archivedAt ? new Date(p.archivedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—'}</div>
+          ${p.pipeline ? `<div class="archived-proj-stage">Last stage: ${p.pipeline}</div>` : ''}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+          <button class="btn" onclick="restoreProject('${p.id}')">Restore</button>
+        </div>
+      </div>
+      ${p.problem ? `<div class="archived-proj-detail"><span class="archived-proj-key">Problem</span> ${p.problem}</div>` : ''}
+      ${p.successCriteria ? `<div class="archived-proj-detail"><span class="archived-proj-key">Success was</span> ${p.successCriteria}</div>` : ''}
+      ${p.tasks?.length ? `<div class="archived-proj-detail"><span class="archived-proj-key">Tasks</span> ${p.tasks.filter(t=>t.done).length}/${p.tasks.length} completed</div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ==============================================================
+// STALE PROJECT CHECK
+// ==============================================================
+function checkStaleProjects() {
+  if (Notification.permission !== 'granted') return;
+  const week = state.weeks[currentWeekId];
+  if (!week) return;
+  const now = Date.now();
+  const STALE_MS = 7 * 24 * 60 * 60 * 1000;
+  week.projects.forEach(p => {
+    if (p.status !== 'Active') return;
+    const last = p.lastTouched ? new Date(p.lastTouched).getTime() : (p.createdAt ? new Date(p.createdAt).getTime() : 0);
+    if (last && (now - last) > STALE_MS) {
+      setTimeout(() => {
+        new Notification('Seize the Day — Project Check-in', {
+          body: `"${p.name}" hasn't been touched in over a week. Is it still live?`,
+          icon: '/seize-app/icon-192.png'
+        });
+      }, 2000 + Math.random() * 3000);
+    }
+  });
 }
 
 // ==============================================================
