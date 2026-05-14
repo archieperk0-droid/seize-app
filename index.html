@@ -1149,142 +1149,134 @@ body {
 .cal-week-expand.open { max-height: 1200px; }
 .cal-week-expand-inner { border-top: 1px solid var(--rule); }
 
-/* ==================== TIMETABLE (spreadsheet style) ==================== */
-.tt-outer { overflow: auto; max-height: 600px; border: 1px solid #aaa; background: #fff; }
-.tt-inner { display: inline-flex; flex-direction: column; min-width: 700px; width: 100%; }
-
-/* Sticky header */
-.tt-head { display: flex; position: sticky; top: 0; z-index: 10; background: #2c3e50; border-bottom: 2px solid #1a252f; }
-.tt-head-time { width: 58px; flex-shrink: 0; border-right: 1px solid rgba(255,255,255,0.15); }
-.tt-head-day {
-  flex: 1; min-width: 90px; padding: 6px 4px 5px; text-align: center;
-  border-right: 1px solid rgba(255,255,255,0.12);
+/* ==================== TIMETABLE (v3 grid style) ==================== */
+.tt-grid-wrap { overflow-x: auto; }
+.tt-grid-header {
+  display: grid;
+  grid-template-columns: 64px repeat(7, 1fr);
+  border-bottom: 2px solid var(--ink);
+  background: var(--paper-2);
+  position: sticky;
+  top: var(--nav-h);
+  z-index: 50;
+  min-width: 700px;
 }
-.tt-head-daily { flex: 0 0 120px; border-right: none; }
-.tt-head-dow {
-  display: block; font-family: var(--mono); font-size: 8px;
-  letter-spacing: 0.15em; text-transform: uppercase;
-  color: rgba(255,255,255,0.6); margin-bottom: 3px;
+.tt-day-head {
+  padding: 8px 10px;
+  border-right: 1px solid var(--rule);
 }
-.tt-head-num {
+.tt-day-head.tt-today { background: var(--paper-3); }
+.tt-day-head.tt-today .tt-day-name { color: var(--accent); }
+.tt-day-name {
   display: block; font-family: var(--display); font-size: 15px;
-  font-style: italic; font-weight: 500; color: #fff; line-height: 1;
+  font-style: italic; font-weight: 500; letter-spacing: -0.01em;
 }
-.tt-head-day.tt-today .tt-head-dow { color: var(--accent-glow); }
-.tt-head-day.tt-today .tt-head-num { color: var(--accent-glow); }
-.tt-head-day.tt-daily-hdr .tt-head-dow { color: rgba(255,255,255,0.35); }
-.tt-head-day.tt-daily-hdr .tt-head-num { color: rgba(255,255,255,0.35); font-size:11px; }
-
-/* Body row */
-.tt-body { display: flex; }
-.tt-time-col {
-  width: 58px; flex-shrink: 0;
-  position: sticky; left: 0; z-index: 4;
-  background: #f8f6f2; border-right: 2px solid #bbb;
+.tt-day-date {
+  display: block; font-family: var(--mono); font-size: 8px;
+  letter-spacing: 0.12em; color: var(--ink-muted); text-transform: uppercase;
 }
+.tt-row {
+  display: grid;
+  grid-template-columns: 64px repeat(7, 1fr);
+  border-bottom: 1px solid var(--rule-soft);
+  min-width: 700px;
+}
+.tt-row.tt-hour { border-bottom-color: var(--rule); }
+.tt-row.tt-half { border-bottom-color: rgba(214,205,184,0.35); }
 .tt-time-lbl {
-  display: flex; align-items: flex-start; justify-content: flex-end;
-  padding: 2px 5px 0 0; font-family: var(--mono); font-size: 8px;
-  letter-spacing: 0.04em; color: #666;
-  border-bottom: 1px solid #d5cdb8;
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em;
+  color: var(--ink-muted); padding: 4px 8px 4px 10px;
+  border-right: 1px solid var(--rule); line-height: 1;
+  background: var(--paper-2); min-height: 28px;
 }
-.tt-time-lbl.tt-half { color: transparent; border-bottom-color: rgba(213,205,184,0.35); }
-
-/* Day columns */
-.tt-day-col { flex: 1; min-width: 90px; position: relative; border-right: 1px solid #d0c8b4; }
-.tt-day-col.tt-today { background: rgba(248,241,232,0.5); }
-.tt-daily-col { flex: 0 0 120px; background: #f0ece0; border-right: none; }
-
-/* Slots */
-.tt-slot {
-  border-bottom: 1px solid #ddd6c4; cursor: pointer;
-  transition: background 0.08s;
+.tt-cell {
+  border-right: 1px solid var(--rule-soft); min-height: 28px;
+  position: relative; cursor: pointer; transition: background 0.08s;
 }
-.tt-slot:hover { background: rgba(184,52,28,0.07); }
-.tt-slot:hover::after { content: '+'; font-size: 11px; color: rgba(184,52,28,0.4); display: flex; align-items: center; justify-content: center; height: 100%; }
-.tt-slot.tt-half { border-bottom-color: rgba(221,214,196,0.4); }
-.tt-slot.tt-drag-over { background: rgba(44,62,80,0.12) !important; outline: 2px dashed #2c3e50; }
+.tt-cell:last-child { border-right: none; }
+.tt-cell:hover { background: rgba(184,52,28,0.04); }
+.tt-cell.tt-drag-over { background: rgba(184,52,28,0.1); outline: 1px dashed var(--accent); }
+.tt-cell-add {
+  position: absolute; left: 2px; right: 2px; height: 24px;
+  background: transparent; border: 1px dashed var(--rule);
+  cursor: pointer; font-family: var(--mono); font-size: 9px;
+  letter-spacing: 0.1em; color: var(--rule); opacity: 0;
+  transition: opacity 0.12s; z-index: 5; top: 2px;
+}
+.tt-cell:hover .tt-cell-add { opacity: 1; }
+.tt-cell-add:hover { border-color: var(--ink-muted); color: var(--ink-muted); }
 
-/* Events — spreadsheet blocks */
-.tt-event {
-  position: absolute; left: 1px; right: 1px; border-radius: 2px;
-  display: flex; align-items: center; justify-content: center;
-  text-align: center; padding: 2px 4px;
-  cursor: grab; overflow: hidden; z-index: 2; user-select: none;
-  border: 1px solid rgba(0,0,0,0.15);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+/* Token blocks */
+.tt-token {
+  position: absolute; left: 2px; right: 2px; border-radius: 2px;
+  padding: 3px 6px; font-family: var(--body); font-size: 11px;
+  font-weight: 500; line-height: 1.3; cursor: grab; overflow: hidden;
+  z-index: 10; user-select: none; border-left: 3px solid rgba(0,0,0,0.18);
   transition: box-shadow 0.12s, opacity 0.12s;
 }
-.tt-event:hover { box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 3; }
-.tt-event.tt-dragging { opacity: 0.3; }
-.tt-event-inner { width: 100%; }
-.tt-event-title {
-  font-family: var(--body); font-weight: 500; font-size: 11px;
-  line-height: 1.3; overflow: hidden;
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+.tt-token:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.18); z-index: 20; }
+.tt-token.tt-dragging { opacity: 0.35; cursor: grabbing; }
+.tt-token-title { font-weight: 600; display: block; overflow: hidden; }
+.tt-token-sub { font-size: 9px; opacity: 0.8; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tt-token-del {
+  position: absolute; top: 2px; right: 3px; background: none; border: none;
+  cursor: pointer; font-size: 12px; opacity: 0; line-height: 1;
+  color: inherit; transition: opacity 0.12s; padding: 0;
 }
-.tt-event-sub {
-  font-family: var(--mono); font-size: 8px; letter-spacing: 0.04em;
-  opacity: 0.75; margin-top: 1px; overflow: hidden; white-space: nowrap;
-  text-overflow: ellipsis;
+.tt-token:hover .tt-token-del { opacity: 0.6; }
+.tt-token-del:hover { opacity: 1 !important; }
+.tt-token-bell {
+  position: absolute; bottom: 2px; right: 3px; background: none; border: none;
+  cursor: pointer; font-size: 10px; opacity: 0; line-height: 1;
+  color: inherit; transition: opacity 0.12s; padding: 0;
 }
-.tt-event-bell-btn {
-  font-size: 9px; opacity: 0; position: absolute; top: 2px; right: 3px;
-  cursor: pointer; transition: opacity 0.1s; background: none; border: none;
-  padding: 0; color: inherit;
-}
-.tt-event:hover .tt-event-bell-btn { opacity: 0.7; }
-.tt-event-bell-btn.tt-bell-on { opacity: 0.9 !important; }
-.tt-resize-handle {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 5px;
-  cursor: ns-resize; opacity: 0; transition: opacity 0.1s;
-  background: rgba(0,0,0,0.15); border-radius: 0 0 2px 2px;
-}
-.tt-event:hover .tt-resize-handle { opacity: 1; }
+.tt-token:hover .tt-token-bell { opacity: 0.5; }
+.tt-token-bell.bell-on { opacity: 0.9 !important; }
 
-/* Daily col events */
-.tt-daily-event {
-  background: #e8e4d8 !important; border-color: #c0b898 !important;
-  color: var(--ink) !important;
-}
+/* Category token colours */
+.cat-work     { background: #ccdaed; color: #1a3a5c; }
+.cat-klayr    { background: #e0d4ed; color: #3a1a5c; }
+.cat-oswin    { background: #f4d8c4; color: #7a3010; }
+.cat-gym      { background: #d4ddc9; color: #2a4222; }
+.cat-personal { background: #ecdbbd; color: #7a4e10; }
+.cat-social   { background: #fce0dc; color: #6a2018; }
+.cat-travel   { background: #e8e0d0; color: #4a4030; }
+.cat-sleep    { background: #d6d0e0; color: #3a3050; }
+.cat-routine  { background: #e6e6e6; color: #444;    }
+.cat-football { background: #fcd4c4; color: #6a2018; }
+.cat-muaythai { background: #d1dcc8; color: #2a4a22; }
 
-/* Quick-add inline */
-.tt-qa {
-  position: absolute; left: 1px; right: 1px; z-index: 20;
-  background: #fff; border: 2px solid #2c3e50;
-  border-radius: 2px; padding: 5px 7px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
-  min-height: 58px;
+/* Token editor overlay */
+.tt-editor-bg {
+  position: fixed; inset: 0; background: rgba(26,22,20,0.6);
+  z-index: 600; display: none; align-items: center; justify-content: center; padding: 20px;
 }
-.tt-qa input {
-  width: 100%; border: none; outline: none;
-  font-family: var(--body); font-size: 12px; color: var(--ink);
-  padding: 1px 0; margin-bottom: 5px; background: transparent;
+.tt-editor-bg.show { display: flex; }
+.tt-editor-box {
+  background: var(--paper); width: 420px; max-width: 100%;
+  padding: 28px 30px; border: 1px solid var(--ink); position: relative;
 }
-.tt-qa-cats { display: flex; flex-wrap: wrap; gap: 3px; }
-.tt-qa-cat {
-  width: 13px; height: 13px; border-radius: 50%; cursor: pointer;
-  border: 2px solid transparent; transition: border-color 0.1s; flex-shrink: 0;
+.tt-editor-title {
+  font-family: var(--display); font-size: 22px; font-style: italic;
+  font-weight: 500; letter-spacing: -0.02em; margin-bottom: 18px;
 }
-.tt-qa-cat.tt-qa-selected { border-color: #2c3e50; }
-.tt-qa-hint { display: block; font-family: var(--mono); font-size: 7px; color: #999; letter-spacing: 0.08em; margin-top: 4px; }
 
 /* Notes row */
-.tt-notes-row { display: flex; border: 1px solid #bbb; border-top: 2px solid #aaa; background: #faf8f3; min-width: 700px; }
+.tt-notes-row { display: flex; border-top: 2px solid var(--rule); background: var(--paper-2); min-width: 700px; }
 .tt-notes-time {
-  width: 58px; flex-shrink: 0; border-right: 2px solid #bbb;
-  padding: 6px 4px; font-family: var(--mono); font-size: 7px;
-  letter-spacing: 0.12em; text-transform: uppercase; color: #888;
+  width: 64px; flex-shrink: 0; border-right: 1px solid var(--rule);
+  padding: 6px 4px; font-family: var(--mono); font-size: 8px;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted);
   display: flex; align-items: center; justify-content: center;
 }
-.tt-notes-cell { flex: 1; min-width: 90px; border-right: 1px solid #d0c8b4; padding: 5px 7px; }
-.tt-notes-daily { flex: 0 0 120px; border-right: none; }
+.tt-notes-cell { flex: 1; border-right: 1px solid var(--rule-soft); padding: 5px 8px; }
+.tt-notes-cell:last-child { border-right: none; }
 .tt-notes-cell textarea {
   width: 100%; border: none; background: transparent; resize: none;
   font-family: var(--display); font-style: italic; font-size: 11px;
-  color: var(--ink-soft); outline: none; min-height: 40px; line-height: 1.45;
+  color: var(--ink-soft); outline: none; min-height: 36px; line-height: 1.45;
 }
-.tt-notes-cell textarea::placeholder { color: #bbb; }
+.tt-notes-cell textarea::placeholder { color: var(--rule); }
 
 /* Calendar legend */
 .cal-legend {
@@ -1336,8 +1328,8 @@ body {
 @media (max-width: 760px) {
   .cal-wrap { padding: 16px 16px 60px; }
   .cal-title { font-size: 20px; }
-  .tt-head-day { min-width: 72px; }
-  .tt-day-col { min-width: 72px; }
+  .tt-day-head { min-width: 72px; }
+  .tt-cell { min-width: 72px; }
 }
 
 /* ==================== MOBILE SIDEBAR ==================== */
@@ -1675,6 +1667,7 @@ body {
     <div id="calWeekView" style="display:none"></div>
     <div class="cal-legend" id="calLegend"></div>
     <div class="cal-actions">
+      <button class="btn primary" onclick="openTTEditorFromNav()">+ Add Event</button>
       <button class="btn" onclick="openImportModal()">Import CSV</button>
       <button class="btn" onclick="exportICS()">Export .ics</button>
     </div>
@@ -1765,6 +1758,63 @@ body {
   </div>
 </div>
 
+<div class="tt-editor-bg" id="ttEditorBg" onclick="if(event.target===this)closeTTEditor()">
+  <div class="tt-editor-box">
+    <button class="modal-close" onclick="closeTTEditor()">×</button>
+    <div class="tt-editor-title" id="ttEditorTitle">Add Event</div>
+    <div class="evt-form">
+      <div class="evt-field"><label>Title</label><input id="ttETitle" placeholder="e.g. Signify Deep Work" autocomplete="off"></div>
+      <div class="evt-field"><label>Subtitle / Note (optional)</label><input id="ttESub" placeholder="e.g. CRM testing" autocomplete="off"></div>
+      <div class="evt-field-row">
+        <div class="evt-field">
+          <label>Day</label>
+          <select id="ttEDay">
+            <option value="0">Monday</option><option value="1">Tuesday</option>
+            <option value="2">Wednesday</option><option value="3">Thursday</option>
+            <option value="4">Friday</option><option value="5">Saturday</option>
+            <option value="6">Sunday</option>
+          </select>
+        </div>
+        <div class="evt-field">
+          <label>Category</label>
+          <select id="ttECat">
+            <option value="cat-work">Work / Signify</option>
+            <option value="cat-klayr">Klayr / CRM</option>
+            <option value="cat-oswin">Oswin</option>
+            <option value="cat-gym">Gym / Fitness</option>
+            <option value="cat-personal">Personal</option>
+            <option value="cat-social">Social</option>
+            <option value="cat-travel">Travel</option>
+            <option value="cat-sleep">Sleep</option>
+            <option value="cat-routine">Routine</option>
+            <option value="cat-football">Football</option>
+            <option value="cat-muaythai">Muay Thai</option>
+          </select>
+        </div>
+      </div>
+      <div class="evt-field-row">
+        <div class="evt-field"><label>Start</label><input type="time" id="ttEStart" value="09:00"></div>
+        <div class="evt-field"><label>End</label><input type="time" id="ttEEnd" value="10:00"></div>
+      </div>
+      <div class="evt-field">
+        <label>Reminder</label>
+        <select id="ttEReminder">
+          <option value="">None</option>
+          <option value="5">5 min before</option>
+          <option value="10">10 min before</option>
+          <option value="30">30 min before</option>
+          <option value="60">60 min before</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn primary" onclick="saveTTEvent()" style="flex:1">Save Event</button>
+        <button class="btn" onclick="closeTTEditor()">Cancel</button>
+        <button class="btn" id="ttEDeleteBtn" style="background:var(--accent);color:#fff;border-color:var(--accent);display:none" onclick="deleteTTEvent()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast">Saved</div>
 
 <input type="file" id="importInput" accept=".json" style="display:none" onchange="importBackup(event)">
@@ -1829,20 +1879,19 @@ let editingSignalIdx = null;
 let calDate = new Date();
 let calView = 'month';
 let calExpandedWeek = null;
-let editingEventId = null;
 
 const CAT = {
-  work:     { label: 'Work / Signify', bg: '#b8cce4', text: '#1a2f4a' },
-  klayr:    { label: 'Klayr / CRM',    bg: '#9b6b7b', text: '#fff'    },
-  oswin:    { label: 'Oswin',          bg: '#d4b896', text: '#4a2800' },
-  gym:      { label: 'Gym / Fitness',  bg: '#f2d5b0', text: '#5a2a00' },
-  personal: { label: 'Personal',       bg: '#d4b8d4', text: '#3a1050' },
-  social:   { label: 'Social',         bg: '#6888a8', text: '#fff'    },
-  travel:   { label: 'Travel',         bg: '#d4cec0', text: '#3a3020' },
-  sleep:    { label: 'Sleep',          bg: '#f0e8b0', text: '#4a3800' },
-  routine:  { label: 'Routine',        bg: '#d0cec8', text: '#3a3830' },
-  football: { label: 'Football',       bg: '#c44444', text: '#fff'    },
-  muaythai: { label: 'Muay Thai',      bg: '#b8ccb0', text: '#1a3a10' }
+  'cat-work':     { label: 'Work / Signify' },
+  'cat-klayr':    { label: 'Klayr / CRM'    },
+  'cat-oswin':    { label: 'Oswin'           },
+  'cat-gym':      { label: 'Gym / Fitness'   },
+  'cat-personal': { label: 'Personal'        },
+  'cat-social':   { label: 'Social'          },
+  'cat-travel':   { label: 'Travel'          },
+  'cat-sleep':    { label: 'Sleep'           },
+  'cat-routine':  { label: 'Routine'         },
+  'cat-football': { label: 'Football'        },
+  'cat-muaythai': { label: 'Muay Thai'       }
 };
 
 // ==============================================================
@@ -1889,6 +1938,15 @@ function migrate() {
   if (!state.disciplines) state.disciplines = defaultDisciplines();
   if (!state.settings) state.settings = defaultSettings();
   if (!state.timetables) state.timetables = {};
+  // Migrate old bare cat keys → cat-* keys
+  const _catMap = { work:'cat-work', klayr:'cat-klayr', oswin:'cat-oswin', gym:'cat-gym',
+    personal:'cat-personal', social:'cat-social', travel:'cat-travel', sleep:'cat-sleep',
+    routine:'cat-routine', football:'cat-football', muaythai:'cat-muaythai' };
+  Object.values(state.timetables).forEach(wk => {
+    (Array.isArray(wk) ? wk : []).forEach(ev => {
+      if (ev.cat && _catMap[ev.cat]) ev.cat = _catMap[ev.cat];
+    });
+  });
 }
 
 function setStatus(t) {
@@ -2166,7 +2224,7 @@ function renderCalendar() {
 
 function renderCalLegend() {
   document.getElementById('calLegend').innerHTML = Object.entries(CAT).map(([k, v]) =>
-    `<span class="cal-legend-item"><span class="cal-legend-dot" style="background:${v.bg};border:1px solid rgba(0,0,0,0.15)"></span>${v.label}</span>`
+    `<span class="cal-legend-item"><span class="cal-legend-dot ${k}" style="border-radius:2px"></span>${v.label}</span>`
   ).join('');
 }
 
@@ -2200,7 +2258,7 @@ function renderMonthView() {
       const isOther = cursor.getMonth() !== month;
       const wkEvts = getWeekEvents(wk).filter(e => e.day === d);
       const pips = wkEvts.slice(0, 4).map(e =>
-        `<span class="cal-day-pip" style="background:${CAT[e.cat]?.bg || '#888'}"></span>`
+        `<span class="cal-day-pip ${e.cat || 'cat-routine'}" style="border-radius:2px"></span>`
       ).join('');
       html += `<div class="cal-day-cell${isToday ? ' today' : ''}${isOther ? ' other-month' : ''}">
         <div class="cal-day-num">${cursor.getDate()}</div>
@@ -2210,12 +2268,17 @@ function renderMonthView() {
     }
     html += `</div>
       <div class="cal-week-expand${isExpanded ? ' open' : ''}" id="week-expand-${wk}">
-        <div class="cal-week-expand-inner">${isExpanded ? buildWeekTimetable(wk) : ''}</div>
+        <div class="cal-week-expand-inner"></div>
       </div>
     </div>`;
   }
   html += '</div>';
   document.getElementById('calMonthView').innerHTML = html;
+  // Re-render tokens for any expanded week
+  if (calExpandedWeek) {
+    const inner = document.querySelector(`#week-expand-${calExpandedWeek} .cal-week-expand-inner`);
+    if (inner) { inner.innerHTML = buildWeekGrid(calExpandedWeek); renderTokensOnGrid(getWeekEvents(calExpandedWeek), calExpandedWeek, inner); }
+  }
 }
 
 function toggleCalWeek(wk, e) {
@@ -2235,7 +2298,9 @@ function toggleCalWeek(wk, e) {
     const expand = document.getElementById(`week-expand-${wk}`);
     if (cells) cells.classList.add('expanded');
     if (expand) {
-      expand.querySelector('.cal-week-expand-inner').innerHTML = buildWeekTimetable(wk);
+      const inner = expand.querySelector('.cal-week-expand-inner');
+      inner.innerHTML = buildWeekGrid(wk);
+      renderTokensOnGrid(getWeekEvents(wk), wk, inner);
       expand.classList.add('open');
     }
   }
@@ -2247,72 +2312,53 @@ function renderWeekView(date) {
   document.getElementById('calTitle').textContent =
     `${wkStart.toLocaleDateString('en-GB', { day:'numeric', month:'short' })} – ` +
     `${new Date(wkStart.getTime() + 6*86400000).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })}`;
-  document.getElementById('calWeekView').innerHTML = buildWeekTimetable(wk);
+  const container = document.getElementById('calWeekView');
+  container.innerHTML = buildWeekGrid(wk);
+  renderTokensOnGrid(getWeekEvents(wk), wk, container);
 }
 
-const TT_SLOT_H = 30, TT_START_H = 5, TT_END_H = 23;
+const TT_SLOT_H = 28, TT_START_H = 5, TT_END_H = 23;
 const TT_TOTAL = (TT_END_H - TT_START_H) * 2;
-const TT_DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-let _ttDrag = null, _ttQA = null;
+const TT_DAYS_FULL = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const TT_DAYS_SHORT = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+let _ttDrag = null, _ttEditId = null, _ttEditWk = null;
 
-function buildWeekTimetable(wk) {
+/* Build grid HTML structure (no tokens — tokens added via renderTokensOnGrid) */
+function buildWeekGrid(wk) {
   const wkStart = weekKeyToMonday(wk);
   const today = dateKey(new Date());
-  const events = getWeekEvents(wk);
-  const dailyEvts = getDailyEvents();
 
-  // Header row
-  let hdr = `<div class="tt-head"><div class="tt-head-time"></div>`;
+  // Header
+  let hdr = `<div class="tt-grid-header"><div class="tt-time-lbl" style="border-bottom:none"></div>`;
   for (let d = 0; d < 7; d++) {
     const dd = new Date(wkStart); dd.setDate(dd.getDate() + d);
     const isT = dateKey(dd) === today;
-    hdr += `<div class="tt-head-day${isT?' tt-today':''}">
-      <span class="tt-head-dow">${TT_DAYS[d]}</span>
-      <span class="tt-head-num">${dd.getDate()}/${String(dd.getMonth()+1).padStart(2,'0')}/${String(dd.getFullYear()).slice(2)}</span>
+    hdr += `<div class="tt-day-head${isT?' tt-today':''}">
+      <span class="tt-day-name">${TT_DAYS_FULL[d]}</span>
+      <span class="tt-day-date">${dd.getDate()} ${dd.toLocaleDateString('en-GB',{month:'short'})}</span>
     </div>`;
   }
-  hdr += `<div class="tt-head-day tt-daily-hdr">
-    <span class="tt-head-dow">Daily</span>
-    <span class="tt-head-num" style="font-size:10px">Routine</span>
-  </div></div>`;
+  hdr += `</div>`;
 
-  // Time column
-  let timeCol = `<div class="tt-time-col">`;
+  // Rows
+  let rows = '';
   for (let s = 0; s < TT_TOTAL; s++) {
-    const h = TT_START_H + Math.floor(s/2), m = s%2===0?'00':'30';
-    timeCol += `<div class="tt-time-lbl${s%2===1?' tt-half':''}" style="height:${TT_SLOT_H}px">${s%2===0?String(h).padStart(2,'0')+':00':''}</div>`;
-  }
-  timeCol += `</div>`;
-
-  // Day columns
-  let cols = '';
-  for (let d = 0; d < 7; d++) {
-    const dd = new Date(wkStart); dd.setDate(dd.getDate() + d);
-    const dk = dateKey(dd);
-    const isT = dk === today;
-    const dayEvts = events.filter(e => e.day === d);
-    let slots = '';
-    for (let s = 0; s < TT_TOTAL; s++) {
-      const h = TT_START_H + Math.floor(s/2), m = s%2===0?'00':'30';
-      const t = `${String(h).padStart(2,'0')}:${m}`;
-      slots += `<div class="tt-slot${s%2===1?' tt-half':''}" style="height:${TT_SLOT_H}px"
-        ondragover="ttDragOver(event,this)" ondragleave="this.classList.remove('tt-drag-over')"
-        ondrop="ttDrop(event,'${wk}',${d},'${t}')"
-        onclick="ttQuickAdd('${wk}',${d},'${t}',this)"></div>`;
+    const h = TT_START_H + Math.floor(s/2);
+    const m = s % 2 === 0 ? '00' : '30';
+    const timeKey = `${String(h).padStart(2,'0')}:${m}`;
+    const label = s % 2 === 0 ? `${String(h).padStart(2,'0')}:00` : '';
+    const rowCls = s % 2 === 0 ? 'tt-hour' : 'tt-half';
+    rows += `<div class="tt-row ${rowCls}">
+      <div class="tt-time-lbl">${label}</div>`;
+    for (let d = 0; d < 7; d++) {
+      rows += `<div class="tt-cell" data-day="${d}" data-time="${timeKey}"
+        ondragover="ttDragOver(event)" ondragleave="this.classList.remove('tt-drag-over')"
+        ondrop="ttDrop(event,'${wk}',${d},'${timeKey}')">
+        <button class="tt-cell-add" onclick="openTTEditor('${wk}',${d},'${timeKey}')">+</button>
+      </div>`;
     }
-    const evHtml = dayEvts.map(ev => ttEventHtml(ev, wk)).join('');
-    cols += `<div class="tt-day-col${isT?' tt-today':''}" style="min-height:${TT_TOTAL*TT_SLOT_H}px">${slots}${evHtml}</div>`;
+    rows += `</div>`;
   }
-
-  // Daily column
-  let dailySlots = '';
-  for (let s = 0; s < TT_TOTAL; s++) {
-    const h = TT_START_H + Math.floor(s/2), m = s%2===0?'00':'30';
-    const t = `${String(h).padStart(2,'0')}:${m}`;
-    dailySlots += `<div class="tt-slot${s%2===1?' tt-half':''}" style="height:${TT_SLOT_H}px"
-      onclick="ttQuickAddDaily('${t}',this)"></div>`;
-  }
-  const dailyEvHtml = dailyEvts.map(ev => ttDailyEventHtml(ev)).join('');
 
   // Notes row
   let notes = `<div class="tt-notes-row"><div class="tt-notes-time">Notes</div>`;
@@ -2322,223 +2368,126 @@ function buildWeekTimetable(wk) {
     const n = (state.days[dk] && state.days[dk].notes) || '';
     notes += `<div class="tt-notes-cell"><textarea placeholder="Notes…" onchange="saveDayNotes('${dk}',this.value)">${esc(n)}</textarea></div>`;
   }
-  notes += `<div class="tt-notes-cell tt-notes-daily"></div></div>`;
+  notes += `</div>`;
 
-  return `<div>
-    <div class="tt-outer" onclick="ttCloseQA(event)">
-      <div class="tt-inner">
-        ${hdr}
-        <div class="tt-body">${timeCol}${cols}
-          <div class="tt-day-col tt-daily-col" style="min-height:${TT_TOTAL*TT_SLOT_H}px">${dailySlots}${dailyEvHtml}</div>
-        </div>
-      </div>
-    </div>
-    ${notes}
-  </div>`;
+  return `<div class="tt-grid-wrap">${hdr}${rows}${notes}</div>`;
 }
 
-function ttEventHtml(ev, wk) {
-  const top = timeToSlot(ev.start, TT_START_H) * TT_SLOT_H;
-  const h = Math.max(durationSlots(ev.start, ev.end) * TT_SLOT_H, TT_SLOT_H);
-  const cat = CAT[ev.cat] || { bg:'#ccc', text:'#333' };
-  return `<div class="tt-event" draggable="true"
-    ondragstart="ttDragStart(event,'${wk}','${ev.id}')"
-    ondragend="ttDragEnd(event)"
-    onclick="openEditEventModal('${wk}','${ev.id}',event)"
-    style="top:${top}px;height:${h}px;background:${cat.bg};color:${cat.text}">
-    <div class="tt-event-inner">
-      <div class="tt-event-title">${esc(ev.title)}</div>
-      ${ev.sub?`<div class="tt-event-sub">${esc(ev.sub)}</div>`:''}
-    </div>
-    <button class="tt-event-bell-btn${ev.reminder?' tt-bell-on':''}"
-      onclick="toggleReminder('${wk}','${ev.id}',event)" title="Reminder">🔔</button>
-    <div class="tt-resize-handle" onmousedown="ttResizeStart(event,'${wk}','${ev.id}')"></div>
-  </div>`;
+/* Place token elements into their start-time cells */
+function renderTokensOnGrid(events, wk, container) {
+  container.querySelectorAll('.tt-token').forEach(el => el.remove());
+  (events || []).forEach(ev => {
+    const startSlot = timeToSlot(ev.start, TT_START_H);
+    const slots = Math.max(1, timeToSlot(ev.end, TT_START_H) - startSlot);
+    const height = slots * TT_SLOT_H - 3;
+    const cell = container.querySelector(`.tt-cell[data-day="${ev.day}"][data-time="${ev.start}"]`);
+    if (!cell) return;
+    const el = document.createElement('div');
+    el.className = `tt-token ${ev.cat || 'cat-routine'}`;
+    el.id = 'tok-' + ev.id;
+    el.style.height = height + 'px';
+    el.style.top = '1px';
+    el.draggable = true;
+    el.innerHTML = `<span class="tt-token-title">${esc(ev.title)}</span>
+      ${ev.sub ? `<span class="tt-token-sub">${esc(ev.sub)}</span>` : ''}
+      <button class="tt-token-bell${ev.reminder ? ' bell-on' : ''}" onclick="toggleReminder('${wk}','${ev.id}',event)" title="Reminder">🔔</button>
+      <button class="tt-token-del" onclick="ttDeleteToken('${wk}','${ev.id}',event)">×</button>`;
+    el.ondragstart = (e) => { _ttDrag = { wk, evId: ev.id }; e.dataTransfer.effectAllowed = 'move'; setTimeout(() => el.classList.add('tt-dragging'), 0); };
+    el.ondragend = () => { el.classList.remove('tt-dragging'); document.querySelectorAll('.tt-drag-over').forEach(x=>x.classList.remove('tt-drag-over')); _ttDrag = null; };
+    el.ondblclick = (e) => { e.stopPropagation(); openTTEditorEdit(wk, ev.id); };
+    cell.appendChild(el);
+  });
 }
 
-function ttDailyEventHtml(ev) {
-  const top = timeToSlot(ev.start, TT_START_H) * TT_SLOT_H;
-  const h = Math.max(durationSlots(ev.start, ev.end) * TT_SLOT_H, TT_SLOT_H);
-  return `<div class="tt-event tt-daily-event"
-    onclick="ttEditDailyEvent('${ev.id}',event)"
-    style="top:${top}px;height:${h}px">
-    <div class="tt-event-inner"><div class="tt-event-title">${esc(ev.title)}</div></div>
-    <div class="tt-resize-handle" onmousedown="ttResizeDailyStart(event,'${ev.id}')"></div>
-  </div>`;
-}
-
-function durationMinutes(start, end) {
-  const [sh,sm]=start.split(':').map(Number), [eh,em]=end.split(':').map(Number);
-  return (eh*60+em)-(sh*60+sm);
-}
-
-// Drag & drop
-function ttDragStart(e, wk, evId) {
-  _ttDrag = { wk, evId };
-  e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text/plain', evId);
-  requestAnimationFrame(() => { if(e.target) e.target.classList.add('tt-dragging'); });
-}
-function ttDragEnd(e) {
-  if(e.target) e.target.classList.remove('tt-dragging');
-  document.querySelectorAll('.tt-drag-over').forEach(el => el.classList.remove('tt-drag-over'));
-  _ttDrag = null;
-}
-function ttDragOver(e, el) {
-  if(!_ttDrag) return;
+function ttDragOver(e) {
+  if (!_ttDrag) return;
   e.preventDefault(); e.dataTransfer.dropEffect = 'move';
   document.querySelectorAll('.tt-drag-over').forEach(x => x.classList.remove('tt-drag-over'));
-  el.classList.add('tt-drag-over');
+  e.currentTarget.classList.add('tt-drag-over');
 }
 function ttDrop(e, wk, day, time) {
   e.preventDefault();
   document.querySelectorAll('.tt-drag-over').forEach(el => el.classList.remove('tt-drag-over'));
-  if(!_ttDrag || _ttDrag.wk !== wk) return;
+  if (!_ttDrag || _ttDrag.wk !== wk) return;
   const events = getWeekEvents(wk);
   const ev = events.find(x => x.id === _ttDrag.evId);
-  if(!ev) { _ttDrag=null; return; }
+  if (!ev) { _ttDrag = null; return; }
   const dur = durationMinutes(ev.start, ev.end);
-  ev.day = day; ev.start = time; ev.end = addMinutes(time, Math.max(dur,30));
+  ev.day = day; ev.start = time; ev.end = addMinutes(time, Math.max(dur, 30));
   _ttDrag = null;
   saveWeekEvents(wk, events); renderCalendar();
+  showToast('Event moved');
 }
 
-// Resize
-function ttResizeStart(e, wk, evId) {
-  e.stopPropagation(); e.preventDefault();
-  const sy = e.clientY, events = getWeekEvents(wk);
-  const ev = events.find(x => x.id === evId); if(!ev) return;
-  const origEnd = ev.end;
-  function onMove(e2) {
-    const ds = Math.round((e2.clientY-sy)/TT_SLOT_H); if(!ds) return;
-    const ne = addMinutes(origEnd, ds*30);
-    if(durationMinutes(ev.start, ne)<30) return;
-    ev.end = ne;
-    const el = document.querySelector(`[ondragstart*="'${evId}'"]`);
-    if(el) el.style.height = Math.max(durationSlots(ev.start,ev.end)*TT_SLOT_H,TT_SLOT_H)+'px';
-  }
-  function onUp() {
-    document.removeEventListener('mousemove',onMove);
-    document.removeEventListener('mouseup',onUp);
-    saveWeekEvents(wk,events); renderCalendar();
-  }
-  document.addEventListener('mousemove',onMove);
-  document.addEventListener('mouseup',onUp);
-}
-function ttResizeDailyStart(e, evId) {
-  e.stopPropagation(); e.preventDefault();
-  const sy = e.clientY, evts = getDailyEvents();
-  const ev = evts.find(x => x.id === evId); if(!ev) return;
-  const origEnd = ev.end;
-  function onMove(e2) {
-    const ds = Math.round((e2.clientY-sy)/TT_SLOT_H); if(!ds) return;
-    const ne = addMinutes(origEnd, ds*30);
-    if(durationMinutes(ev.start,ne)<30) return;
-    ev.end = ne;
-  }
-  function onUp() {
-    document.removeEventListener('mousemove',onMove);
-    document.removeEventListener('mouseup',onUp);
-    saveDailyEvents(evts); renderCalendar();
-  }
-  document.addEventListener('mousemove',onMove);
-  document.addEventListener('mouseup',onUp);
+function ttDeleteToken(wk, id, e) {
+  e && e.stopPropagation();
+  saveWeekEvents(wk, getWeekEvents(wk).filter(x => x.id !== id));
+  renderCalendar();
 }
 
-// Quick-add
-function ttQuickAdd(wk, day, time, slotEl) {
-  ttCloseQA();
-  const col = slotEl.closest('.tt-day-col'); if(!col) return;
-  _ttQA = { wk, day, time, cat:'work' };
-  const qa = document.createElement('div');
-  qa.className='tt-qa'; qa.id='ttQABox';
-  qa.style.top = slotEl.offsetTop+'px';
-  const cats = Object.entries(CAT).map(([k,v]) =>
-    `<span class="tt-qa-cat${k==='work'?' tt-qa-selected':''}" style="background:${v.bg}"
-      title="${v.label}" onclick="ttSetQACat('${k}',this)"></span>`).join('');
-  qa.innerHTML = `<input id="ttQAInput" placeholder="Event title…" autocomplete="off"
-    onkeydown="ttQAKey(event,'${wk}',${day},'${time}')">
-    <div class="tt-qa-cats">${cats}</div>
-    <span class="tt-qa-hint">Enter to add · Esc to cancel</span>`;
-  col.appendChild(qa);
-  setTimeout(()=>{ const i=document.getElementById('ttQAInput'); if(i) i.focus(); },20);
+/* Token editor modal */
+function openTTEditor(wk, day, time) {
+  _ttEditId = null; _ttEditWk = wk;
+  document.getElementById('ttEditorTitle').textContent = 'Add Event';
+  document.getElementById('ttETitle').value = '';
+  document.getElementById('ttESub').value = '';
+  document.getElementById('ttEDay').value = String(day);
+  document.getElementById('ttECat').value = 'cat-work';
+  document.getElementById('ttEStart').value = time;
+  document.getElementById('ttEEnd').value = addMinutes(time, 60);
+  document.getElementById('ttEReminder').value = '';
+  document.getElementById('ttEDeleteBtn').style.display = 'none';
+  document.getElementById('ttEditorBg').classList.add('show');
+  setTimeout(() => document.getElementById('ttETitle').focus(), 80);
 }
-function ttCloseQA(e) {
-  if(e && e.target && e.target.closest && e.target.closest('.tt-qa')) return;
-  const el=document.getElementById('ttQABox'); if(el) el.remove(); _ttQA=null;
+function openTTEditorEdit(wk, id) {
+  const ev = getWeekEvents(wk).find(x => x.id === id);
+  if (!ev) return;
+  _ttEditId = id; _ttEditWk = wk;
+  document.getElementById('ttEditorTitle').textContent = 'Edit Event';
+  document.getElementById('ttETitle').value = ev.title;
+  document.getElementById('ttESub').value = ev.sub || '';
+  document.getElementById('ttEDay').value = String(ev.day);
+  document.getElementById('ttECat').value = ev.cat || 'cat-work';
+  document.getElementById('ttEStart').value = ev.start;
+  document.getElementById('ttEEnd').value = ev.end;
+  document.getElementById('ttEReminder').value = ev.reminder ? String(ev.reminder.minutes) : '';
+  document.getElementById('ttEDeleteBtn').style.display = '';
+  document.getElementById('ttEditorBg').classList.add('show');
 }
-function ttSetQACat(cat, el) {
-  if(_ttQA) _ttQA.cat=cat;
-  document.querySelectorAll('.tt-qa-cat').forEach(d=>d.classList.remove('tt-qa-selected'));
-  el.classList.add('tt-qa-selected');
+function closeTTEditor() {
+  document.getElementById('ttEditorBg').classList.remove('show');
+  _ttEditId = null;
 }
-function ttQAKey(e, wk, day, time) {
-  if(e.key==='Enter'){e.preventDefault();ttConfirmQA(wk,day,time);}
-  if(e.key==='Escape') ttCloseQA();
-}
-function ttConfirmQA(wk, day, time) {
-  const title = document.getElementById('ttQAInput')?.value.trim();
-  if(!title){ttCloseQA();return;}
-  const events=getWeekEvents(wk);
-  events.push({id:'evt_'+Date.now(),day,start:time,end:addMinutes(time,60),title,sub:'',cat:_ttQA?.cat||'work',reminder:null});
-  saveWeekEvents(wk,events); ttCloseQA(); renderCalendar();
-}
-
-// Daily column
-function getDailyEvents() {
-  if(!state.timetables) state.timetables={};
-  return state.timetables['daily']||[];
-}
-function saveDailyEvents(evts) {
-  if(!state.timetables) state.timetables={};
-  state.timetables['daily']=evts; saveState();
-}
-function ttQuickAddDaily(time, slotEl) {
-  ttCloseQA();
-  const col=slotEl.closest('.tt-daily-col'); if(!col) return;
-  _ttQA={type:'daily',time};
-  const qa=document.createElement('div');
-  qa.className='tt-qa'; qa.id='ttQABox'; qa.style.top=slotEl.offsetTop+'px';
-  qa.innerHTML=`<input id="ttQAInput" placeholder="Daily routine…" autocomplete="off"
-    onkeydown="ttDailyQAKey(event,'${time}')">
-    <span class="tt-qa-hint">Enter to add · Esc to cancel</span>`;
-  col.appendChild(qa);
-  setTimeout(()=>{ const i=document.getElementById('ttQAInput'); if(i) i.focus(); },20);
-}
-function ttDailyQAKey(e, time) {
-  if(e.key==='Escape'){ttCloseQA();return;}
-  if(e.key==='Enter'){
-    const title=document.getElementById('ttQAInput')?.value.trim();
-    if(!title){ttCloseQA();return;}
-    const evts=getDailyEvents();
-    evts.push({id:'daily_'+Date.now(),start:time,end:addMinutes(time,30),title,sub:'',cat:'routine'});
-    saveDailyEvents(evts); ttCloseQA(); renderCalendar();
+function saveTTEvent() {
+  const title = document.getElementById('ttETitle').value.trim();
+  if (!title) { document.getElementById('ttETitle').focus(); return; }
+  const day   = parseInt(document.getElementById('ttEDay').value);
+  const cat   = document.getElementById('ttECat').value;
+  const start = document.getElementById('ttEStart').value;
+  const end   = document.getElementById('ttEEnd').value;
+  const sub   = document.getElementById('ttESub').value.trim();
+  const remMin = document.getElementById('ttEReminder').value;
+  const reminder = remMin ? { minutes: parseInt(remMin), time: subtractMinutes(start, parseInt(remMin)) } : null;
+  const wk = _ttEditWk;
+  const events = getWeekEvents(wk);
+  if (_ttEditId) {
+    const idx = events.findIndex(x => x.id === _ttEditId);
+    if (idx >= 0) events[idx] = { ...events[idx], title, sub, day, start, end, cat, reminder };
+  } else {
+    events.push({ id: 'evt_' + Date.now(), day, start, end, title, sub, cat, reminder });
   }
+  saveWeekEvents(wk, events);
+  closeTTEditor();
+  renderCalendar();
+  showToast(_ttEditId ? 'Event updated' : 'Event added');
 }
-function ttEditDailyEvent(id, e) {
-  e&&e.stopPropagation();
-  const ev=getDailyEvents().find(x=>x.id===id); if(!ev) return;
-  showModal(`<div class="modal-h">Edit Daily Routine</div>
-    <form class="evt-form" onsubmit="ttSaveDailyEdit(event,'${id}')">
-      <div class="evt-field"><label>Title</label><input name="title" value="${esc(ev.title)}" required></div>
-      <div class="evt-field-row">
-        <div class="evt-field"><label>Start</label><input type="time" name="start" value="${ev.start}" required></div>
-        <div class="evt-field"><label>End</label><input type="time" name="end" value="${ev.end}" required></div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:4px">
-        <button type="submit" class="btn" style="flex:1">Save</button>
-        <button type="button" class="btn" style="background:var(--accent);color:#fff;border-color:var(--accent)" onclick="ttDeleteDailyEvent('${id}')">Delete</button>
-      </div>
-    </form>`);
-}
-function ttSaveDailyEdit(e,id){
-  e.preventDefault(); const fd=new FormData(e.target);
-  const evts=getDailyEvents(); const ev=evts.find(x=>x.id===id);
-  if(ev){ev.title=fd.get('title').trim();ev.start=fd.get('start');ev.end=fd.get('end');}
-  saveDailyEvents(evts); closeModal(); renderCalendar();
-}
-function ttDeleteDailyEvent(id){
-  saveDailyEvents(getDailyEvents().filter(x=>x.id!==id)); closeModal(); renderCalendar();
+function deleteTTEvent() {
+  if (!_ttEditId || !_ttEditWk) return;
+  saveWeekEvents(_ttEditWk, getWeekEvents(_ttEditWk).filter(x => x.id !== _ttEditId));
+  closeTTEditor();
+  renderCalendar();
+  showToast('Event deleted');
 }
 
 function weekKeyToMonday(wk) {
@@ -2575,95 +2524,16 @@ function esc(s) {
 }
 
 // ---- Event modal ----
-function openNewEventModal(wk, day, time) {
-  editingEventId = null;
-  const endTime = addMinutes(time, 60);
-  showModal(eventModalHtml(wk, day, time, endTime, '', '', 'work', null));
+
+function durationMinutes(start, end) {
+  const [sh,sm]=start.split(':').map(Number),[eh,em]=end.split(':').map(Number);
+  return (eh*60+em)-(sh*60+sm);
 }
 
-function openEditEventModal(wk, id, e) {
-  e && e.stopPropagation();
-  editingEventId = id;
-  const events = getWeekEvents(wk);
-  const ev = events.find(x => x.id === id);
-  if (!ev) return;
-  showModal(eventModalHtml(wk, ev.day, ev.start, ev.end, ev.title, ev.sub || '', ev.cat, ev.reminder, true));
-}
-
-function eventModalHtml(wk, day, start, end, title, sub, cat, reminder, isEdit) {
-  const catBtns = Object.entries(CAT).map(([k, v]) =>
-    `<button type="button" class="evt-cat-btn${cat===k?' selected':''}" style="background:${v.bg};color:${v.text}"
-      onclick="selectEvtCat(this,'${k}')">${v.label}</button>`
-  ).join('');
-  const remVal = reminder ? reminder.minutes : '';
-  return `
-    <div class="modal-h">${isEdit ? 'Edit Event' : 'New Event'}</div>
-    <form class="evt-form" onsubmit="saveEvent(event,'${wk}',${day})">
-      <input type="hidden" id="evtCat" value="${cat}">
-      <div class="evt-field"><label>Title</label><input name="title" value="${esc(title)}" required autocomplete="off"></div>
-      <div class="evt-field"><label>Subtitle (optional)</label><input name="sub" value="${esc(sub)}" autocomplete="off"></div>
-      <div class="evt-field-row">
-        <div class="evt-field"><label>Start</label><input type="time" name="start" value="${start}" required></div>
-        <div class="evt-field"><label>End</label><input type="time" name="end" value="${end}" required></div>
-      </div>
-      <div class="evt-field"><label>Category</label><div class="evt-cat-grid">${catBtns}</div></div>
-      <div class="evt-field-row">
-        <div class="evt-field"><label>Reminder (min before)</label>
-          <select name="reminder" onchange="document.getElementById('customRemWrap').style.display=this.value==='custom'?'':'none'">
-            <option value="">None</option>
-            <option value="5"${remVal==5?' selected':''}>5 min</option>
-            <option value="10"${remVal==10?' selected':''}>10 min</option>
-            <option value="30"${remVal==30?' selected':''}>30 min</option>
-            <option value="60"${remVal==60?' selected':''}>60 min</option>
-            <option value="custom">Custom…</option>
-          </select>
-        </div>
-        <div class="evt-field" id="customRemWrap" style="display:${remVal&&![5,10,30,60,''].includes(remVal)?'':'none'}">
-          <label>Custom (min)</label><input type="number" name="reminderCustom" min="1" value="${![5,10,30,60,''].includes(remVal)?remVal:''}">
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:4px">
-        <button type="submit" class="btn" style="flex:1">${isEdit ? 'Save changes' : 'Add event'}</button>
-        ${isEdit ? `<button type="button" class="btn" style="background:var(--accent);color:#fff;border-color:var(--accent)" onclick="deleteEvent('${wk}','${editingEventId}')">Delete</button>` : ''}
-      </div>
-    </form>`;
-}
-
-function selectEvtCat(btn, key) {
-  document.querySelectorAll('.evt-cat-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  document.getElementById('evtCat').value = key;
-}
-
-function saveEvent(e, wk, day) {
-  e.preventDefault();
-  const fd = new FormData(e.target);
-  const title = fd.get('title').trim();
-  const sub   = fd.get('sub').trim();
-  const start = fd.get('start');
-  const end   = fd.get('end');
-  const cat   = document.getElementById('evtCat').value;
-  let remMin  = fd.get('reminder');
-  if (remMin === 'custom') remMin = fd.get('reminderCustom');
-  const reminder = remMin ? { minutes: parseInt(remMin), time: subtractMinutes(start, parseInt(remMin)) } : null;
-
-  const events = getWeekEvents(wk);
-  if (editingEventId) {
-    const idx = events.findIndex(x => x.id === editingEventId);
-    if (idx >= 0) events[idx] = { ...events[idx], title, sub, start, end, cat, reminder };
-  } else {
-    events.push({ id: 'evt_' + Date.now(), day, start, end, title, sub, cat, reminder });
-  }
-  saveWeekEvents(wk, events);
-  closeModal();
-  renderCalendar();
-}
-
-function deleteEvent(wk, id) {
-  const events = getWeekEvents(wk).filter(e => e.id !== id);
-  saveWeekEvents(wk, events);
-  closeModal();
-  renderCalendar();
+function openTTEditorFromNav() {
+  const wk = getWeekKey(startOfWeekMon(calDate));
+  const day = Math.min(6, Math.max(0, (new Date().getDay() + 6) % 7));
+  openTTEditor(wk, day, '09:00');
 }
 
 function toggleReminder(wk, id, e) {
@@ -2757,16 +2627,18 @@ function processCSVImport() {
 
 function guessCategory(title) {
   const t = title.toLowerCase();
-  if (t.includes('gym') || t.includes('lift') || t.includes('fitness')) return 'gym';
-  if (t.includes('football') || t.includes('soccer')) return 'football';
-  if (t.includes('muay') || t.includes('thai') || t.includes('boxing')) return 'muaythai';
-  if (t.includes('sleep') || t.includes('bed')) return 'sleep';
-  if (t.includes('klayr') || t.includes('crm') || t.includes('lead')) return 'klayr';
-  if (t.includes('oswin')) return 'oswin';
-  if (t.includes('travel') || t.includes('flight') || t.includes('drive')) return 'travel';
-  if (t.includes('social') || t.includes('dinner') || t.includes('lunch') || t.includes('friend')) return 'social';
-  if (t.includes('meditation') || t.includes('yoga') || t.includes('mindful')) return 'routine';
-  return 'work';
+  if (t.includes('gym') || t.includes('lift') || t.includes('fitness')) return 'cat-gym';
+  if (t.includes('football') || t.includes('soccer') || t.includes('arsenal') || t.includes('omonia')) return 'cat-football';
+  if (t.includes('muay') || t.includes('thai') || t.includes('boxing')) return 'cat-muaythai';
+  if (t.includes('sleep') || t.includes('bed')) return 'cat-sleep';
+  if (t.includes('klayr') || t.includes('crm') || t.includes('lead')) return 'cat-klayr';
+  if (t.includes('oswin')) return 'cat-oswin';
+  if (t.includes('travel') || t.includes('flight') || t.includes('drive')) return 'cat-travel';
+  if (t.includes('social') || t.includes('dinner') || t.includes('lunch') || t.includes('friend') || t.includes('ben')) return 'cat-social';
+  if (t.includes('signify')) return 'cat-work';
+  if (t.includes('wake') || t.includes('shower') || t.includes('coffee') || t.includes('breakfast') || t.includes('meditat') || t.includes('read') || t.includes('routine')) return 'cat-routine';
+  if (t.includes('project') || t.includes('work') || t.includes('meeting')) return 'cat-klayr';
+  return 'cat-work';
 }
 
 // ---- .ics Export ----
