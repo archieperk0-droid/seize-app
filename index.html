@@ -687,9 +687,8 @@ body {
 
 /* Timetable grid */
 .tt-grid-wrap { overflow-x: auto; }
-.tt-grid {
-  display: grid;
-  min-width: 900px;
+.tt-grid-inner {
+  min-width: 860px;
   border-top: 2px solid var(--ink);
   border-left: 1px solid var(--rule);
 }
@@ -1924,7 +1923,7 @@ body {
       <span class="sidebar-dot" style="background:#f4a78c"></span>Dashboard
     </div>
     <div class="sidebar-item" data-view="timetable" onclick="switchView('timetable')">
-      <span class="sidebar-dot" style="background:#b8d4f4"></span>Timetable
+      <span class="sidebar-dot" style="background:#b8d4f4"></span>Calendar
     </div>
     <div class="sidebar-item" data-view="projects" onclick="switchView('projects')">
       <span class="sidebar-dot" style="background:#b8f4c0"></span>Projects
@@ -2061,7 +2060,7 @@ body {
   <div class="timetable-view">
     <div class="section-head">
       <div class="section-num">§ 01</div>
-      <div class="section-title">Weekly Timetable</div>
+      <div class="section-title">Weekly Calendar</div>
       <div class="section-meta" id="ttWeekLabel">—</div>
     </div>
     <div class="tt-controls">
@@ -2076,8 +2075,10 @@ body {
       <div class="tt-legend" id="ttLegend"></div>
     </div>
     <div class="tt-grid-wrap">
-      <div id="ttGridHeader" class="tt-grid-header"></div>
-      <div id="ttGridBody"></div>
+      <div class="tt-grid-inner">
+        <div id="ttGridHeader" class="tt-grid-header"></div>
+        <div id="ttGridBody"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -3301,45 +3302,84 @@ function importTimetableFromCSV() {
 }
 
 function parseCSVToTokens(csv) {
-  const lines = csv.split('\n').filter(l=>l.trim());
+  const lines = csv.split('\n').map(l => l.trim()).filter(Boolean);
   const tokens = [];
-  const dayMap = { 'Monday':0,'Tuesday':1,'Wednesday':2,'Thursday':3,'Friday':4,'Saturday':5,'Sunday':6 };
-  // Simple parser: find rows with time in col B and events in day cols
-  let colDays = null;
-  for (const line of lines) {
-    const cols = line.split(',');
-    if (!colDays && cols.some(c => DAYS_FULL.includes(c.trim()))) {
-      colDays = cols.map(c => dayMap[c.trim()] ?? null);
-      continue;
+  const dayMap = {
+    'monday':0,'tuesday':1,'wednesday':2,'thursday':3,'friday':4,'saturday':5,'sunday':6,
+    'mon':0,'tue':1,'wed':2,'thu':3,'fri':4,'sat':5,'sun':6
+  };
+  const parseCell = s => s ? s.trim().replace(/^["']|["']$/g,'').trim() : '';
+  const isTime = s => /^\d{1,2}:\d{2}(:\d{2})?(\s*(am|pm))?$/i.test(s.trim());
+  const toHHMM = s => {
+    s = s.trim().toLowerCase();
+    const ampm = s.includes('am') ? 'am' : s.includes('pm') ? 'pm' : null;
+    s = s.replace(/[apm\s]/g,'');
+    let [h,m] = s.split(':').map(Number);
+    if (ampm === 'pm' && h < 12) h += 12;
+    if (ampm === 'am' && h === 12) h = 0;
+    return `${String(h).padStart(2,'0')}:${String(m||0).padStart(2,'0')}`;
+  };
+
+  // Detect format A: column-per-day grid (first row has day names, first col is time)
+  const firstCols = lines[0].split(',').map(parseCell);
+  const hasDayHeaders = firstCols.some(c => dayMap[c.toLowerCase()] !== undefined);
+
+  if (hasDayHeaders) {
+    // Format A: Time grid — row = time slot, col = day
+    const colDays = firstCols.map(c => dayMap[c.toLowerCase()] ?? null);
+    for (let li = 1; li < lines.length; li++) {
+      const cols = lines[li].split(',').map(parseCell);
+      const rawTime = cols[0] || cols[1];
+      if (!rawTime || !isTime(rawTime)) continue;
+      const timeStr = toHHMM(rawTime);
+      cols.forEach((val, i) => {
+        const day = colDays[i];
+        if (day == null || !val) return;
+        const existing = tokens.findIndex(t => t.day===day && t.title===val);
+        if (existing >= 0) {
+          tokens[existing].end = timeStr; // extend end time
+        } else {
+          tokens.push({ id:`csv-${Date.now()}-${li}-${i}`, day, start:timeStr, end:addOneHour(timeStr), title:val, sub:'', cat:guessCat(val) });
+        }
+      });
     }
-    if (!colDays) continue;
-    const timeStr = cols[1]?.trim();
-    if (!timeStr || !/^\d{2}:\d{2}$/.test(timeStr)) continue;
-    cols.forEach((val,i) => {
-      const day = colDays[i];
-      if (day == null || !val.trim()) return;
-      const text = val.trim().replace(/^"|"$/g,'');
-      if (!text) return;
-      const existing = tokens.findIndex(t=>t.day===day && t.title===text);
-      if (existing >= 0) {
-        tokens[existing].end = addOneHour(timeStr);
-      } else {
-        tokens.push({ id:'tt-csv-'+Date.now()+'-'+i, day, start:timeStr, end:addOneHour(timeStr), title:text, sub:'', cat:guessCat(text) });
+  } else {
+    // Format B: list — Day, Start, End, Title[, Subtitle, Category]
+    // or:        Day, Start, Title
+    // Skip header row if present
+    const startIdx = isTime(lines[0].split(',')[1]) ? 0 : 1;
+    for (let li = startIdx; li < lines.length; li++) {
+      const cols = lines[li].split(',').map(parseCell);
+      // Try to find day, start time, title in the row
+      let day = null, start = null, end = null, title = '', sub = '', cat = '';
+      for (const c of cols) {
+        if (day === null && dayMap[c.toLowerCase()] !== undefined) { day = dayMap[c.toLowerCase()]; continue; }
+        if (start === null && isTime(c)) { start = toHHMM(c); continue; }
+        if (start !== null && end === null && isTime(c)) { end = toHHMM(c); continue; }
+        if (!title) { title = c; continue; }
+        if (!sub) { sub = c; continue; }
+        if (!cat && c.startsWith('cat-')) { cat = c; }
       }
-    });
+      if (day === null || !start || !title) continue;
+      tokens.push({ id:`csv-${Date.now()}-${li}`, day, start, end: end || addOneHour(start), title, sub, cat: cat || guessCat(title) });
+    }
   }
   return tokens;
 }
+
 function guessCat(title) {
   const t = title.toLowerCase();
-  if (t.includes('sleep')) return 'cat-sleep';
-  if (t.includes('gym') || t.includes('muay') || t.includes('training') || t.includes('football')) return 'cat-gym';
+  if (t.includes('sleep') || t.includes('bed')) return 'cat-sleep';
+  if (t.includes('muay') || t.includes('thai') || t.includes('boxing')) return 'cat-muaythai';
+  if (t.includes('football') || t.includes('soccer') || t.includes('match') || t.includes('training')) return 'cat-football';
+  if (t.includes('gym') || t.includes('lift') || t.includes('workout') || t.includes('run')) return 'cat-gym';
+  if (t.includes('klayr') || t.includes('crm') || t.includes('lead') || t.includes('sales')) return 'cat-klayr';
+  if (t.includes('oswin') || t.includes('brand') || t.includes('design') || t.includes('clothing')) return 'cat-oswin';
   if (t.includes('signify')) return 'cat-signify';
-  if (t.includes('crm') || t.includes('project') || t.includes('fetcher') || t.includes('scorer')) return 'cat-crm';
-  if (t.includes('oswin')) return 'cat-oswin';
-  if (t.includes('travel')) return 'cat-travel';
-  if (t.includes('game') || t.includes('arsenal') || t.includes('omonia')) return 'cat-social';
-  if (t.includes('wake') || t.includes('shower') || t.includes('coffee') || t.includes('food') || t.includes('breakfast') || t.includes('meditat') || t.includes('read')) return 'cat-routine';
+  if (t.includes('travel') || t.includes('flight') || t.includes('drive') || t.includes('commute')) return 'cat-travel';
+  if (t.includes('social') || t.includes('dinner') || t.includes('friends') || t.includes('drinks')) return 'cat-social';
+  if (t.includes('wake') || t.includes('shower') || t.includes('coffee') || t.includes('breakfast') || t.includes('meditat') || t.includes('read') || t.includes('routine')) return 'cat-routine';
+  if (t.includes('work') || t.includes('meeting') || t.includes('call') || t.includes('deep work')) return 'cat-work';
   return 'cat-personal';
 }
 
