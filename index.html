@@ -2449,12 +2449,18 @@ function _enterApp() {
 // ==============================================================
 async function _boot() {
   await loadState();
+
+  // Migrate old state formats — ensure required keys exist
+  if (!state.weeks) state.weeks = {};
+  if (!state.decisions) state.decisions = [];
+  if (!state.timetables) state.timetables = {};
+
   currentWeekId = state.currentWeek || getCurrentWeekId();
+
   if (!state.weeks[currentWeekId]) {
     state.weeks[currentWeekId] = buildInitialWeek(currentWeekId);
     await saveState();
   }
-  if (!state.timetables) state.timetables = {};
   if (!state.timetables[currentWeekId]) {
     state.timetables[currentWeekId] = buildInitialTimetable();
     await saveState();
@@ -2463,7 +2469,6 @@ async function _boot() {
     _showOnboarding();
     return;
   }
-  // Returning user — show quote/loading screen then enter app
   _showQuoteScreen();
 }
 
@@ -2820,6 +2825,7 @@ function createWeekFromPrevious(weekId) {
 // MAIN RENDER
 // ==============================================================
 function render() {
+  if (!state?.weeks) return;
   const week = state.weeks[currentWeekId];
   if (!week) return;
 
