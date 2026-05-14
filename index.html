@@ -623,16 +623,37 @@ body {
 .strategy-text strong { color: #f4a78c; }
 
 /* ========================
-   TIMETABLE VIEW
+   CALENDAR VIEW
    ======================== */
-.timetable-view { padding: 28px 32px 80px; }
+.timetable-view { padding: 20px 28px 80px; }
 .tt-controls {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 28px;
+  gap: 8px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
+.tt-view-toggle {
+  display: flex;
+  border: 1px solid var(--rule);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.tt-view-btn {
+  background: var(--paper);
+  border: none;
+  border-right: 1px solid var(--rule);
+  padding: 7px 14px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  transition: all 0.15s;
+}
+.tt-view-btn:last-child { border-right: none; }
+.tt-view-btn.active { background: var(--ink); color: var(--paper); }
 .tt-week-nav {
   display: flex;
   gap: 0;
@@ -642,7 +663,7 @@ body {
   background: var(--paper);
   border: none;
   border-right: 1px solid var(--rule);
-  padding: 8px 14px;
+  padding: 7px 12px;
   cursor: pointer;
   font-family: var(--mono);
   font-size: 10px;
@@ -654,16 +675,17 @@ body {
 .tt-week-btn:hover { background: var(--paper-2); }
 .tt-week-label {
   font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.15em;
+  font-size: 10px;
+  letter-spacing: 0.12em;
   color: var(--ink-soft);
-  padding: 8px 14px;
+  padding: 7px 12px;
   border: 1px solid var(--rule);
   background: var(--paper-2);
+  white-space: nowrap;
 }
 .tt-legend {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
   margin-left: auto;
   flex-wrap: wrap;
@@ -685,30 +707,33 @@ body {
   flex-shrink: 0;
 }
 
-/* Timetable grid */
-.tt-grid-wrap { overflow-x: auto; }
+/* Week grid */
+.tt-grid-wrap { overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 220px); }
 .tt-grid-inner {
-  min-width: 860px;
+  min-width: 760px;
   border-top: 2px solid var(--ink);
   border-left: 1px solid var(--rule);
 }
 .tt-grid-header {
   display: grid;
-  grid-template-columns: 64px repeat(7, 1fr);
+  grid-template-columns: 52px repeat(7, 1fr);
   border-bottom: 2px solid var(--ink);
   background: var(--paper-2);
   position: sticky;
-  top: var(--nav-h);
+  top: 0;
   z-index: 50;
 }
 .tt-day-head {
-  padding: 10px 12px;
+  padding: 6px 8px;
   border-right: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
+  cursor: pointer;
+  transition: background 0.1s;
 }
+.tt-day-head:hover { background: var(--paper-3); }
 .tt-day-name {
   font-family: var(--display);
-  font-size: 16px;
+  font-size: 13px;
   font-style: italic;
   font-weight: 500;
   letter-spacing: -0.01em;
@@ -716,41 +741,282 @@ body {
 }
 .tt-day-date {
   font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.12em;
+  font-size: 8px;
+  letter-spacing: 0.1em;
   color: var(--ink-muted);
   text-transform: uppercase;
+}
+.tt-day-note-indicator {
+  font-size: 9px;
+  color: var(--accent);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--body);
+  font-style: italic;
+  opacity: 0.8;
 }
 .tt-day-head.today { background: var(--paper-3); }
 .tt-day-head.today .tt-day-name { color: var(--accent); }
 .tt-time-col { display: contents; }
-
 .tt-row {
   display: grid;
-  grid-template-columns: 64px repeat(7, 1fr);
-  border-bottom: 1px solid var(--rule-soft);
+  grid-template-columns: 52px repeat(7, 1fr);
 }
-.tt-row.half-hour { border-bottom: 1px dotted var(--rule-soft); }
-.tt-row.hour-mark { border-bottom: 1px solid var(--rule); }
+.tt-row.half-hour { border-bottom: 1px dotted rgba(214,205,184,0.5); }
+.tt-row.hour-mark { border-bottom: 1px solid var(--rule-soft); }
 .tt-time-label {
   font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
+  font-size: 8px;
+  letter-spacing: 0.08em;
   color: var(--ink-muted);
-  padding: 5px 8px 5px 12px;
+  padding: 2px 6px 0 8px;
   border-right: 1px solid var(--rule);
   line-height: 1;
-  padding-top: 6px;
   background: var(--paper-2);
 }
 .tt-cell {
-  border-right: 1px solid var(--rule-soft);
-  min-height: 28px;
+  border-right: 1px solid rgba(214,205,184,0.4);
+  min-height: 18px;
   position: relative;
   transition: background 0.1s;
 }
 .tt-cell:last-child { border-right: none; }
+.tt-cell:hover { background: rgba(184,52,28,0.03); }
 .tt-cell.drag-over { background: rgba(184,52,28,0.08); }
+
+/* ========================
+   MONTH VIEW
+   ======================== */
+#ttMonthView { display: none; }
+.month-grid {
+  border-top: 2px solid var(--ink);
+  border-left: 1px solid var(--rule);
+}
+.month-header {
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  background: var(--paper-2);
+  border-bottom: 2px solid var(--ink);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.month-header-day {
+  padding: 8px 10px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  border-right: 1px solid var(--rule);
+}
+.month-header-day:last-child { border-right: none; }
+.month-week-row {
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  border-bottom: 1px solid var(--rule-soft);
+  min-height: 110px;
+}
+.month-cell {
+  border-right: 1px solid var(--rule-soft);
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: background 0.1s;
+  overflow: hidden;
+  position: relative;
+}
+.month-cell:last-child { border-right: none; }
+.month-cell:hover { background: var(--paper-2); }
+.month-cell.today { background: var(--paper-3); }
+.month-cell.other-month { opacity: 0.35; }
+.month-cell-date {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.month-cell.today .month-cell-date { color: var(--accent); font-weight: 600; }
+.month-note-icon { font-size: 10px; opacity: 0.5; }
+.month-event-chip {
+  font-family: var(--body);
+  font-size: 10px;
+  padding: 2px 5px;
+  border-radius: 2px;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.month-more {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  margin-top: 2px;
+}
+.month-note-text {
+  font-family: var(--body);
+  font-size: 10px;
+  font-style: italic;
+  color: var(--ink-muted);
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ========================
+   DAY NOTE MODAL
+   ======================== */
+.day-note-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,22,20,0.5);
+  z-index: 800;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.day-note-modal.open { display: flex; }
+.day-note-box {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  padding: 28px;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.day-note-title {
+  font-family: var(--display);
+  font-size: 22px;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.day-note-textarea {
+  border: 1px solid var(--rule);
+  background: var(--paper-2);
+  font-family: var(--body);
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 12px;
+  resize: vertical;
+  min-height: 120px;
+  outline: none;
+  width: 100%;
+}
+.day-note-textarea:focus { border-color: var(--ink); }
+.day-note-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+/* ========================
+   CUSTOM CATEGORIES MODAL
+   ======================== */
+.cat-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,22,20,0.5);
+  z-index: 800;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.cat-modal.open { display: flex; }
+.cat-modal-box {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  padding: 28px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 80vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.cat-modal-title {
+  font-family: var(--display);
+  font-size: 22px;
+  font-style: italic;
+  font-weight: 500;
+}
+.cat-list { display: flex; flex-direction: column; gap: 8px; }
+.cat-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--rule);
+  background: var(--paper-2);
+}
+.cat-swatch {
+  width: 24px; height: 24px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+.cat-row-name {
+  flex: 1;
+  font-family: var(--body);
+  font-size: 13px;
+}
+.cat-row-del {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  cursor: pointer;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+.cat-row-del:hover { border-color: var(--accent); }
+.cat-add-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+  flex-wrap: wrap;
+}
+.cat-add-name {
+  flex: 1;
+  min-width: 140px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  padding: 8px 10px;
+  font-family: var(--body);
+  font-size: 13px;
+  outline: none;
+}
+.cat-add-name:focus { border-color: var(--ink); }
+.cat-color-pair {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+input[type="color"].cat-color-input {
+  width: 32px; height: 32px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 2px;
+  cursor: pointer;
+  background: none;
+}
 
 /* Timetable tokens */
 .tt-token {
@@ -2055,30 +2321,80 @@ body {
   </div>
 </div>
 
-<!-- ======================== TIMETABLE ======================== -->
+<!-- ======================== CALENDAR ======================== -->
 <div class="view" id="view-timetable">
   <div class="timetable-view">
     <div class="section-head">
       <div class="section-num">§ 01</div>
-      <div class="section-title">Weekly Calendar</div>
+      <div class="section-title">Calendar</div>
       <div class="section-meta" id="ttWeekLabel">—</div>
     </div>
     <div class="tt-controls">
-      <div class="tt-week-nav">
-        <button class="tt-week-btn" onclick="navigateWeek(-1)">‹ Prev</button>
-        <span class="tt-week-label" id="ttWeekDisplay">—</span>
-        <button class="tt-week-btn" onclick="navigateWeek(1)">Next ›</button>
+      <div class="tt-view-toggle">
+        <button class="tt-view-btn active" id="btnWeekView" onclick="setCalView('week')">Week</button>
+        <button class="tt-view-btn" id="btnMonthView" onclick="setCalView('month')">Month</button>
       </div>
-      <button class="btn" onclick="goToCurrentWeek()">This Week</button>
-      <button class="btn" onclick="openTokenEditor()">+ Add Event</button>
+      <div class="tt-week-nav">
+        <button class="tt-week-btn" onclick="calNavPrev()">‹</button>
+        <span class="tt-week-label" id="ttWeekDisplay">—</span>
+        <button class="tt-week-btn" onclick="calNavNext()">›</button>
+      </div>
+      <button class="btn" onclick="calNavToday()">Today</button>
+      <button class="btn" id="btnAddEvent" onclick="openTokenEditor()">+ Add Event</button>
       <button class="btn" onclick="importTimetableFromCSV()">Import CSV</button>
+      <button class="btn" onclick="openCatModal()">Categories</button>
       <div class="tt-legend" id="ttLegend"></div>
     </div>
-    <div class="tt-grid-wrap">
-      <div class="tt-grid-inner">
-        <div id="ttGridHeader" class="tt-grid-header"></div>
-        <div id="ttGridBody"></div>
+
+    <!-- WEEK VIEW -->
+    <div id="ttWeekView">
+      <div class="tt-grid-wrap">
+        <div class="tt-grid-inner">
+          <div id="ttGridHeader" class="tt-grid-header"></div>
+          <div id="ttGridBody"></div>
+        </div>
       </div>
+    </div>
+
+    <!-- MONTH VIEW -->
+    <div id="ttMonthView">
+      <div class="month-grid">
+        <div class="month-header" id="monthHeader"></div>
+        <div id="monthBody"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DAY NOTE MODAL -->
+<div class="day-note-modal" id="dayNoteModal">
+  <div class="day-note-box">
+    <div class="day-note-title" id="dayNoteTitle">Note for Monday</div>
+    <textarea class="day-note-textarea" id="dayNoteText" placeholder="Add a note for this day — plans, intentions, reminders…"></textarea>
+    <div class="day-note-actions">
+      <button class="btn" onclick="closeDayNote()">Cancel</button>
+      <button class="btn primary" onclick="saveDayNote()">Save Note</button>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOM CATEGORIES MODAL -->
+<div class="cat-modal" id="catModal">
+  <div class="cat-modal-box">
+    <div class="cat-modal-title">Categories</div>
+    <div class="cat-list" id="catList"></div>
+    <div class="cat-add-row">
+      <input class="cat-add-name" id="catAddName" placeholder="New category name" maxlength="30">
+      <div class="cat-color-pair">
+        BG <input type="color" class="cat-color-input" id="catAddBg" value="#d4e8d4">
+      </div>
+      <div class="cat-color-pair">
+        Text <input type="color" class="cat-color-input" id="catAddColor" value="#1a3a1a">
+      </div>
+      <button class="btn primary" onclick="addCustomCat()">+ Add</button>
+    </div>
+    <div style="display:flex;justify-content:flex-end">
+      <button class="btn" onclick="closeCatModal()">Done</button>
     </div>
   </div>
 </div>
@@ -2465,6 +2781,10 @@ async function _boot() {
     state.timetables[currentWeekId] = buildInitialTimetable();
     await saveState();
   }
+  if (!state.customCategories) state.customCategories = [];
+  if (!state.dayNotes) state.dayNotes = {};
+  calMonthDate = new Date();
+
   if (!state.profile || !state.profile.name) {
     _showOnboarding();
     return;
@@ -2478,29 +2798,44 @@ async function _boot() {
 const STORAGE_KEY = 'archie_ops_v3';
 const TT_START_HOUR = 5;
 const TT_END_HOUR = 23;
-const SLOT_HEIGHT = 28; // px per 30min
+const SLOT_HEIGHT = 18; // px per 30min — compact so full day fits on screen
 
 const DAYS_SHORT = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DAYS_FULL  = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 
-const CAT_LABELS = {
-  'cat-work':     'Work',
-  'cat-klayr':    'Klayr',
-  'cat-oswin':    'Oswin',
-  'cat-signify':  'Signify',
-  'cat-crm':      'CRM',
-  'cat-gym':      'Gym',
-  'cat-muaythai': 'Muay Thai',
-  'cat-football': 'Football',
-  'cat-personal': 'Personal',
-  'cat-social':   'Social',
-  'cat-travel':   'Travel',
-  'cat-sleep':    'Sleep',
-  'cat-routine':  'Routine'
+const BUILTIN_CATS = {
+  'cat-work':     { label:'Work',      bg:'#ccdaed', color:'#1a3a5c' },
+  'cat-klayr':    { label:'Klayr',     bg:'#f5d0c8', color:'#7a1a0a' },
+  'cat-oswin':    { label:'Oswin',     bg:'#f4d8c4', color:'#7a3010' },
+  'cat-signify':  { label:'Signify',   bg:'#d1dcc8', color:'#2a4a22' },
+  'cat-crm':      { label:'CRM',       bg:'#e0d4ed', color:'#3a1a5c' },
+  'cat-gym':      { label:'Gym',       bg:'#d4ddc9', color:'#2a4222' },
+  'cat-muaythai': { label:'Muay Thai', bg:'#fcd8c0', color:'#7a2800' },
+  'cat-football': { label:'Football',  bg:'#c8dcc8', color:'#1a3a1a' },
+  'cat-personal': { label:'Personal',  bg:'#ecdbbd', color:'#7a4e10' },
+  'cat-social':   { label:'Social',    bg:'#fce0dc', color:'#6a2018' },
+  'cat-travel':   { label:'Travel',    bg:'#e8e0d0', color:'#4a4030' },
+  'cat-sleep':    { label:'Sleep',     bg:'#d6d0e0', color:'#3a3050' },
+  'cat-routine':  { label:'Routine',   bg:'#e6e6e6', color:'#444444' }
 };
+
+function getAllCats() {
+  const cats = { ...BUILTIN_CATS };
+  (state?.customCategories || []).forEach(c => { cats[c.id] = { label: c.label, bg: c.bg, color: c.color }; });
+  return cats;
+}
+function getCatLabel(id) { return getAllCats()[id]?.label || id; }
+function getCatBg(id)    { return getAllCats()[id]?.bg    || '#e6e6e6'; }
+function getCatColor(id) { return getAllCats()[id]?.color || '#444'; }
+
+// Legacy CAT_LABELS for backward compat
+const CAT_LABELS = Object.fromEntries(Object.entries(BUILTIN_CATS).map(([k,v]) => [k, v.label]));
 
 let state = null;
 let currentWeekId = null;
+let calView = 'week';       // 'week' | 'month'
+let calMonthDate = null;    // Date object for current month view
+let _dayNoteTarget = null;  // 'YYYY-MM-DD' being edited
 let activeProjectTab = null;
 let editingTokenId = null;
 let dragToken = null;
@@ -2787,6 +3122,32 @@ function _closeSidebar() {
 // ==============================================================
 // NAVIGATION
 // ==============================================================
+// ==============================================================
+// CALENDAR VIEW SWITCHING
+// ==============================================================
+function setCalView(v) {
+  calView = v;
+  document.getElementById('ttWeekView').style.display = v === 'week' ? '' : 'none';
+  document.getElementById('ttMonthView').style.display = v === 'month' ? '' : 'none';
+  document.getElementById('btnWeekView').classList.toggle('active', v === 'week');
+  document.getElementById('btnMonthView').classList.toggle('active', v === 'month');
+  document.getElementById('btnAddEvent').style.display = v === 'week' ? '' : 'none';
+  if (v === 'week') renderTimetable();
+  else renderMonthView();
+}
+function calNavPrev() {
+  if (calView === 'week') navigateWeek(-1);
+  else { calMonthDate.setMonth(calMonthDate.getMonth()-1); renderMonthView(); }
+}
+function calNavNext() {
+  if (calView === 'week') navigateWeek(1);
+  else { calMonthDate.setMonth(calMonthDate.getMonth()+1); renderMonthView(); }
+}
+function calNavToday() {
+  if (calView === 'week') goToCurrentWeek();
+  else { calMonthDate = new Date(); renderMonthView(); }
+}
+
 function navigateWeek(dir) {
   const newId = offsetWeekId(currentWeekId, dir);
   currentWeekId = newId;
@@ -3098,6 +3459,7 @@ function renderTimetable() {
   const tokens = state.timetables[currentWeekId];
 
   // Header
+  if (!state.dayNotes) state.dayNotes = {};
   const header = document.getElementById('ttGridHeader');
   header.innerHTML = `
     <div class="tt-time-label" style="background:var(--paper-2);border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)"></div>
@@ -3105,9 +3467,11 @@ function renderTimetable() {
       const dateObj = dates[i];
       const dateStr = dateObj.toISOString().slice(0,10);
       const isToday = dateStr === todayStr;
-      return `<div class="tt-day-head${isToday?' today':''}">
-        <span class="tt-day-name">${d}</span>
+      const note = state.dayNotes[dateStr] || '';
+      return `<div class="tt-day-head${isToday?' today':''}" onclick="openDayNote('${dateStr}','${d}')">
+        <span class="tt-day-name">${DAYS_SHORT[i]}</span>
         <span class="tt-day-date">${dateObj.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</span>
+        ${note ? `<div class="tt-day-note-indicator">${note}</div>` : ''}
       </div>`;
     }).join('')}
   `;
@@ -3169,7 +3533,10 @@ function renderTokensOnGrid(tokens) {
     if (!cell) return;
 
     const el = document.createElement('div');
-    el.className = `tt-token ${token.cat||'cat-routine'}`;
+    const cat = token.cat || 'cat-routine';
+    el.className = `tt-token`;
+    el.style.background = getCatBg(cat);
+    el.style.color = getCatColor(cat);
     el.id = 'tok-' + token.id;
     el.style.height = height + 'px';
     el.style.top = '1px';
@@ -3224,12 +3591,174 @@ function deleteToken(id) {
 
 function renderTTLegend() {
   const leg = document.getElementById('ttLegend');
-  leg.innerHTML = Object.entries(CAT_LABELS).map(([cls, label]) => `
+  leg.innerHTML = Object.entries(getAllCats()).map(([id, cat]) => `
     <div class="tt-legend-item">
-      <div class="tt-legend-dot ${cls}"></div>
-      <span>${label}</span>
+      <div class="tt-legend-dot" style="background:${cat.bg}"></div>
+      <span>${cat.label}</span>
     </div>
   `).join('');
+}
+
+// ==============================================================
+// MONTH VIEW
+// ==============================================================
+function renderMonthView() {
+  if (!calMonthDate) calMonthDate = new Date();
+  if (!state.dayNotes) state.dayNotes = {};
+  if (!state.timetables) state.timetables = {};
+
+  const y = calMonthDate.getFullYear();
+  const m = calMonthDate.getMonth();
+  const monthLabel = calMonthDate.toLocaleDateString('en-GB', { month:'long', year:'numeric' });
+  document.getElementById('ttWeekLabel').textContent = monthLabel;
+  document.getElementById('ttWeekDisplay').textContent = monthLabel;
+
+  // Month header
+  document.getElementById('monthHeader').innerHTML =
+    DAYS_SHORT.map(d => `<div class="month-header-day">${d}</div>`).join('');
+
+  // Build calendar grid
+  const firstDay = new Date(y, m, 1);
+  // Start from Monday of the week containing the 1st
+  let start = new Date(firstDay);
+  const dow = (firstDay.getDay() + 6) % 7; // 0=Mon
+  start.setDate(start.getDate() - dow);
+
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0, 10);
+
+  let html = '';
+  for (let week = 0; week < 6; week++) {
+    const rowDate = new Date(start);
+    rowDate.setDate(rowDate.getDate() + week * 7);
+    if (week > 0 && rowDate.getMonth() !== m && new Date(rowDate.getTime() - 86400000*6).getMonth() !== m) break;
+
+    html += '<div class="month-week-row">';
+    for (let d = 0; d < 7; d++) {
+      const cellDate = new Date(start);
+      cellDate.setDate(cellDate.getDate() + week * 7 + d);
+      const dateStr = cellDate.toISOString().slice(0, 10);
+      const isToday = dateStr === todayStr;
+      const otherMonth = cellDate.getMonth() !== m;
+
+      // Get events for this day from all timetable weeks
+      const dayOfWeek = (cellDate.getDay() + 6) % 7;
+      const weekId = weekIdFromDate(cellDate);
+      const tokens = (state.timetables[weekId] || []).filter(t => t.day === dayOfWeek);
+      tokens.sort((a,b) => a.start.localeCompare(b.start));
+
+      const note = state.dayNotes[dateStr] || '';
+      const chips = tokens.slice(0, 3).map(t => {
+        const bg = getCatBg(t.cat || 'cat-routine');
+        const col = getCatColor(t.cat || 'cat-routine');
+        return `<div class="month-event-chip" style="background:${bg};color:${col}" title="${t.title}">${t.title}</div>`;
+      }).join('');
+      const more = tokens.length > 3 ? `<div class="month-more">+${tokens.length-3} more</div>` : '';
+      const noteHtml = note ? `<div class="month-note-text">${note}</div>` : '';
+
+      html += `
+        <div class="month-cell${isToday?' today':''}${otherMonth?' other-month':''}"
+             onclick="monthCellClick('${dateStr}','${cellDate.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}')">
+          <div class="month-cell-date">
+            <span>${cellDate.getDate()}</span>
+            ${note ? '<span class="month-note-icon">✏</span>' : ''}
+          </div>
+          ${chips}${more}${noteHtml}
+        </div>`;
+    }
+    html += '</div>';
+  }
+  document.getElementById('monthBody').innerHTML = html;
+}
+
+function monthCellClick(dateStr, label) {
+  openDayNote(dateStr, label);
+}
+
+// ==============================================================
+// DAY NOTES
+// ==============================================================
+function openDayNote(dateStr, label) {
+  if (!state.dayNotes) state.dayNotes = {};
+  _dayNoteTarget = dateStr;
+  document.getElementById('dayNoteTitle').textContent = 'Note — ' + label;
+  document.getElementById('dayNoteText').value = state.dayNotes[dateStr] || '';
+  document.getElementById('dayNoteModal').classList.add('open');
+  setTimeout(() => document.getElementById('dayNoteText').focus(), 80);
+}
+function closeDayNote() {
+  document.getElementById('dayNoteModal').classList.remove('open');
+  _dayNoteTarget = null;
+}
+async function saveDayNote() {
+  if (!_dayNoteTarget) return;
+  if (!state.dayNotes) state.dayNotes = {};
+  const val = document.getElementById('dayNoteText').value.trim();
+  if (val) state.dayNotes[_dayNoteTarget] = val;
+  else delete state.dayNotes[_dayNoteTarget];
+  closeDayNote();
+  await saveState();
+  if (calView === 'week') renderTimetable();
+  else renderMonthView();
+}
+
+// ==============================================================
+// CUSTOM CATEGORIES
+// ==============================================================
+function openCatModal() {
+  renderCatList();
+  document.getElementById('catModal').classList.add('open');
+}
+function closeCatModal() {
+  document.getElementById('catModal').classList.remove('open');
+  rebuildCatDropdown();
+  renderTTLegend();
+  if (calView === 'week') renderTokensOnGrid(state.timetables[currentWeekId] || []);
+}
+function renderCatList() {
+  const list = document.getElementById('catList');
+  const customs = state.customCategories || [];
+  const builtinHtml = Object.entries(BUILTIN_CATS).map(([id, c]) => `
+    <div class="cat-row">
+      <div class="cat-swatch" style="background:${c.bg}"></div>
+      <div class="cat-row-name">${c.label}</div>
+      <span style="font-family:var(--mono);font-size:9px;color:var(--ink-muted);letter-spacing:0.1em">Built-in</span>
+    </div>
+  `).join('');
+  const customHtml = customs.map((c, i) => `
+    <div class="cat-row">
+      <div class="cat-swatch" style="background:${c.bg}"></div>
+      <div class="cat-row-name">${c.label}</div>
+      <span class="cat-row-del" onclick="deleteCustomCat(${i})">Remove</span>
+    </div>
+  `).join('');
+  list.innerHTML = builtinHtml + (customHtml ? `<div style="height:8px"></div>${customHtml}` : '');
+}
+async function addCustomCat() {
+  const name = document.getElementById('catAddName').value.trim();
+  if (!name) return;
+  const bg = document.getElementById('catAddBg').value;
+  const color = document.getElementById('catAddColor').value;
+  if (!state.customCategories) state.customCategories = [];
+  const id = 'cat-custom-' + Date.now();
+  state.customCategories.push({ id, label: name, bg, color });
+  document.getElementById('catAddName').value = '';
+  await saveState();
+  renderCatList();
+}
+async function deleteCustomCat(i) {
+  if (!state.customCategories) return;
+  state.customCategories.splice(i, 1);
+  await saveState();
+  renderCatList();
+}
+function rebuildCatDropdown() {
+  const sel = document.getElementById('teCat');
+  if (!sel) return;
+  const all = getAllCats();
+  sel.innerHTML = Object.entries(all).map(([id, c]) =>
+    `<option value="${id}">${c.label}</option>`
+  ).join('');
 }
 
 // Token editor
@@ -3237,6 +3766,7 @@ let _tokenEditorMeta = {};
 function openTokenEditor(day=0, time='09:00') {
   editingTokenId = null;
   _tokenEditorMeta = { day, time };
+  rebuildCatDropdown();
   document.getElementById('tokenEditorTitle').textContent = 'Add Event';
   document.getElementById('teTitle').value = '';
   document.getElementById('teSub').value = '';
