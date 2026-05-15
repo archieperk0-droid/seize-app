@@ -2358,6 +2358,80 @@ body {
 .hli-dur { font-family:var(--mono); font-size:9px; color:var(--ink-muted); margin-left:auto; }
 .hli-note { font-family:var(--body); font-size:11px; font-style:italic; color:var(--ink-muted); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
+/* ---- Long-Term Mastery Plan ---- */
+.habit-plan-tabs { display:flex; gap:0; margin-bottom:20px; border-bottom:2px solid var(--ink); }
+.habit-plan-tab { font-family:var(--mono); font-size:8.5px; letter-spacing:.12em; text-transform:uppercase; padding:9px 18px; background:transparent; border:none; color:var(--ink-muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .15s; }
+.habit-plan-tab:hover { color:var(--ink); }
+.habit-plan-tab.active { color:var(--ink); border-bottom-color:var(--accent); }
+
+/* Month timeline strip */
+.lt-timeline { display:flex; gap:4px; overflow-x:auto; padding-bottom:8px; margin-bottom:20px; scrollbar-width:none; }
+.lt-timeline::-webkit-scrollbar { display:none; }
+.lt-month-dot { display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; flex-shrink:0; }
+.lt-month-dot-circle { width:32px; height:32px; border-radius:50%; border:2px solid var(--rule); background:var(--paper-2); display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:9px; color:var(--ink-muted); transition:all .2s; }
+.lt-month-dot-circle.current { border-color:var(--accent); background:var(--accent); color:var(--paper); }
+.lt-month-dot-circle.done { border-color:var(--green); background:var(--green); color:var(--paper); }
+.lt-month-dot-circle.future { opacity:.4; }
+.lt-month-dot-label { font-family:var(--mono); font-size:7px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-muted); text-align:center; max-width:38px; line-height:1.2; }
+.lt-month-connector { width:20px; height:2px; background:var(--rule); align-self:center; flex-shrink:0; margin-top:-16px; }
+
+/* Month plan card */
+.lt-month-card { border:1px solid var(--rule); padding:20px; margin-bottom:12px; background:var(--paper-2); }
+.lt-month-card.current-month { border-color:var(--ink); border-left:3px solid var(--accent); background:var(--paper); }
+.lt-mc-head { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px; gap:12px; }
+.lt-mc-num { font-family:var(--mono); font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:3px; }
+.lt-mc-theme { font-family:var(--display); font-size:20px; font-style:italic; font-weight:500; line-height:1.2; }
+.lt-mc-phase-tag { font-family:var(--mono); font-size:7.5px; letter-spacing:.1em; text-transform:uppercase; padding:3px 8px; flex-shrink:0; }
+.lt-mc-phase-tag.foundation { background:rgba(160,104,32,.1); color:var(--amber); }
+.lt-mc-phase-tag.development { background:rgba(26,74,122,.1); color:var(--blue); }
+.lt-mc-phase-tag.application { background:rgba(61,107,54,.1); color:var(--green); }
+.lt-mc-phase-tag.specialisation { background:rgba(90,61,122,.1); color:var(--purple); }
+.lt-mc-phase-tag.performance { background:rgba(184,52,28,.1); color:var(--accent); }
+.lt-mc-phase-tag.refinement { background:rgba(26,22,20,.08); color:var(--ink-soft); }
+.lt-mc-focus { font-family:var(--body); font-size:12px; color:var(--ink-soft); margin-bottom:12px; line-height:1.5; }
+/* Skills chips */
+.lt-skills { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+.lt-skill-chip { font-family:var(--mono); font-size:8px; letter-spacing:.08em; text-transform:uppercase; padding:4px 9px; border:1px solid var(--rule); color:var(--ink-soft); background:var(--paper-3); }
+.lt-mc-session { background:var(--paper-3); padding:11px 13px; margin:8px 0; }
+.lt-mc-session-row { display:flex; gap:8px; margin-bottom:3px; font-family:var(--body); font-size:11.5px; line-height:1.4; }
+.lt-mc-session-tag { font-family:var(--mono); font-size:8px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-muted); min-width:70px; flex-shrink:0; padding-top:1px; }
+.lt-mc-goal { font-family:var(--mono); font-size:10px; letter-spacing:.04em; padding:8px 10px; border-left:2px solid var(--accent); margin:10px 0; color:var(--ink-soft); }
+.lt-mc-note { font-family:var(--body); font-size:11px; font-style:italic; color:var(--ink-muted); margin-top:6px; }
+
+/* Supporting practices */
+.lt-support-section { margin:10px 0 0; }
+.lt-support-title { font-family:var(--mono); font-size:8px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:8px; }
+.lt-support-cards { display:flex; flex-wrap:wrap; gap:8px; }
+.lt-support-card { border:1px solid var(--rule); padding:10px 12px; background:var(--paper); display:flex; align-items:center; gap:10px; flex:1; min-width:180px; }
+.lt-support-icon { font-size:16px; flex-shrink:0; }
+.lt-support-info { flex:1; min-width:0; }
+.lt-support-name { font-family:var(--body); font-size:12px; font-weight:500; }
+.lt-support-freq { font-family:var(--mono); font-size:8px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-muted); margin-top:2px; }
+.lt-add-cal-btn { font-family:var(--mono); font-size:7.5px; letter-spacing:.08em; text-transform:uppercase; padding:5px 9px; border:1px solid var(--green); color:var(--green); background:transparent; cursor:pointer; flex-shrink:0; white-space:nowrap; }
+.lt-add-cal-btn:hover { background:rgba(61,107,54,.08); }
+.lt-add-cal-btn.added { background:rgba(61,107,54,.1); cursor:default; opacity:.7; }
+
+/* Monthly progress check-in */
+.lt-monthly-checkin { border-top:1px dotted var(--rule); margin-top:14px; padding-top:12px; }
+.lt-monthly-checkin-title { font-family:var(--mono); font-size:8px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:8px; }
+.lt-month-rating { display:flex; gap:6px; margin-bottom:8px; }
+.lt-mr-star { font-size:18px; cursor:pointer; color:var(--rule); }
+.lt-mr-star.active { color:var(--amber); }
+.lt-month-done-check { font-family:var(--mono); font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; padding:6px 14px; border:1px solid var(--green); color:var(--green); background:transparent; cursor:pointer; margin-top:6px; }
+.lt-month-done-check:hover { background:rgba(61,107,54,.08); }
+.lt-month-done-check.complete { background:rgba(61,107,54,.1); cursor:default; }
+
+/* Long-term overview card */
+.lt-overview-card { background:var(--ink); color:var(--paper); padding:20px 22px; margin-bottom:20px; }
+.lt-ov-sub { font-family:var(--mono); font-size:8px; letter-spacing:.15em; text-transform:uppercase; color:#f4a78c; margin-bottom:8px; }
+.lt-ov-text { font-family:var(--body); font-size:13px; line-height:1.65; color:rgba(245,241,232,.85); }
+.lt-ov-duration { font-family:var(--display); font-size:22px; font-style:italic; font-weight:500; color:rgba(245,241,232,.5); margin-top:8px; }
+
+/* Month weekly progression */
+.lt-weekly-prog { display:flex; flex-direction:column; gap:4px; margin:8px 0; }
+.lt-week-row { display:flex; gap:8px; font-family:var(--body); font-size:11px; color:var(--ink-soft); }
+.lt-week-num { font-family:var(--mono); font-size:8px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-muted); min-width:44px; flex-shrink:0; padding-top:1px; }
+
 /* ---- Check-in Modal ---- */
 .checkin-modal { position:fixed; inset:0; background:rgba(26,22,20,.65); z-index:950; display:none; align-items:center; justify-content:center; padding:24px; }
 .checkin-modal.open { display:flex; }
@@ -3986,16 +4060,18 @@ function navigateWeek(dir) {
   currentWeekId = newId;
   if (!state.weeks[currentWeekId]) {
     state.weeks[currentWeekId] = createWeekFromPrevious(currentWeekId);
-    saveState();
   }
+  applyRecurringTemplates(currentWeekId);
+  saveState();
   render();
 }
 function goToCurrentWeek() {
   currentWeekId = getCurrentWeekId();
   if (!state.weeks[currentWeekId]) {
     state.weeks[currentWeekId] = createWeekFromPrevious(currentWeekId);
-    saveState();
   }
+  applyRecurringTemplates(currentWeekId);
+  saveState();
   render();
 }
 function createWeekFromPrevious(weekId) {
@@ -6151,19 +6227,38 @@ function _renderHabitDetail(habit) {
       <div class="heatmap-grid">${heatCells}</div>
     </div>
 
-    <!-- AI COACHING PLAN -->
-    <div class="habit-plan-section" id="habitPlanSection-${habit.id}">
-      <div class="hps-head">
-        <div class="hps-title">AI Coaching Plan</div>
-        <button class="hps-refresh" onclick="refreshHabitPlan('${habit.id}')">↻ Refresh Plan</button>
-      </div>
-      <div id="habitPlanContent-${habit.id}">${planHTML}</div>
-    </div>
-
-    <!-- LOG HISTORY -->
+    <!-- PLAN TABS -->
     <div class="habit-plan-section">
-      <div class="hps-head"><div class="hps-title">Session Log</div></div>
-      <div class="habit-log-list">${logHTML}</div>
+      <div class="habit-plan-tabs">
+        <button class="habit-plan-tab active" id="hpt-foundation-${habit.id}" onclick="switchHabitPlanTab('${habit.id}','foundation')">27-Day Formation Plan</button>
+        <button class="habit-plan-tab" id="hpt-mastery-${habit.id}" onclick="switchHabitPlanTab('${habit.id}','mastery')">Long-Term Mastery${habit.longTermPlan?' ✓':''}</button>
+        <button class="habit-plan-tab" id="hpt-log-${habit.id}" onclick="switchHabitPlanTab('${habit.id}','log')">Session Log (${habit.logs.length})</button>
+      </div>
+
+      <!-- Foundation Plan -->
+      <div id="hpt-content-foundation-${habit.id}">
+        <div class="hps-head" style="border:none;padding:0;margin-bottom:14px">
+          <div class="hps-title">27-Day Coaching Plan</div>
+          <button class="hps-refresh" onclick="refreshHabitPlan('${habit.id}')">↻ Refresh</button>
+        </div>
+        <div id="habitPlanContent-${habit.id}">${planHTML}</div>
+      </div>
+
+      <!-- Long-Term Mastery Plan -->
+      <div id="hpt-content-mastery-${habit.id}" style="display:none">
+        <div class="hps-head" style="border:none;padding:0;margin-bottom:14px">
+          <div class="hps-title">12-Month Mastery Roadmap</div>
+          <button class="hps-refresh" onclick="generateLongTermPlan('${habit.id}')">
+            ${habit.longTermPlan ? '↻ Regenerate' : '⚡ Generate Plan'}
+          </button>
+        </div>
+        <div id="ltPlanContent-${habit.id}">${habit.longTermPlan ? _renderLongTermPlan(habit) : '<div class="plan-loading" style="animation:none;color:var(--ink-muted)">Click "Generate Plan" to build your 12-month mastery roadmap. The AI will create a month-by-month progression with skill themes, session structures, and supporting practices that integrate into your calendar.</div>'}</div>
+      </div>
+
+      <!-- Session Log -->
+      <div id="hpt-content-log-${habit.id}" style="display:none">
+        <div class="habit-log-list">${logHTML}</div>
+      </div>
     </div>
   `;
 }
@@ -6468,6 +6563,369 @@ Return ONLY valid JSON using the same structure as before but with:
     if (contentEl) contentEl.innerHTML = _renderPlan(habit);
     showToast('Refresh failed — check API key');
   }
+}
+
+// ---- Plan tab switching ----
+function switchHabitPlanTab(id, tab) {
+  ['foundation','mastery','log'].forEach(t => {
+    const btn = document.getElementById(`hpt-${t}-${id}`);
+    const content = document.getElementById(`hpt-content-${t}-${id}`);
+    if (btn) btn.classList.toggle('active', t===tab);
+    if (content) content.style.display = t===tab ? '' : 'none';
+  });
+}
+
+// ---- Long-Term Mastery Plan ----
+function _ltCurrentMonth(habit) {
+  // Which month number (1-12) are we in, based on journeyStartDate
+  if (!habit.journeyStartDate) return 1;
+  const start = new Date(habit.journeyStartDate);
+  const now = new Date();
+  const months = (now.getFullYear() - start.getFullYear())*12 + (now.getMonth() - start.getMonth()) + 1;
+  return Math.max(1, months);
+}
+
+function _renderLongTermPlan(habit) {
+  const ltp = habit.longTermPlan;
+  if (!ltp) return '';
+  const currentMonth = _ltCurrentMonth(habit);
+  const monthlyProgress = habit.monthlyProgress || {};
+
+  // Timeline strip
+  const timeline = ltp.months.map((m, i) => {
+    const mNum = m.month;
+    const isDone = mNum < currentMonth && monthlyProgress[`m${mNum}`]?.complete;
+    const isCurrent = mNum === currentMonth;
+    const cls = isDone ? 'done' : (isCurrent ? 'current' : (mNum > currentMonth ? 'future' : ''));
+    const connector = i < ltp.months.length-1 ? '<div class="lt-month-connector"></div>' : '';
+    return `<div class="lt-month-dot" onclick="document.getElementById('lt-mc-${habit.id}-${mNum}')?.scrollIntoView({behavior:'smooth',block:'nearest'})">
+      <div class="lt-month-dot-circle ${cls}">${mNum}</div>
+      <div class="lt-month-dot-label">${(m.theme||'').split(' ').slice(0,2).join(' ')}</div>
+    </div>${connector}`;
+  }).join('');
+
+  // Overview
+  const overviewHTML = ltp.overview ? `
+    <div class="lt-overview-card">
+      <div class="lt-ov-sub">12-Month Vision</div>
+      <div class="lt-ov-text">${ltp.overview}</div>
+      <div class="lt-ov-duration">${ltp.totalDuration || '12 months'}</div>
+    </div>` : '';
+
+  // Month cards
+  const monthCards = ltp.months.map(m => {
+    const mNum = m.month;
+    const isCurrent = mNum === currentMonth;
+    const progress = monthlyProgress[`m${mNum}`] || {};
+    const isDone = progress.complete;
+    const phaseClass = (m.phase||'foundation').toLowerCase();
+
+    const skills = (m.primarySkills||[]).map(s=>`<span class="lt-skill-chip">${s}</span>`).join('');
+    const sessionBox = m.sessionStructure ? `
+      <div class="lt-mc-session">
+        ${m.sessionStructure.warmup ? `<div class="lt-mc-session-row"><span class="lt-mc-session-tag">Warm-up</span>${m.sessionStructure.warmup}</div>` : ''}
+        ${m.sessionStructure.main ? `<div class="lt-mc-session-row"><span class="lt-mc-session-tag">Main focus</span>${m.sessionStructure.main}</div>` : ''}
+        ${m.sessionStructure.conditioning ? `<div class="lt-mc-session-row"><span class="lt-mc-session-tag">Conditioning</span>${m.sessionStructure.conditioning}</div>` : ''}
+        ${m.sessionStructure.cooldown ? `<div class="lt-mc-session-row"><span class="lt-mc-session-tag">Cool-down</span>${m.sessionStructure.cooldown}</div>` : ''}
+      </div>` : '';
+
+    const weeklyProg = (m.weeklyProgression||[]).length ? `
+      <div class="lt-weekly-prog" style="margin:10px 0">
+        ${m.weeklyProgression.map((w,i)=>`<div class="lt-week-row"><span class="lt-week-num">Wk ${i+1}</span>${w}</div>`).join('')}
+      </div>` : '';
+
+    // Supporting practices
+    const supportHTML = (m.supportingPractices||[]).length ? `
+      <div class="lt-support-section">
+        <div class="lt-support-title">Supporting Practices</div>
+        <div class="lt-support-cards">
+          ${m.supportingPractices.map((sp,si)=>{
+            const added = (habit.calendarPractices||[]).some(p=>p.monthKey===`m${mNum}` && p.name===sp.name);
+            return `<div class="lt-support-card">
+              <div class="lt-support-icon">${sp.icon||'⏱️'}</div>
+              <div class="lt-support-info">
+                <div class="lt-support-name">${sp.name}</div>
+                <div class="lt-support-freq">${sp.frequency} · ${sp.minutes} min</div>
+              </div>
+              <button class="lt-add-cal-btn${added?' added':''}" onclick="addSupportPracticeToCalendar('${habit.id}','m${mNum}',${si})">
+                ${added ? '✓ Added' : '+ Calendar'}
+              </button>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>` : '';
+
+    // Monthly check-in
+    const checkInHTML = (isCurrent || isDone) ? `
+      <div class="lt-monthly-checkin">
+        <div class="lt-monthly-checkin-title">${isDone ? '✓ Month Complete' : 'Month Progress Check-in'}</div>
+        ${isDone ? `<div style="font-family:var(--body);font-size:11px;color:var(--ink-muted)">
+          Rating: ${'★'.repeat(progress.rating||0)}${'☆'.repeat(5-(progress.rating||0))}
+          ${progress.notes ? `<br><em>"${progress.notes}"</em>` : ''}
+        </div>` : `
+        <div class="lt-month-rating" id="lt-rating-${habit.id}-${mNum}">
+          ${[1,2,3,4,5].map(n=>`<span class="lt-mr-star${(progress.rating||0)>=n?' active':''}" data-v="${n}" onclick="setLTRating('${habit.id}',${mNum},${n})">★</span>`).join('')}
+        </div>
+        <textarea id="lt-notes-${habit.id}-${mNum}" placeholder="What did you achieve? What needs work?" style="width:100%;border:1px solid var(--rule);background:var(--paper-2);padding:8px 10px;font-family:var(--body);font-size:11.5px;resize:none;height:55px;outline:none;color:var(--ink);margin-top:6px">${progress.notes||''}</textarea>
+        <button class="lt-month-done-check" onclick="saveMonthProgress('${habit.id}',${mNum})">Mark Month Complete →</button>`}
+      </div>` : '';
+
+    return `
+      <div class="lt-month-card${isCurrent?' current-month':''}" id="lt-mc-${habit.id}-${mNum}">
+        <div class="lt-mc-head">
+          <div>
+            <div class="lt-mc-num">Month ${mNum} ${isDone?'✓':''}</div>
+            <div class="lt-mc-theme">${m.theme||''}</div>
+          </div>
+          <span class="lt-mc-phase-tag ${phaseClass}">${m.phase||''}</span>
+        </div>
+        <div class="lt-mc-focus">${m.focus||''}</div>
+        ${skills ? `<div class="lt-skills">${skills}</div>` : ''}
+        ${weeklyProg}
+        ${sessionBox}
+        ${m.monthlyGoal ? `<div class="lt-mc-goal">Monthly goal: ${m.monthlyGoal}</div>` : ''}
+        ${m.coachNote ? `<div class="lt-mc-note">"${m.coachNote}"</div>` : ''}
+        ${supportHTML}
+        ${checkInHTML}
+      </div>`;
+  }).join('');
+
+  return `
+    ${overviewHTML}
+    <div style="font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:10px">Month-by-Month Roadmap</div>
+    <div class="lt-timeline">${timeline}</div>
+    <div id="lt-months-${habit.id}">${monthCards}</div>
+  `;
+}
+
+async function generateLongTermPlan(id) {
+  const habit = state.habits?.find(h=>h.id===id);
+  if (!habit) return;
+  const apiKey = state.settings?.anthropicApiKey;
+  const contentEl = document.getElementById(`ltPlanContent-${id}`);
+
+  if (!apiKey) {
+    if (contentEl) contentEl.innerHTML = `<div style="font-family:var(--body);font-size:12px;color:var(--ink-muted);padding:16px 0">Add your Anthropic API key in Settings to generate the 12-month mastery roadmap.</div>`;
+    return;
+  }
+
+  if (contentEl) contentEl.innerHTML = '<div class="plan-loading">Building your 12-month mastery roadmap — thinking through periodization, skill progressions, supporting habits…</div>';
+
+  const t = HABIT_TYPES[habit.type] || HABIT_TYPES.physical;
+  const profile = state.profile || {};
+  const weeklyLoad = `${habit.timesPerWeek} sessions/week, ${habit.minsPerSession} min/session`;
+
+  const systemPrompt = `You are an elite long-term coaching specialist with deep expertise in periodization, skill development, and habit integration. You build comprehensive yearly training plans that develop well-rounded mastery through structured monthly focus areas.`;
+
+  const userPrompt = `Build a 12-month mastery development plan for this discipline:
+
+HABIT: ${habit.name}
+TYPE: ${t.label}
+SCHEDULE: ${weeklyLoad} (${habit.frequency})
+PRACTITIONER: ${profile.name||'Archie'}, ${profile.role||'founder'} — committed but time-constrained
+CONTEXT: They've just completed (or are completing) their initial 27-day habit formation phase. Now building toward genuine mastery.
+
+IMPORTANT PRINCIPLES:
+1. Use periodization — cycle through different aspects each month (don't repeat)
+2. Build progressively — month 1 skills feed into month 3+
+3. Include supporting practices (stretching, conditioning, mental practice, study) that should be done OUTSIDE main sessions — these need to be added to their daily calendar
+4. Make it discipline-specific and highly practical
+5. Consider recovery and deload periods (important for physical disciplines)
+
+Return ONLY valid JSON:
+{
+  "overview": "2-3 sentence vision for where this person will be after 12 months of this plan",
+  "totalDuration": "12 months",
+  "months": [
+    {
+      "month": 1,
+      "theme": "Evocative 3-5 word theme name",
+      "phase": "Foundation|Development|Application|Specialisation|Performance|Refinement",
+      "focus": "1-2 sentence description of this month's central focus",
+      "primarySkills": ["Specific skill 1", "Specific skill 2", "Specific skill 3", "Skill 4"],
+      "weeklyProgression": [
+        "Week 1: Specific focus and drill emphasis",
+        "Week 2: Build on week 1 with...",
+        "Week 3: Introduce...",
+        "Week 4: Consolidate and test..."
+      ],
+      "sessionStructure": {
+        "warmup": "Specific warmup for this month's theme (time + activity)",
+        "main": "Primary training block — time + specific drills/work",
+        "conditioning": "Conditioning specific to this month (optional)",
+        "cooldown": "Cool-down (time + activity)"
+      },
+      "supportingPractices": [
+        {
+          "name": "Specific practice name (e.g. Hip flexor stretching routine)",
+          "frequency": "daily|3x/week|weekly",
+          "minutes": 15,
+          "icon": "🧘",
+          "why": "Why this specifically supports this month's theme",
+          "bestTime": "morning|evening|post-session"
+        }
+      ],
+      "monthlyGoal": "One specific measurable achievement for this month",
+      "coachNote": "Tactical insight or motivational note for this month",
+      "deload": false
+    }
+    ... (all 12 months, think carefully about what makes sense for ${habit.name})
+  ]
+}
+
+Make every month genuinely different and specific to ${habit.name}. Think like an elite coach building a year-long curriculum. For physical disciplines especially, include recovery/deload months and cross-training suggestions.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:6000,
+        system:systemPrompt,
+        messages:[{role:'user',content:userPrompt}]
+      })
+    });
+    const data = await res.json();
+    let text = data.content?.find(c=>c.type==='text')?.text||'';
+    text = text.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+    const ltp = JSON.parse(text);
+    habit.longTermPlan = ltp;
+    if (!habit.monthlyProgress) habit.monthlyProgress = {};
+    if (!habit.calendarPractices) habit.calendarPractices = [];
+    await saveState();
+    if (contentEl) contentEl.innerHTML = _renderLongTermPlan(habit);
+    // Update tab label
+    const tab = document.getElementById(`hpt-mastery-${id}`);
+    if (tab) tab.textContent = 'Long-Term Mastery ✓';
+    showToast('12-month mastery plan generated');
+  } catch(err) {
+    if (contentEl) contentEl.innerHTML = `<div style="font-family:var(--body);font-size:12px;color:var(--accent);padding:16px 0">Generation failed. ${err.message}</div>`;
+    showToast('Plan generation failed — check API key');
+  }
+}
+
+// ---- Monthly progress ----
+let _ltRatings = {};
+function setLTRating(habitId, monthNum, val) {
+  _ltRatings[`${habitId}-${monthNum}`] = val;
+  document.querySelectorAll(`#lt-rating-${habitId}-${monthNum} .lt-mr-star`).forEach(s => {
+    s.classList.toggle('active', parseInt(s.dataset.v) <= val);
+  });
+}
+async function saveMonthProgress(habitId, monthNum) {
+  const habit = state.habits?.find(h=>h.id===habitId);
+  if (!habit) return;
+  if (!habit.monthlyProgress) habit.monthlyProgress = {};
+  const rating = _ltRatings[`${habitId}-${monthNum}`] || 3;
+  const notesEl = document.getElementById(`lt-notes-${habitId}-${monthNum}`);
+  habit.monthlyProgress[`m${monthNum}`] = {
+    complete: true,
+    rating,
+    notes: notesEl?.value.trim() || '',
+    completedAt: new Date().toISOString()
+  };
+  await saveState();
+  showToast(`Month ${monthNum} filed ✓`);
+  // Re-render the long-term plan in place
+  const contentEl = document.getElementById(`ltPlanContent-${habitId}`);
+  if (contentEl) contentEl.innerHTML = _renderLongTermPlan(habit);
+}
+
+// ---- Calendar integration for supporting practices ----
+async function addSupportPracticeToCalendar(habitId, monthKey, practiceIdx) {
+  const habit = state.habits?.find(h=>h.id===habitId);
+  if (!habit || !habit.longTermPlan) return;
+  const monthNum = parseInt(monthKey.replace('m',''));
+  const month = habit.longTermPlan.months.find(m=>m.month===monthNum);
+  if (!month) return;
+  const sp = month.supportingPractices[practiceIdx];
+  if (!sp) return;
+
+  // Store the association
+  if (!habit.calendarPractices) habit.calendarPractices = [];
+  if (habit.calendarPractices.some(p=>p.monthKey===monthKey && p.name===sp.name)) {
+    showToast('Already in calendar'); return;
+  }
+  habit.calendarPractices.push({ monthKey, name:sp.name, frequency:sp.frequency, minutes:sp.minutes });
+
+  // Determine which days to add based on frequency
+  const daysToAdd = [];
+  if (sp.frequency === 'daily') {
+    daysToAdd.push(0,1,2,3,4,5,6);
+  } else if (sp.frequency === '3x/week') {
+    daysToAdd.push(0,2,4); // Mon, Wed, Fri
+  } else if (sp.frequency === '5x/week' || sp.frequency === 'weekdays') {
+    daysToAdd.push(0,1,2,3,4);
+  } else {
+    daysToAdd.push(0); // default: Monday
+  }
+
+  // Pick a time based on bestTime hint
+  const timeMap = { morning:'07:00', evening:'20:00', 'post-session':'19:00' };
+  const startTime = timeMap[sp.bestTime] || '07:30';
+  const [sh,sm] = startTime.split(':').map(Number);
+  const endMins = sh*60+sm+sp.minutes;
+  const endTime = `${String(Math.floor(endMins/60)).padStart(2,'0')}:${String(endMins%60).padStart(2,'0')}`;
+
+  // Add to current week's timetable
+  if (!state.timetables[currentWeekId]) state.timetables[currentWeekId] = [];
+  daysToAdd.forEach(day => {
+    // Don't duplicate
+    const exists = state.timetables[currentWeekId].some(e=>e.title===sp.name && e.day===day);
+    if (!exists) {
+      state.timetables[currentWeekId].push({
+        id: 'tt-sp-'+Date.now()+'-'+day,
+        day, start:startTime, end:endTime,
+        title: sp.name,
+        sub: `${habit.name} support practice`,
+        cat: habit.type==='physical'?'cat-gym':'cat-routine',
+        reminder: ''
+      });
+    }
+  });
+
+  // Also store as a recurring template so it applies to future weeks
+  if (!state.recurringTemplates) state.recurringTemplates = [];
+  state.recurringTemplates.push({
+    id: 'rt-'+Date.now(),
+    name: sp.name,
+    sub: `${habit.name} support practice`,
+    days: daysToAdd,
+    start: startTime, end: endTime,
+    cat: habit.type==='physical'?'cat-gym':'cat-routine',
+    source: `habit:${habitId}`
+  });
+
+  await saveState();
+  showToast(`"${sp.name}" added to calendar (${daysToAdd.length} day${daysToAdd.length>1?'s':''}/week)`);
+
+  // Re-render the plan
+  const contentEl = document.getElementById(`ltPlanContent-${habitId}`);
+  if (contentEl) contentEl.innerHTML = _renderLongTermPlan(habit);
+}
+
+// Apply recurring templates to a week's timetable
+function applyRecurringTemplates(weekId) {
+  if (!state.recurringTemplates?.length) return;
+  if (!state.timetables[weekId]) state.timetables[weekId] = [];
+  state.recurringTemplates.forEach(tmpl => {
+    tmpl.days.forEach(day => {
+      const exists = state.timetables[weekId].some(e=>e.title===tmpl.name && e.day===day);
+      if (!exists) {
+        state.timetables[weekId].push({
+          id: 'tt-rt-'+Date.now()+'-'+day+'-'+Math.random(),
+          day, start:tmpl.start, end:tmpl.end,
+          title:tmpl.name, sub:tmpl.sub, cat:tmpl.cat, reminder:''
+        });
+      }
+    });
+  });
 }
 
 // ---- Check-in ----
