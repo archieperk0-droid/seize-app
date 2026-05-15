@@ -3376,6 +3376,22 @@ body {
     </div>
 
     <div class="settings-section">
+      <div class="settings-section-title">AI Assistant</div>
+      <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:10px">
+        <div>
+          <div class="settings-key">Anthropic API Key</div>
+          <div class="settings-desc">Used for AI coaching plans in Habits &amp; Discipline. Stored locally in your browser — never sent anywhere except directly to Anthropic.</div>
+        </div>
+        <div style="display:flex;gap:8px;width:100%;align-items:center">
+          <input type="password" id="apiKeyInput" class="form-input" style="flex:1;font-family:var(--mono);font-size:11px;letter-spacing:0.06em" placeholder="sk-ant-…">
+          <button class="btn" id="apiKeyToggle" onclick="toggleApiKeyVisibility()" style="flex-shrink:0">Show</button>
+          <button class="btn primary" onclick="saveApiKey()" style="flex-shrink:0">Save</button>
+        </div>
+        <div id="apiKeyStatus" style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted)"></div>
+      </div>
+    </div>
+
+    <div class="settings-section">
       <div class="settings-section-title">Add / Manage Projects</div>
       <div id="projectManagerList"></div>
       <div style="margin-top:14px">
@@ -5593,6 +5609,12 @@ function loadArchiveWeek(id) {
 // ==============================================================
 function renderSettings() {
   notifStatus();
+  // Populate API key field
+  const keyInput = document.getElementById('apiKeyInput');
+  if (keyInput) {
+    keyInput.value = state.settings?.anthropicApiKey || '';
+    _updateApiKeyStatus();
+  }
   const list = document.getElementById('remindersListSettings');
   list.innerHTML = (state.reminders||[]).map(r => `
     <div class="reminder-item" style="padding:8px 0">
@@ -5616,6 +5638,35 @@ function renderSettings() {
       </div>
     </div>
   `).join('');
+}
+function saveApiKey() {
+  const val = document.getElementById('apiKeyInput')?.value.trim();
+  if (!val) { showToast('Paste your API key first'); return; }
+  if (!val.startsWith('sk-ant-')) { showToast('Key should start with sk-ant-'); return; }
+  if (!state.settings) state.settings = {};
+  state.settings.anthropicApiKey = val;
+  saveState();
+  _updateApiKeyStatus();
+  showToast('API key saved');
+}
+function toggleApiKeyVisibility() {
+  const input = document.getElementById('apiKeyInput');
+  const btn = document.getElementById('apiKeyToggle');
+  if (!input) return;
+  if (input.type === 'password') { input.type = 'text'; btn.textContent = 'Hide'; }
+  else { input.type = 'password'; btn.textContent = 'Show'; }
+}
+function _updateApiKeyStatus() {
+  const el = document.getElementById('apiKeyStatus');
+  if (!el) return;
+  const key = state.settings?.anthropicApiKey;
+  if (key) {
+    el.textContent = `Key set: ${key.slice(0,10)}…${key.slice(-4)}`;
+    el.style.color = 'var(--ink-muted)';
+  } else {
+    el.textContent = 'No key set — AI features unavailable';
+    el.style.color = 'var(--accent)';
+  }
 }
 function notifStatus() {
   const el = document.getElementById('notifStatus');
