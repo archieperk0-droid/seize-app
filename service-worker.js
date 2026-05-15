@@ -3,7 +3,7 @@
    Handles: offline caching, push notifications, scheduled alerts
    ============================================================ */
 
-const CACHE_NAME = 'seize-v4';
+const CACHE_NAME = 'seize-v5';
 const ASSETS = [
   '/seize-app/',
   '/seize-app/index.html',
