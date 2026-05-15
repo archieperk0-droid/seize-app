@@ -2275,9 +2275,9 @@ body {
 .habit-plan-btn { font-family:var(--mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; padding:7px 14px; border:1px solid var(--rule); background:transparent; color:var(--ink-muted); cursor:pointer; transition:all .15s; }
 .habit-plan-btn:hover { border-color:var(--ink-soft); color:var(--ink); }
 .habit-del-btn { font-family:var(--mono); font-size:8px; padding:7px 10px; border:1px solid var(--rule); background:transparent; color:var(--ink-muted); cursor:pointer; margin-left:auto; }
-.habits-empty { text-align:center; padding:80px 20px; }
+.habits-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px 20px; min-height:60vh; }
 .habits-empty-title { font-family:var(--display); font-size:30px; font-style:italic; font-weight:500; margin-bottom:10px; }
-.habits-empty-sub { font-family:var(--body); font-size:13px; color:var(--ink-muted); margin-bottom:24px; line-height:1.6; max-width:360px; margin-left:auto; margin-right:auto; }
+.habits-empty-sub { font-family:var(--body); font-size:13px; color:var(--ink-muted); margin-bottom:24px; line-height:1.6; max-width:360px; }
 
 /* ---- Habit Wizard ---- */
 .habit-wizard { position:fixed; inset:0; background:rgba(26,22,20,.75); z-index:900; display:none; align-items:center; justify-content:center; padding:20px; }
@@ -6626,9 +6626,10 @@ Return ONLY valid JSON (no markdown, no explanation) using this EXACT structure:
       })
     });
     const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || `API error ${res.status}`);
     let text = data.content?.find(c=>c.type==='text')?.text||'';
-    // Strip any markdown code fences
     text = text.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+    if (!text) throw new Error('Empty response — the model returned no content');
     const plan = JSON.parse(text);
     habit.aiPlan = plan;
     habit.planGeneratedAt = new Date().toISOString();
@@ -6705,8 +6706,10 @@ Return ONLY valid JSON using the same structure as before but with:
       })
     });
     const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || `API error ${res.status}`);
     let text = data.content?.find(c=>c.type==='text')?.text||'';
     text = text.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+    if (!text) throw new Error('Empty response — the model returned no content');
     const plan = JSON.parse(text);
 
     if (plan.adaptationNote) {
@@ -6951,8 +6954,10 @@ Make every month genuinely different and specific to ${habit.name}. Think like a
       })
     });
     const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || `API error ${res.status}`);
     let text = data.content?.find(c=>c.type==='text')?.text||'';
     text = text.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+    if (!text) throw new Error('Empty response — the model returned no content');
     const ltp = JSON.parse(text);
     habit.longTermPlan = ltp;
     if (!habit.monthlyProgress) habit.monthlyProgress = {};
