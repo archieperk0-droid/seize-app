@@ -5489,7 +5489,7 @@ Be direct, practical, and specific. No fluff. Format as plain text with clear se
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5',
         max_tokens: 1000,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -6670,7 +6670,7 @@ Return ONLY valid JSON (no markdown, no explanation) using this EXACT structure:
         'anthropic-dangerous-direct-browser-access':'true'
       },
       body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'claude-sonnet-4-5',
         max_tokens:3000,
         system: systemPrompt,
         messages:[{role:'user',content:userPrompt}]
@@ -6691,7 +6691,7 @@ Return ONLY valid JSON (no markdown, no explanation) using this EXACT structure:
     showToast('Coaching plan ready');
   } catch(err) {
     habit._planLoading = false;
-    if (contentEl) contentEl.innerHTML = `<div style="font-family:var(--body);font-size:12px;color:var(--accent);padding:16px 0">Plan generation failed. Check your API key in Settings. Error: ${err.message}</div>`;
+    if (contentEl) contentEl.innerHTML = `<div style="font-family:var(--body);font-size:12px;color:var(--accent);padding:16px 0">Plan generation failed: ${err.message}</div>`;
   }
 }
 
@@ -6750,7 +6750,7 @@ Return ONLY valid JSON using the same structure as before but with:
         'anthropic-dangerous-direct-browser-access':'true'
       },
       body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'claude-sonnet-4-5',
         max_tokens:3000,
         system:systemPrompt,
         messages:[{role:'user',content:userPrompt}]
@@ -6998,7 +6998,7 @@ Make every month genuinely different and specific to ${habit.name}. Think like a
         'anthropic-dangerous-direct-browser-access':'true'
       },
       body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'claude-sonnet-4-5',
         max_tokens:6000,
         system:systemPrompt,
         messages:[{role:'user',content:userPrompt}]
