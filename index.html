@@ -995,6 +995,107 @@ body {
 }
 
 /* ========================
+   DAY DETAIL PANEL
+   ======================== */
+.day-panel-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(26,22,20,0.5);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s;
+}
+.day-panel-overlay.open { opacity: 1; pointer-events: auto; }
+.day-panel {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 301;
+  background: var(--paper);
+  border-top: 2px solid var(--ink);
+  max-height: 72vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.25s ease;
+  border-radius: 4px 4px 0 0;
+}
+.day-panel.open { transform: translateY(0); }
+.day-panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px 12px;
+  border-bottom: 1px solid var(--rule);
+  position: sticky; top: 0; background: var(--paper); z-index: 1;
+}
+.day-panel-date {
+  font-family: var(--display); font-size: 18px; font-style: italic; font-weight: 600; color: var(--ink);
+}
+.day-panel-sub {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-top: 1px;
+}
+.day-panel-event {
+  display: flex; align-items: stretch; gap: 12px;
+  padding: 12px 20px; border-bottom: 1px dotted var(--rule);
+}
+.day-panel-event-bar { width: 3px; border-radius: 2px; flex-shrink: 0; }
+.day-panel-event-body { flex: 1; }
+.day-panel-event-time { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; color: var(--ink-muted); }
+.day-panel-event-title { font-family: var(--body); font-size: 14px; color: var(--ink); font-weight: 500; margin: 2px 0 1px; }
+.day-panel-event-sub { font-family: var(--body); font-size: 11px; color: var(--ink-muted); }
+.day-panel-event-tasks { font-family: var(--mono); font-size: 9px; color: var(--ink-muted); margin-top: 5px; line-height: 1.7; }
+.day-panel-event-actions { display: flex; flex-direction: column; gap: 5px; justify-content: center; }
+.day-panel-event-btn { font-family: var(--mono); font-size: 9px; background: none; border: 1px solid var(--rule); color: var(--ink-muted); padding: 3px 8px; cursor: pointer; }
+.day-panel-event-btn:hover { border-color: var(--ink); color: var(--ink); }
+.day-panel-event-btn.del { border-color: rgba(184,52,28,0.3); color: var(--accent); }
+.day-panel-event-btn.del:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+.day-panel-empty {
+  padding: 28px 20px; text-align: center;
+  font-family: var(--mono); font-size: 10px; color: var(--ink-muted); letter-spacing: 0.1em;
+}
+.day-panel-add {
+  display: block; width: calc(100% - 40px); margin: 12px 20px;
+  padding: 12px; text-align: center;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  border: 1px dashed var(--rule); color: var(--ink-muted); cursor: pointer; background: none;
+}
+.day-panel-add:hover { border-color: var(--ink); color: var(--ink); }
+.day-panel-note { padding: 12px 20px 20px; }
+.day-panel-note-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 6px; }
+
+/* ========================
+   CAL SYNC MODAL
+   ======================== */
+.cal-sync-overlay {
+  display: none; position: fixed; inset: 0; z-index: 400;
+  background: rgba(26,22,20,0.6); align-items: flex-end; justify-content: center;
+}
+.cal-sync-overlay.open { display: flex; }
+.cal-sync-box {
+  background: var(--paper); border-top: 2px solid var(--ink);
+  width: 100%; max-width: 560px; max-height: 80vh; overflow-y: auto;
+  padding: 24px 24px 32px;
+}
+.cal-sync-title { font-family: var(--display); font-size: 20px; font-style: italic; font-weight: 600; margin-bottom: 4px; color: var(--ink); }
+.cal-sync-sub { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; color: var(--ink-muted); margin-bottom: 20px; }
+.cal-sync-platform {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 0; border-bottom: 1px dotted var(--rule);
+}
+.cal-sync-icon { font-size: 22px; width: 34px; text-align: center; flex-shrink: 0; }
+.cal-sync-info { flex: 1; }
+.cal-sync-name { font-family: var(--body); font-size: 14px; font-weight: 500; color: var(--ink); }
+.cal-sync-desc { font-family: var(--mono); font-size: 9px; color: var(--ink-muted); letter-spacing: 0.06em; margin-top: 2px; }
+.cal-sync-steps { background: var(--paper-2); border: 1px solid var(--rule); padding: 14px 16px; margin-top: 14px; display: none; }
+.cal-sync-steps.open { display: block; }
+.cal-sync-step { font-family: var(--body); font-size: 12px; color: var(--ink-soft); padding: 4px 0; line-height: 1.5; }
+.cal-sync-preview { background: var(--ink); border-radius: 4px; padding: 14px 16px; margin-top: 14px; display: none; max-height: 200px; overflow-y: auto; }
+.cal-sync-preview.open { display: block; }
+.cal-sync-preview-title { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(245,241,232,0.45); margin-bottom: 8px; }
+.cal-sync-preview-event { display: flex; gap: 10px; padding: 5px 0; border-bottom: 1px solid rgba(245,241,232,0.08); }
+.cal-sync-preview-time { font-family: var(--mono); font-size: 9px; color: rgba(245,241,232,0.5); width: 120px; flex-shrink: 0; }
+.cal-sync-preview-name { font-family: var(--body); font-size: 12px; color: rgba(245,241,232,0.9); }
+
+/* Cat row edit */
+.cat-row-editbtn { font-family: var(--mono); font-size: 9px; color: var(--ink-muted); cursor: pointer; padding: 2px 7px; border: 1px solid var(--rule); background: none; margin-left: auto; }
+.cat-row-editbtn:hover { border-color: var(--ink); color: var(--ink); }
+.cat-inline-colors { display: flex; gap: 8px; align-items: center; padding: 6px 0 4px; }
+.cat-inline-colors label { font-family: var(--mono); font-size: 9px; color: var(--ink-muted); }
+
+/* ========================
    TIMESPAN BAR
    ======================== */
 .tt-timespan-bar {
@@ -2943,7 +3044,9 @@ body {
       </div>
       <button class="btn" onclick="calNavToday()">Today</button>
       <button class="btn" id="btnAddEvent" onclick="openTokenEditor()">+ Add Event</button>
+      <button class="btn" id="btnAddEventMonth" onclick="openTokenEditorForMonth()" style="display:none">+ Add Event</button>
       <button class="btn" onclick="importTimetableFromCSV()">Import CSV</button>
+      <button class="btn" onclick="openCalSyncModal()">Sync Calendar</button>
       <button class="btn" onclick="openCatModal()">Categories</button>
       <button class="btn" onclick="openPresetModal()">Templates</button>
       <button class="btn" style="color:var(--accent);border-color:var(--accent-soft)" onclick="clearTimetable()">Clear Week</button>
@@ -2990,6 +3093,103 @@ body {
     <div class="day-note-actions">
       <button class="btn" onclick="closeDayNote()">Cancel</button>
       <button class="btn primary" onclick="saveDayNote()">Save Note</button>
+    </div>
+  </div>
+</div>
+
+<!-- DAY DETAIL PANEL -->
+<div class="day-panel-overlay" id="dayPanelOverlay" onclick="closeDayPanel()"></div>
+<div class="day-panel" id="dayPanel">
+  <div class="day-panel-head">
+    <div>
+      <div class="day-panel-date" id="dayPanelDate">—</div>
+      <div class="day-panel-sub" id="dayPanelSub"></div>
+    </div>
+    <button class="modal-close" style="position:static;margin-left:12px" onclick="closeDayPanel()">×</button>
+  </div>
+  <div id="dayPanelBody"></div>
+  <button class="day-panel-add" id="dayPanelAddBtn" onclick="dayPanelAddEvent()">+ Add Event to This Day</button>
+  <div class="day-panel-note" id="dayPanelNoteSection"></div>
+</div>
+
+<!-- CAL SYNC MODAL -->
+<div class="cal-sync-overlay" id="calSyncOverlay">
+  <div class="cal-sync-box">
+    <button class="modal-close" onclick="closeCalSyncModal()">×</button>
+    <div class="cal-sync-title">Sync Calendar</div>
+    <div class="cal-sync-sub">IMPORT EVENTS FROM IOS, GOOGLE OR OUTLOOK</div>
+
+    <div class="cal-sync-platform" onclick="toggleCalSyncSteps('ios')">
+      <div class="cal-sync-icon">📱</div>
+      <div class="cal-sync-info">
+        <div class="cal-sync-name">iOS Calendar</div>
+        <div class="cal-sync-desc">Export from iPhone · Import .ics file</div>
+      </div>
+      <span style="font-family:var(--mono);font-size:10px;color:var(--ink-muted)">›</span>
+    </div>
+    <div class="cal-sync-steps" id="calSyncStepsIos">
+      <div class="cal-sync-step">1. Open the <strong>Calendar</strong> app on iPhone</div>
+      <div class="cal-sync-step">2. Tap <strong>Calendars</strong> at the bottom</div>
+      <div class="cal-sync-step">3. Tap ⓘ next to a calendar → <strong>Share Calendar</strong></div>
+      <div class="cal-sync-step">4. Share via Files/AirDrop → save as <strong>.ics</strong></div>
+      <div class="cal-sync-step">5. Upload the file below ↓</div>
+    </div>
+
+    <div class="cal-sync-platform" onclick="toggleCalSyncSteps('google')">
+      <div class="cal-sync-icon">📅</div>
+      <div class="cal-sync-info">
+        <div class="cal-sync-name">Google Calendar</div>
+        <div class="cal-sync-desc">Export from Google Calendar settings · Import .ics</div>
+      </div>
+      <span style="font-family:var(--mono);font-size:10px;color:var(--ink-muted)">›</span>
+    </div>
+    <div class="cal-sync-steps" id="calSyncStepsGoogle">
+      <div class="cal-sync-step">1. Go to <strong>calendar.google.com</strong> on desktop</div>
+      <div class="cal-sync-step">2. Settings → <strong>Import &amp; Export</strong> → Export</div>
+      <div class="cal-sync-step">3. Download the ZIP, extract the <strong>.ics</strong> file</div>
+      <div class="cal-sync-step">4. Upload it below ↓</div>
+    </div>
+
+    <div class="cal-sync-platform" onclick="toggleCalSyncSteps('outlook')">
+      <div class="cal-sync-icon">📧</div>
+      <div class="cal-sync-info">
+        <div class="cal-sync-name">Outlook / Office 365</div>
+        <div class="cal-sync-desc">Export from Outlook settings · Import .ics</div>
+      </div>
+      <span style="font-family:var(--mono);font-size:10px;color:var(--ink-muted)">›</span>
+    </div>
+    <div class="cal-sync-steps" id="calSyncStepsOutlook">
+      <div class="cal-sync-step">1. Go to <strong>outlook.com</strong> → Calendar</div>
+      <div class="cal-sync-step">2. Click the settings gear → <strong>View all Outlook settings</strong></div>
+      <div class="cal-sync-step">3. Calendar → Shared calendars → <strong>Export calendar</strong></div>
+      <div class="cal-sync-step">4. Upload the .ics file below ↓</div>
+    </div>
+
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--rule)">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:10px">Upload .ics File</div>
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+        <div class="btn" style="pointer-events:none;flex-shrink:0">Choose File</div>
+        <span style="font-family:var(--mono);font-size:10px;color:var(--ink-muted)" id="calSyncFileName">No file selected</span>
+        <input type="file" accept=".ics" style="display:none" id="calSyncFileInput" onchange="handleICSFile(this)">
+      </label>
+      <div class="cal-sync-preview" id="calSyncPreview">
+        <div class="cal-sync-preview-title">Events to import (<span id="calSyncPreviewCount">0</span>)</div>
+        <div id="calSyncPreviewBody"></div>
+      </div>
+    </div>
+
+    <div id="calSyncImportRange" style="display:none;margin-top:14px">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px">Import range</div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <input type="date" class="form-input" id="calSyncFrom" style="flex:1">
+        <span style="font-family:var(--mono);font-size:9px;color:var(--ink-muted)">to</span>
+        <input type="date" class="form-input" id="calSyncTo" style="flex:1">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:18px">
+      <button class="btn primary" id="calSyncImportBtn" onclick="confirmCalImport()" style="display:none">Import Events</button>
+      <button class="btn" onclick="closeCalSyncModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -3811,6 +4011,11 @@ const BUILTIN_CATS = {
 
 function getAllCats() {
   const cats = { ...BUILTIN_CATS };
+  // Apply user color overrides for built-in cats
+  const overrides = state?.catColorOverrides || {};
+  Object.keys(overrides).forEach(id => {
+    if (cats[id]) cats[id] = { ...cats[id], ...overrides[id] };
+  });
   (state?.customCategories || []).forEach(c => { cats[c.id] = { label: c.label, bg: c.bg, color: c.color }; });
   return cats;
 }
@@ -4212,12 +4417,13 @@ function _sidebarGoProject(id) {
 function setCalView(v) {
   calView = v;
   document.getElementById('ttWeekView').style.display = v === 'week' ? '' : 'none';
-  document.getElementById('ttMonthView').style.display = v === 'month' ? '' : 'none';
+  document.getElementById('ttMonthView').style.display = v === 'month' ? 'block' : 'none';
   const dayView = document.getElementById('ttDayView');
   if (dayView) dayView.style.display = v === 'day' ? '' : 'none';
   document.getElementById('btnWeekView').classList.toggle('active', v === 'week');
   document.getElementById('btnMonthView').classList.toggle('active', v === 'month');
-  document.getElementById('btnAddEvent').style.display = v === 'week' ? '' : 'none';
+  document.getElementById('btnAddEvent').style.display = (v === 'week' || v === 'day') ? '' : 'none';
+  document.getElementById('btnAddEventMonth').style.display = v === 'month' ? '' : 'none';
   const tsBar = document.getElementById('ttTimespanBar');
   if (tsBar) tsBar.classList.toggle('hidden', v === 'month');
   // Update day tab active states
@@ -4797,15 +5003,12 @@ function renderMonthView() {
   document.getElementById('ttWeekLabel').textContent = monthLabel;
   document.getElementById('ttWeekDisplay').textContent = monthLabel;
 
-  // Month header
   document.getElementById('monthHeader').innerHTML =
     DAYS_SHORT.map(d => `<div class="month-header-day">${d}</div>`).join('');
 
-  // Build calendar grid
   const firstDay = new Date(y, m, 1);
-  // Start from Monday of the week containing the 1st
   let start = new Date(firstDay);
-  const dow = (firstDay.getDay() + 6) % 7; // 0=Mon
+  const dow = (firstDay.getDay() + 6) % 7;
   start.setDate(start.getDate() - dow);
 
   const today = new Date();
@@ -4825,7 +5028,6 @@ function renderMonthView() {
       const isToday = dateStr === todayStr;
       const otherMonth = cellDate.getMonth() !== m;
 
-      // Get events for this day from all timetable weeks
       const dayOfWeek = (cellDate.getDay() + 6) % 7;
       const weekId = weekIdFromDate(cellDate);
       const tokens = (state.timetables[weekId] || []).filter(t => t.day === dayOfWeek);
@@ -4833,22 +5035,24 @@ function renderMonthView() {
 
       const note = state.dayNotes[dateStr] || '';
       const chips = tokens.slice(0, 3).map(t => {
-        const dotColor = getCatBg(t.cat || 'cat-routine');
-        const borderColor = getCatColor(t.cat || 'cat-routine');
-        return `<div class="month-event-chip" style="border-left-color:${borderColor}" title="${t.title}">
-          <span class="chip-dot" style="background:${dotColor};border:1px solid ${borderColor}"></span>
+        const bg = getCatBg(t.cat || 'cat-routine');
+        const col = getCatColor(t.cat || 'cat-routine');
+        return `<div class="month-event-chip"
+          style="border-left-color:${col};background:${bg}88"
+          onclick="event.stopPropagation();openDayPanel('${dateStr}')"
+          title="${t.title}">
+          <span class="chip-dot" style="background:${col}"></span>
           <span class="chip-time">${t.start}</span>
           <span class="chip-title">${t.title}</span>
         </div>`;
       }).join('');
       const more = tokens.length > 3 ? `<div class="month-more">+${tokens.length-3} more</div>` : '';
-      const noteHtml = note ? `<div class="month-note-text">${note}</div>` : '';
+      const noteHtml = note ? `<div class="month-note-text">✏ ${note}</div>` : '';
 
       html += `
         <div class="month-cell${isToday?' today':''}${otherMonth?' other-month':''}"
-             onclick="monthCellClick('${dateStr}','${cellDate.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}')">
+             onclick="openDayPanel('${dateStr}')">
           <div class="month-cell-date">
-            ${note ? '<span class="month-note-icon">✏</span>' : ''}
             <span class="date-num">${cellDate.getDate()}</span>
           </div>
           ${chips}${more}${noteHtml}
@@ -4860,7 +5064,109 @@ function renderMonthView() {
 }
 
 function monthCellClick(dateStr, label) {
-  openDayNote(dateStr, label);
+  openDayPanel(dateStr);
+}
+
+// ==============================================================
+// DAY DETAIL PANEL
+// ==============================================================
+let _dayPanelDate = null;
+
+function openDayPanel(dateStr) {
+  _dayPanelDate = dateStr;
+  const d = new Date(dateStr + 'T12:00:00');
+  document.getElementById('dayPanelDate').textContent =
+    d.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long' });
+  document.getElementById('dayPanelSub').textContent = String(d.getFullYear());
+
+  const weekId = weekIdFromDate(d);
+  const dow = (d.getDay() + 6) % 7;
+  const tokens = (state.timetables[weekId] || []).filter(t => t.day === dow);
+  tokens.sort((a,b) => a.start.localeCompare(b.start));
+  const note = state.dayNotes?.[dateStr] || '';
+
+  // Store weekId on button for add-event
+  document.getElementById('dayPanelAddBtn').dataset.weekId = weekId;
+  document.getElementById('dayPanelAddBtn').dataset.dow = dow;
+
+  let bodyHtml = '';
+  if (tokens.length === 0) {
+    bodyHtml = `<div class="day-panel-empty">No events scheduled</div>`;
+  } else {
+    tokens.forEach(t => {
+      const bg = getCatBg(t.cat || 'cat-routine');
+      const col = getCatColor(t.cat || 'cat-routine');
+      const tasksHtml = (t.tasks||[]).length
+        ? `<div class="day-panel-event-tasks">${t.tasks.map(tk=>`☐ ${tk}`).join('  ·  ')}</div>`
+        : '';
+      bodyHtml += `
+        <div class="day-panel-event">
+          <div class="day-panel-event-bar" style="background:${col}"></div>
+          <div class="day-panel-event-body">
+            <div class="day-panel-event-time">${t.start} – ${t.end} · ${getAllCats()[t.cat||'cat-routine']?.label||''}</div>
+            <div class="day-panel-event-title">${t.title}</div>
+            ${t.sub ? `<div class="day-panel-event-sub">${t.sub}</div>` : ''}
+            ${tasksHtml}
+          </div>
+          <div class="day-panel-event-actions">
+            <button class="day-panel-event-btn" onclick="dayPanelEditEvent('${t.id}','${weekId}')">Edit</button>
+            <button class="day-panel-event-btn del" onclick="dayPanelDeleteEvent('${t.id}','${weekId}')">Delete</button>
+          </div>
+        </div>`;
+    });
+  }
+  document.getElementById('dayPanelBody').innerHTML = bodyHtml;
+
+  // Note section
+  document.getElementById('dayPanelNoteSection').innerHTML = note
+    ? `<div class="day-panel-note-label">Day Note</div>
+       <div style="font-family:var(--body);font-size:13px;color:var(--ink-soft);line-height:1.5">${note}</div>
+       <button class="btn" style="margin-top:8px;font-size:10px" onclick="closeDayPanel();openDayNote('${dateStr}','${d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}')">Edit Note</button>`
+    : `<button class="btn" style="margin:0 20px 16px;font-size:10px;width:calc(100% - 40px)" onclick="closeDayPanel();openDayNote('${dateStr}','${d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}')">+ Add Day Note</button>`;
+
+  document.getElementById('dayPanelOverlay').classList.add('open');
+  document.getElementById('dayPanel').classList.add('open');
+}
+
+function closeDayPanel() {
+  document.getElementById('dayPanelOverlay').classList.remove('open');
+  document.getElementById('dayPanel').classList.remove('open');
+  _dayPanelDate = null;
+}
+
+function dayPanelEditEvent(tokenId, weekId) {
+  closeDayPanel();
+  // Temporarily set currentWeekId to the event's week, open editor, restore
+  const prevWeek = currentWeekId;
+  currentWeekId = weekId;
+  openTokenEditorForEdit(tokenId);
+  // After save, renderMonthView will be called by saveToken if we hook it
+}
+
+function dayPanelDeleteEvent(tokenId, weekId) {
+  if (!state.timetables[weekId]) return;
+  state.timetables[weekId] = state.timetables[weekId].filter(t => t.id !== tokenId);
+  saveState();
+  closeDayPanel();
+  renderMonthView();
+  showToast('Event deleted');
+}
+
+function dayPanelAddEvent() {
+  if (!_dayPanelDate) return;
+  const d = new Date(_dayPanelDate + 'T12:00:00');
+  const weekId = weekIdFromDate(d);
+  const dow = (d.getDay() + 6) % 7;
+  // Navigate week view to that week
+  currentWeekId = weekId;
+  if (!state.timetables[currentWeekId]) state.timetables[currentWeekId] = [];
+  closeDayPanel();
+  openTokenEditor(dow, '09:00');
+}
+
+function openTokenEditorForMonth() {
+  if (!calMonthDate) calMonthDate = new Date();
+  openTokenEditor(0, '09:00');
 }
 
 // ==============================================================
@@ -4891,6 +5197,142 @@ async function saveDayNote() {
 }
 
 // ==============================================================
+// CALENDAR SYNC (ICS IMPORT)
+// ==============================================================
+let _parsedICSEvents = [];
+
+function openCalSyncModal() {
+  _parsedICSEvents = [];
+  document.getElementById('calSyncFileName').textContent = 'No file selected';
+  document.getElementById('calSyncPreview').classList.remove('open');
+  document.getElementById('calSyncImportBtn').style.display = 'none';
+  document.getElementById('calSyncImportRange').style.display = 'none';
+  document.getElementById('calSyncFileInput').value = '';
+  document.getElementById('calSyncOverlay').classList.add('open');
+}
+function closeCalSyncModal() {
+  document.getElementById('calSyncOverlay').classList.remove('open');
+}
+function toggleCalSyncSteps(platform) {
+  ['ios','google','outlook'].forEach(p => {
+    const el = document.getElementById('calSyncSteps' + p.charAt(0).toUpperCase() + p.slice(1));
+    if (el) el.classList.toggle('open', p === platform && !el.classList.contains('open'));
+  });
+}
+
+function handleICSFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('calSyncFileName').textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    _parsedICSEvents = parseICS(e.target.result);
+    showICSPreview(_parsedICSEvents);
+  };
+  reader.readAsText(file);
+}
+
+function parseICS(text) {
+  const events = [];
+  const vevents = text.split('BEGIN:VEVENT');
+  vevents.slice(1).forEach(block => {
+    const get = key => {
+      const m = block.match(new RegExp(`${key}(?:;[^:]*)?:([^\\r\\n]+)`));
+      return m ? m[1].trim() : '';
+    };
+    const dtstart = get('DTSTART');
+    const dtend = get('DTEND');
+    const summary = get('SUMMARY').replace(/\\,/g, ',').replace(/\\n/g, ' ');
+    const description = get('DESCRIPTION').replace(/\\,/g, ',').replace(/\\n/g, ' ');
+    if (!dtstart || !summary) return;
+
+    const parseDate = str => {
+      // YYYYMMDDTHHMMSS or YYYYMMDD
+      const clean = str.replace(/Z$/, '');
+      if (clean.length >= 15) {
+        return new Date(
+          parseInt(clean.slice(0,4)), parseInt(clean.slice(4,6))-1, parseInt(clean.slice(6,8)),
+          parseInt(clean.slice(9,11)||0), parseInt(clean.slice(11,13)||0), 0
+        );
+      }
+      return new Date(parseInt(clean.slice(0,4)), parseInt(clean.slice(4,6))-1, parseInt(clean.slice(6,8)), 9, 0, 0);
+    };
+
+    const start = parseDate(dtstart);
+    const end = dtend ? parseDate(dtend) : new Date(start.getTime() + 3600000);
+    if (isNaN(start.getTime())) return;
+
+    const pad = n => String(n).padStart(2,'0');
+    events.push({
+      title: summary,
+      sub: description.slice(0, 80),
+      date: start.toISOString().slice(0,10),
+      start: `${pad(start.getHours())}:${pad(start.getMinutes())}`,
+      end: `${pad(end.getHours())}:${pad(end.getMinutes())}`,
+      day: (start.getDay() + 6) % 7,
+      weekId: weekIdFromDate(start),
+    });
+  });
+  events.sort((a,b) => a.date.localeCompare(b.date));
+  return events;
+}
+
+function showICSPreview(events) {
+  const preview = document.getElementById('calSyncPreview');
+  const body = document.getElementById('calSyncPreviewBody');
+  document.getElementById('calSyncPreviewCount').textContent = events.length;
+
+  if (events.length === 0) {
+    body.innerHTML = `<div style="font-family:var(--mono);font-size:9px;color:rgba(245,241,232,0.4)">No parseable events found in this file.</div>`;
+    preview.classList.add('open');
+    return;
+  }
+
+  // Set default date range
+  const dates = events.map(e => e.date).sort();
+  document.getElementById('calSyncFrom').value = dates[0];
+  document.getElementById('calSyncTo').value = dates[dates.length-1];
+  document.getElementById('calSyncImportRange').style.display = 'block';
+
+  body.innerHTML = events.slice(0,20).map(e =>
+    `<div class="cal-sync-preview-event">
+      <div class="cal-sync-preview-time">${e.date} ${e.start}</div>
+      <div class="cal-sync-preview-name">${e.title}</div>
+    </div>`
+  ).join('') + (events.length > 20 ? `<div style="font-family:var(--mono);font-size:9px;color:rgba(245,241,232,0.4);padding:6px 0">…and ${events.length-20} more</div>` : '');
+
+  preview.classList.add('open');
+  document.getElementById('calSyncImportBtn').style.display = '';
+}
+
+async function confirmCalImport() {
+  const from = document.getElementById('calSyncFrom').value;
+  const to = document.getElementById('calSyncTo').value;
+  const filtered = _parsedICSEvents.filter(e => (!from || e.date >= from) && (!to || e.date <= to));
+
+  if (!state.timetables) state.timetables = {};
+  let added = 0;
+  filtered.forEach(e => {
+    if (!state.timetables[e.weekId]) state.timetables[e.weekId] = [];
+    const exists = state.timetables[e.weekId].some(t => t.title === e.title && t.day === e.day && t.start === e.start);
+    if (!exists) {
+      state.timetables[e.weekId].push({
+        id: 'ics-' + Date.now() + '-' + Math.random().toString(36).slice(2),
+        day: e.day, start: e.start, end: e.end,
+        title: e.title, sub: e.sub, cat: 'cat-routine', reminder: '', tasks: []
+      });
+      added++;
+    }
+  });
+
+  await saveState();
+  closeCalSyncModal();
+  if (calView === 'month') renderMonthView();
+  else renderTimetable();
+  showToast(`${added} event${added!==1?'s':''} imported`);
+}
+
+// ==============================================================
 // CUSTOM CATEGORIES
 // ==============================================================
 function openCatModal() {
@@ -4905,22 +5347,79 @@ function closeCatModal() {
 }
 function renderCatList() {
   const list = document.getElementById('catList');
+  const overrides = state.catColorOverrides || {};
   const customs = state.customCategories || [];
-  const builtinHtml = Object.entries(BUILTIN_CATS).map(([id, c]) => `
-    <div class="cat-row">
-      <div class="cat-swatch" style="background:${c.bg}"></div>
+
+  const builtinHtml = Object.entries(BUILTIN_CATS).map(([id, c]) => {
+    const effective = overrides[id] ? { ...c, ...overrides[id] } : c;
+    const hasOverride = !!overrides[id];
+    return `
+    <div class="cat-row" id="catrow-${id}">
+      <div class="cat-swatch" style="background:${effective.bg};border:2px solid ${effective.color}"></div>
       <div class="cat-row-name">${c.label}</div>
-      <span style="font-family:var(--mono);font-size:9px;color:var(--ink-muted);letter-spacing:0.1em">Built-in</span>
+      ${hasOverride ? `<button class="cat-row-editbtn" onclick="resetBuiltinCatColor('${id}')">Reset</button>` : ''}
+      <button class="cat-row-editbtn" onclick="toggleBuiltinCatEdit('${id}')">Edit colour</button>
     </div>
-  `).join('');
+    <div class="cat-inline-colors" id="catinline-${id}" style="display:none;padding:6px 0 8px 0">
+      <label>BG</label>
+      <input type="color" class="cat-color-input" id="catinline-bg-${id}" value="${effective.bg}">
+      <label>Text</label>
+      <input type="color" class="cat-color-input" id="catinline-col-${id}" value="${effective.color}">
+      <button class="btn primary" style="font-size:10px;padding:4px 12px" onclick="saveBuiltinCatColor('${id}')">Apply</button>
+    </div>`;
+  }).join('');
+
   const customHtml = customs.map((c, i) => `
-    <div class="cat-row">
-      <div class="cat-swatch" style="background:${c.bg}"></div>
+    <div class="cat-row" id="catrow-custom-${i}">
+      <div class="cat-swatch" style="background:${c.bg};border:2px solid ${c.color}"></div>
       <div class="cat-row-name">${c.label}</div>
-      <span class="cat-row-del" onclick="deleteCustomCat(${i})">Remove</span>
+      <button class="cat-row-editbtn" onclick="toggleCustomCatEdit(${i})">Edit colour</button>
+      <button class="cat-row-editbtn" style="color:var(--accent);border-color:rgba(184,52,28,0.3)" onclick="deleteCustomCat(${i})">Remove</button>
     </div>
-  `).join('');
-  list.innerHTML = builtinHtml + (customHtml ? `<div style="height:8px"></div>${customHtml}` : '');
+    <div class="cat-inline-colors" id="catinline-custom-${i}" style="display:none;padding:6px 0 8px 0">
+      <label>BG</label>
+      <input type="color" class="cat-color-input" id="catinline-custbg-${i}" value="${c.bg}">
+      <label>Text</label>
+      <input type="color" class="cat-color-input" id="catinline-custcol-${i}" value="${c.color}">
+      <button class="btn primary" style="font-size:10px;padding:4px 12px" onclick="saveCustomCatColor(${i})">Apply</button>
+    </div>`).join('');
+
+  list.innerHTML = builtinHtml + (customHtml ? `<div style="height:12px;border-top:1px solid var(--rule);margin-top:4px"></div>${customHtml}` : '');
+}
+
+function toggleBuiltinCatEdit(id) {
+  const el = document.getElementById(`catinline-${id}`);
+  el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+}
+async function saveBuiltinCatColor(id) {
+  const bg = document.getElementById(`catinline-bg-${id}`).value;
+  const color = document.getElementById(`catinline-col-${id}`).value;
+  if (!state.catColorOverrides) state.catColorOverrides = {};
+  state.catColorOverrides[id] = { bg, color };
+  await saveState();
+  renderCatList();
+  showToast('Colour updated');
+}
+async function resetBuiltinCatColor(id) {
+  if (state.catColorOverrides) delete state.catColorOverrides[id];
+  await saveState();
+  renderCatList();
+  showToast('Colour reset');
+}
+function toggleCustomCatEdit(i) {
+  const el = document.getElementById(`catinline-custom-${i}`);
+  el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+}
+async function saveCustomCatColor(i) {
+  const bg = document.getElementById(`catinline-custbg-${i}`).value;
+  const color = document.getElementById(`catinline-custcol-${i}`).value;
+  if (state.customCategories?.[i]) {
+    state.customCategories[i].bg = bg;
+    state.customCategories[i].color = color;
+    await saveState();
+    renderCatList();
+    showToast('Colour updated');
+  }
 }
 async function addCustomCat() {
   const name = document.getElementById('catAddName').value.trim();
@@ -5013,7 +5512,8 @@ function saveToken() {
   } else {
     state.timetables[currentWeekId].push(token);
   }
-  saveState(); closeTokenEditor(); renderTimetable();
+  saveState(); closeTokenEditor();
+  if (calView === 'month') renderMonthView(); else renderTimetable();
   scheduleEventReminders();
   showToast(editingTokenId ? 'Event updated' : 'Event added');
 }
