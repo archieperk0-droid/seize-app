@@ -1593,6 +1593,14 @@ input[type="color"].cat-color-input {
   letter-spacing: -0.02em;
   margin-bottom: 20px;
 }
+.te-day-tab {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 6px 11px; background: none; border: none; border-right: 1px solid var(--rule);
+  cursor: pointer; color: var(--ink-muted); transition: all 0.15s; white-space: nowrap;
+}
+.te-day-tab:last-child { border-right: none; }
+.te-day-tab:hover { color: var(--ink); background: var(--paper-2); }
+.te-day-tab.active { background: var(--ink); color: var(--paper); }
 .form-row { margin-bottom: 14px; }
 .form-label {
   font-family: var(--mono);
@@ -3834,8 +3842,17 @@ body {
       <label class="form-label">Subtitle / Note (optional)</label>
       <input type="text" class="form-input" id="teSub" placeholder="e.g. CRM testing">
     </div>
+    <div class="form-row" style="margin-bottom:10px" id="teDayModeRow">
+      <label class="form-label">Repeat</label>
+      <div style="display:flex;gap:0;border:1px solid var(--rule);width:fit-content">
+        <button class="te-day-tab active" id="teTabSingle"  onclick="setTeDayMode('single')">Single Day</button>
+        <button class="te-day-tab"        id="teTabWeekdays" onclick="setTeDayMode('weekdays')">Weekdays</button>
+        <button class="te-day-tab"        id="teTabWeekends" onclick="setTeDayMode('weekends')">Weekends</button>
+        <button class="te-day-tab"        id="teTabEveryday" onclick="setTeDayMode('everyday')">Every Day</button>
+      </div>
+    </div>
     <div class="form-row-2">
-      <div class="form-row" style="margin-bottom:0">
+      <div class="form-row" style="margin-bottom:0" id="teDaySelectRow">
         <label class="form-label">Day</label>
         <select class="form-input" id="teDay">
           <option value="0">Monday</option>
@@ -5691,9 +5708,20 @@ function rebuildCatDropdown() {
 
 // Token editor
 let _tokenEditorMeta = {};
+let _teDayMode = 'single';
+
+function setTeDayMode(mode) {
+  _teDayMode = mode;
+  ['single','weekdays','weekends','everyday'].forEach(m => {
+    document.getElementById('teTab' + m.charAt(0).toUpperCase() + m.slice(1))?.classList.toggle('active', m === mode);
+  });
+  document.getElementById('teDaySelectRow').style.display = mode === 'single' ? '' : 'none';
+}
+
 function openTokenEditor(day=0, time='09:00') {
   editingTokenId = null;
   _tokenEditorMeta = { day, time };
+  _teDayMode = 'single';
   rebuildCatDropdown();
   document.getElementById('tokenEditorTitle').textContent = 'Add Event';
   document.getElementById('teTitle').value = '';
@@ -5705,6 +5733,8 @@ function openTokenEditor(day=0, time='09:00') {
   document.getElementById('teReminder').value = '';
   document.getElementById('teTasks').value = '';
   document.getElementById('teDuplicateBtn').style.display = 'none';
+  document.getElementById('teDayModeRow').style.display = '';
+  setTeDayMode('single');
   document.getElementById('tokenEditor').classList.add('show');
   setTimeout(()=>document.getElementById('teTitle').focus(),100);
 }
@@ -5712,6 +5742,7 @@ function openTokenEditorForEdit(id) {
   const token = state.timetables[currentWeekId]?.find(t=>t.id===id);
   if (!token) return;
   editingTokenId = id;
+  _teDayMode = 'single';
   rebuildCatDropdown();
   document.getElementById('tokenEditorTitle').textContent = 'Edit Event';
   document.getElementById('teTitle').value = token.title;
@@ -5723,6 +5754,8 @@ function openTokenEditorForEdit(id) {
   document.getElementById('teReminder').value = token.reminder || '';
   document.getElementById('teTasks').value = (token.tasks||[]).join('\n');
   document.getElementById('teDuplicateBtn').style.display = '';
+  document.getElementById('teDayModeRow').style.display = 'none';
+  document.getElementById('teDaySelectRow').style.display = '';
   document.getElementById('tokenEditor').classList.add('show');
 }
 function closeTokenEditor() {
@@ -5735,28 +5768,41 @@ function saveToken() {
   const reminder = document.getElementById('teReminder').value || '';
   const tasksRaw = document.getElementById('teTasks').value.trim();
   const tasks = tasksRaw ? tasksRaw.split('\n').map(t=>t.trim()).filter(Boolean) : [];
-  const token = {
-    id: editingTokenId || 'tt-'+Date.now(),
-    day: parseInt(document.getElementById('teDay').value),
-    start: document.getElementById('teStart').value,
-    end: document.getElementById('teEnd').value,
-    title: title,
-    sub: document.getElementById('teSub').value.trim(),
-    cat: document.getElementById('teCat').value,
-    reminder: reminder,
-    tasks
-  };
+  const start = document.getElementById('teStart').value;
+  const end   = document.getElementById('teEnd').value;
+  const sub   = document.getElementById('teSub').value.trim();
+  const cat   = document.getElementById('teCat').value;
+
+  const daySets = { single:[parseInt(document.getElementById('teDay').value)], weekdays:[0,1,2,3,4], weekends:[5,6], everyday:[0,1,2,3,4,5,6] };
+  const days = daySets[_teDayMode] || daySets.single;
+
   if (!state.timetables[currentWeekId]) state.timetables[currentWeekId] = [];
+
   if (editingTokenId) {
+    // Editing: always single day
+    const token = { id: editingTokenId, day: days[0], start, end, title, sub, cat, reminder, tasks };
     const idx = state.timetables[currentWeekId].findIndex(t=>t.id===editingTokenId);
     if (idx >= 0) state.timetables[currentWeekId][idx] = token;
-  } else {
-    state.timetables[currentWeekId].push(token);
+    saveState(); closeTokenEditor();
+    if (calView === 'month') renderMonthView(); else renderTimetable();
+    scheduleEventReminders();
+    showToast('Event updated');
+    return;
   }
+
+  // New event: create one token per day in the set
+  days.forEach((day, i) => {
+    state.timetables[currentWeekId].push({
+      id: 'tt-' + (Date.now() + i) + '-' + Math.random().toString(36).slice(2),
+      day, start, end, title, sub, cat, reminder, tasks
+    });
+  });
+
   saveState(); closeTokenEditor();
   if (calView === 'month') renderMonthView(); else renderTimetable();
   scheduleEventReminders();
-  showToast(editingTokenId ? 'Event updated' : 'Event added');
+  const label = { single:'Event added', weekdays:'5 weekday events added', weekends:'Weekend events added', everyday:'7 daily events added' }[_teDayMode] || 'Event added';
+  showToast(label);
 }
 function addOneHour(time) {
   const [h,m] = time.split(':').map(Number);
