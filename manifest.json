@@ -1,13 +1,14 @@
 {
-  "name": "Seize the Day",
+  "name": "Seize",
   "short_name": "Seize",
-  "description": "Seize the day system — daily command, projects, habits, focus.",
-  "start_url": "/",
+  "description": "Daily command centre — calendar, projects, habits, focus.",
+  "start_url": "/seize-app/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f5f1e8",
+  "background_color": "#1a1614",
   "theme_color": "#1a1614",
   "icons": [
+    { "src": "logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ],
