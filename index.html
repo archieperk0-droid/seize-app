@@ -1510,6 +1510,28 @@ input[type="color"].cat-color-input {
 }
 .tt-token:hover .tt-token-del { opacity: 0.6; }
 .tt-token-del:hover { opacity: 1 !important; }
+.tt-token-copy {
+  position: absolute;
+  top: 2px; right: 20px;
+  background: none; border: none; cursor: pointer;
+  font-size: 11px; opacity: 0; line-height: 1;
+  color: inherit; transition: opacity 0.15s; padding: 0;
+}
+.tt-token:hover .tt-token-copy { opacity: 0.5; }
+.tt-token-copy:hover { opacity: 1 !important; }
+.tt-token.copied-source { outline: 2px dashed currentColor; outline-offset: 2px; opacity: 0.7; }
+.tt-cell.paste-ready { cursor: crosshair !important; background: rgba(184,52,28,0.06) !important; }
+.tt-cell.paste-ready:hover { background: rgba(184,52,28,0.14) !important; }
+.paste-mode-bar {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--accent); color: #fff;
+  padding: 8px 16px; display: flex; align-items: center; gap: 12px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.paste-mode-bar button {
+  background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+  color: #fff; font-family: var(--mono); font-size: 9px; padding: 3px 10px; cursor: pointer;
+}
 
 /* Token colours */
 .cat-work     { background: #ccdaed; color: #1a3a5c; }
@@ -3202,6 +3224,12 @@ body {
       <span style="font-family:var(--mono);font-size:9px;color:var(--ink-muted)">→</span>
       <select class="tt-timespan-select" id="ttEndHour" onchange="applyTimeSpan()">
       </select>
+    </div>
+
+    <!-- Paste mode bar (hidden when not copying) -->
+    <div class="paste-mode-bar" id="pasteModeBar" style="display:none">
+      <span>⎘ Paste mode — click any slot to place a copy</span>
+      <button onclick="cancelPasteMode()">Cancel (Esc)</button>
     </div>
 
     <!-- WEEK VIEW -->
@@ -4946,6 +4974,7 @@ function cycleMilestoneStatus(mid) {
 // TIMETABLE
 // ==============================================================
 function renderTimetable() {
+  if (_copiedToken) cancelPasteMode();
   const week = state.weeks[currentWeekId];
   if (!week) return;
 
@@ -5002,8 +5031,9 @@ function renderTimetable() {
           ${DAYS_FULL.map((_,di) => `
             <div class="tt-cell" data-day="${di}" data-time="${timeKey}"
               ondragover="ttDragOver(event)" ondrop="ttDrop(event,${di},'${timeKey}')"
-              ondragleave="ttDragLeave(event)">
-              <button class="tt-add-token" onclick="openTokenEditor(${di},'${timeKey}')">+</button>
+              ondragleave="ttDragLeave(event)"
+              onclick="ttCellClick(event,${di},'${timeKey}')">
+              <button class="tt-add-token" onclick="openTokenEditor(${di},'${timeKey}');event.stopPropagation()">+</button>
             </div>
           `).join('')}
         </div>
@@ -5057,6 +5087,7 @@ function renderTokensOnGrid(tokens) {
     el.innerHTML = `
       <span class="tt-token-title">${token.title}</span>
       ${token.sub ? `<span class="tt-token-sub">${token.sub}</span>` : ''}
+      <button class="tt-token-copy" title="Copy event" onclick="copyToken('${token.id}',event)">⎘</button>
       <button class="tt-token-del" onclick="deleteToken('${token.id}')">×</button>
     `;
     el.ondragstart = (e) => ttTokenDragStart(e, token.id);
@@ -5127,6 +5158,66 @@ function overlapCancel() {
 function deleteToken(id) {
   state.timetables[currentWeekId] = state.timetables[currentWeekId].filter(t=>t.id!==id);
   saveState(); renderTimetable();
+}
+
+// ==============================================================
+// TOKEN COPY / PASTE
+// ==============================================================
+let _copiedToken = null;
+
+function copyToken(id, e) {
+  if (e) e.stopPropagation();
+  const token = state.timetables[currentWeekId]?.find(t => t.id === id);
+  if (!token) return;
+  _copiedToken = { ...token };
+  // Visual: mark source token
+  document.querySelectorAll('.tt-token').forEach(el => el.classList.remove('copied-source'));
+  const src = document.getElementById('tok-' + id);
+  if (src) src.classList.add('copied-source');
+  // Enter paste mode
+  document.querySelectorAll('.tt-cell').forEach(el => el.classList.add('paste-ready'));
+  document.getElementById('pasteModeBar').style.display = '';
+  showToast('⎘ Event copied — click any slot to paste');
+  // Keyboard cancel
+  document.addEventListener('keydown', _pasteKeyHandler);
+}
+
+function ttCellClick(e, day, time) {
+  if (!_copiedToken) return;
+  e.stopPropagation();
+  pasteToken(day, time);
+}
+
+function pasteToken(day, time) {
+  if (!_copiedToken) return;
+  const duration = timeDurationSlots(_copiedToken.start, _copiedToken.end);
+  const [h, m] = time.split(':').map(Number);
+  const endMins = h * 60 + m + duration * 30;
+  const newEnd = `${String(Math.floor(endMins / 60)).padStart(2,'0')}:${String(endMins % 60).padStart(2,'0')}`;
+  const copy = {
+    ..._copiedToken,
+    id: 'tt-' + Date.now() + '-' + Math.random().toString(36).slice(2),
+    day,
+    start: time,
+    end: newEnd,
+  };
+  if (!state.timetables[currentWeekId]) state.timetables[currentWeekId] = [];
+  state.timetables[currentWeekId].push(copy);
+  saveState();
+  renderTimetable();
+  showToast('Event pasted — click another slot or Esc to finish');
+}
+
+function cancelPasteMode() {
+  _copiedToken = null;
+  document.querySelectorAll('.tt-token').forEach(el => el.classList.remove('copied-source'));
+  document.querySelectorAll('.tt-cell').forEach(el => el.classList.remove('paste-ready'));
+  document.getElementById('pasteModeBar').style.display = 'none';
+  document.removeEventListener('keydown', _pasteKeyHandler);
+}
+
+function _pasteKeyHandler(e) {
+  if (e.key === 'Escape') cancelPasteMode();
 }
 
 function renderTTLegend() {
