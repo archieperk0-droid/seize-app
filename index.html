@@ -2279,6 +2279,23 @@ body {
 .habits-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px 20px; min-height:60vh; }
 .habits-empty-title { font-family:var(--display); font-size:30px; font-style:italic; font-weight:500; margin-bottom:10px; }
 .habits-empty-sub { font-family:var(--body); font-size:13px; color:var(--ink-muted); margin-bottom:24px; line-height:1.6; max-width:360px; }
+.session-brief-card { background:var(--ink); color:var(--paper); border-radius:10px; padding:18px 20px; margin-bottom:20px; }
+.sbc-label { font-family:var(--mono); font-size:8px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(245,241,232,0.5); margin-bottom:6px; }
+.sbc-theme { font-family:var(--display); font-size:20px; font-style:italic; font-weight:500; margin-bottom:4px; }
+.sbc-focus { font-family:var(--body); font-size:13px; color:rgba(245,241,232,0.75); margin-bottom:14px; line-height:1.5; }
+.sbc-structure { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
+.sbc-row { display:flex; gap:10px; align-items:flex-start; font-family:var(--body); font-size:12px; color:rgba(245,241,232,0.7); line-height:1.45; }
+.sbc-tag { font-family:var(--mono); font-size:8px; letter-spacing:0.1em; text-transform:uppercase; padding:2px 7px; border-radius:3px; flex-shrink:0; margin-top:1px; }
+.sbc-tag.warm { background:#a06820; color:#fff; }
+.sbc-tag.main { background:#b8341c; color:#fff; }
+.sbc-tag.cool { background:#1a4a7a; color:#fff; }
+.yt-links-row { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+.yt-link-btn { display:inline-flex; align-items:center; gap:5px; padding:6px 12px; background:rgba(245,241,232,0.08); border:1px solid rgba(245,241,232,0.15); border-radius:5px; font-family:var(--mono); font-size:9px; letter-spacing:0.08em; color:rgba(245,241,232,0.8); text-decoration:none; transition:background 0.15s; }
+.yt-link-btn:hover { background:rgba(245,241,232,0.15); }
+.plan-week-card.collapsed .plan-session-box, .plan-week-card.collapsed .pwc-goal, .plan-week-card.collapsed .pwc-note, .plan-week-card.collapsed .pwc-milestone { display:none; }
+.plan-week-card.collapsed .pwc-focus { display:none; }
+.plan-week-card.collapsed { opacity:0.6; cursor:pointer; }
+.plan-week-card.collapsed:hover { opacity:0.85; }
 
 /* ---- Habit Wizard ---- */
 .habit-wizard { position:fixed; inset:0; background:rgba(26,22,20,.75); z-index:900; display:none; align-items:center; justify-content:center; padding:20px; }
@@ -3469,6 +3486,11 @@ body {
         <input type="time" class="form-input" id="teReminder" style="width:130px">
         <span style="font-family:var(--mono);font-size:9px;color:var(--ink-muted)">Leave blank for no reminder</span>
       </div>
+    </div>
+    <div class="form-row" style="margin-top:14px">
+      <label class="form-label">Session Checklist (optional)</label>
+      <textarea class="form-input" id="teTasks" rows="3" placeholder="One task per line:&#10;Brush teeth&#10;Shower&#10;Breakfast" style="resize:vertical;font-family:var(--body);font-size:12px;line-height:1.6"></textarea>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--ink-muted);margin-top:3px">Tasks appear as a ☐ checklist in your lock screen notification</div>
     </div>
     <div class="form-actions">
       <button class="btn primary" onclick="saveToken()">Save Event</button>
@@ -4897,6 +4919,7 @@ function openTokenEditor(day=0, time='09:00') {
   document.getElementById('teEnd').value = addOneHour(time);
   document.getElementById('teCat').value = 'cat-routine';
   document.getElementById('teReminder').value = '';
+  document.getElementById('teTasks').value = '';
   document.getElementById('teDuplicateBtn').style.display = 'none';
   document.getElementById('tokenEditor').classList.add('show');
   setTimeout(()=>document.getElementById('teTitle').focus(),100);
@@ -4914,6 +4937,7 @@ function openTokenEditorForEdit(id) {
   document.getElementById('teEnd').value = token.end;
   document.getElementById('teCat').value = token.cat || 'cat-routine';
   document.getElementById('teReminder').value = token.reminder || '';
+  document.getElementById('teTasks').value = (token.tasks||[]).join('\n');
   document.getElementById('teDuplicateBtn').style.display = '';
   document.getElementById('tokenEditor').classList.add('show');
 }
@@ -4925,6 +4949,8 @@ function saveToken() {
   const title = document.getElementById('teTitle').value.trim();
   if (!title) { alert('Title required'); return; }
   const reminder = document.getElementById('teReminder').value || '';
+  const tasksRaw = document.getElementById('teTasks').value.trim();
+  const tasks = tasksRaw ? tasksRaw.split('\n').map(t=>t.trim()).filter(Boolean) : [];
   const token = {
     id: editingTokenId || 'tt-'+Date.now(),
     day: parseInt(document.getElementById('teDay').value),
@@ -4933,7 +4959,8 @@ function saveToken() {
     title: title,
     sub: document.getElementById('teSub').value.trim(),
     cat: document.getElementById('teCat').value,
-    reminder: reminder
+    reminder: reminder,
+    tasks
   };
   if (!state.timetables[currentWeekId]) state.timetables[currentWeekId] = [];
   if (editingTokenId) {
@@ -5049,8 +5076,11 @@ function scheduleEventReminders() {
     if (fireTime <= now) return;
     const delay = fireTime - now;
     const t = setTimeout(() => {
-      new Notification('Seize — Reminder', {
-        body: `${token.title}${token.sub ? ' — ' + token.sub : ''} — starts at ${token.start}`,
+      const taskLines = (token.tasks||[]).length
+        ? '\n' + token.tasks.map(t=>`☐  ${t}`).join('\n')
+        : '';
+      new Notification(`Seize — ${token.title}`, {
+        body: `${token.start}–${token.end}${token.sub ? '\n'+token.sub : ''}${taskLines}`,
         icon: '/seize-app/icon-192.png'
       });
     }, delay);
@@ -5339,12 +5369,16 @@ function renderProjectPane(p) {
     ${pipelineBar}
     ${problemBlock}
     ${successBlock}
-    <div class="agent-panel" id="agent-${p.id}">
+    <div class="agent-panel" id="agent-${p.id}" style="margin-bottom:12px">
       <div class="agent-header">
-        <div class="agent-label"><div class="agent-pulse"></div>AI Priority Agent — ${p.name}</div>
-        <button class="btn" onclick="runPriorityAgent('${p.id}')">↻ Refresh Analysis</button>
+        <div class="agent-label"><div class="agent-pulse"></div>Project Brief</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" onclick="generateProjectBrief('${p.id}')">${p.aiBrief ? '↻ Refresh Brief' : '⚡ Generate Brief'}</button>
+          <button class="btn" onclick="runPriorityAgent('${p.id}')">Quick Analysis</button>
+        </div>
       </div>
-      <div class="agent-output" id="agent-output-${p.id}">Click "Refresh Analysis" to get an AI review of your current tasks and recommend what to focus on next.</div>
+      <div id="proj-brief-${p.id}">${p.aiBrief ? _renderProjectBrief(p.aiBrief, p.id) : '<div style="font-family:var(--body);font-size:12px;color:var(--ink-muted);padding:10px 0">Generate a structured project brief with next actions, session focus, and strategic insights.</div>'}</div>
+      <div class="agent-output" id="agent-output-${p.id}" style="display:none"></div>
     </div>
 
     <div class="proj-layout">
@@ -5466,6 +5500,7 @@ async function runPriorityAgent(pid) {
   const p = week.projects.find(x=>x.id===pid);
   if (!p) return;
   const outputEl = document.getElementById('agent-output-'+pid);
+  outputEl.style.display = '';
   outputEl.className = 'agent-output loading';
   outputEl.textContent = 'Agent thinking…';
 
@@ -5491,10 +5526,17 @@ Please provide:
 
 Be direct, practical, and specific. No fluff. Format as plain text with clear sections.`;
 
+  const apiKey = state.settings?.anthropicApiKey;
+  if (!apiKey) { outputEl.className = 'agent-output'; outputEl.textContent = 'Add your Anthropic API key in Settings to enable the AI agent.'; return; }
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
         model: 'claude-3-5-sonnet-20241022',
         max_tokens: 1000,
@@ -5502,16 +5544,116 @@ Be direct, practical, and specific. No fluff. Format as plain text with clear se
       })
     });
     const data = await response.json();
+    if (!response.ok) throw new Error(data.error?.message || `API error ${response.status}`);
     const text = data.content?.find(c=>c.type==='text')?.text || 'No response received.';
     outputEl.className = 'agent-output';
     outputEl.innerHTML = text.split('\n').map(line => {
-      if (line.match(/^\d\./)) return `<strong>${line}</strong>`;
-      return line;
-    }).join('<br>');
+      if (line.match(/^\d\./)) return `<div style="margin:6px 0"><strong>${line}</strong></div>`;
+      if (line.trim()) return `<div style="margin:2px 0">${line}</div>`;
+      return '<br>';
+    }).join('');
   } catch(err) {
     outputEl.className = 'agent-output';
-    outputEl.textContent = 'Agent unavailable — check your connection and API access. Error: ' + err.message;
+    outputEl.textContent = 'Agent error: ' + err.message;
   }
+}
+
+async function generateProjectBrief(pid) {
+  const week = state.weeks[currentWeekId];
+  const p = week.projects.find(x=>x.id===pid);
+  if (!p) return;
+  const apiKey = state.settings?.anthropicApiKey;
+  if (!apiKey) { showToast('Add API key in Settings'); return; }
+  const briefEl = document.getElementById(`proj-brief-${pid}`);
+  if (briefEl) briefEl.innerHTML = '<div style="font-family:var(--body);font-size:12px;color:var(--ink-muted);padding:12px 0">Generating project brief…</div>';
+
+  const doneTasks = p.tasks.filter(t=>t.done).map(t=>t.text).join(', ') || 'None';
+  const pendingTasks = p.tasks.filter(t=>!t.done).map(t=>t.text).join(', ') || 'None';
+
+  const userPrompt = `You are a strategic project coach for a founder named Archie. Analyse this project and return ONLY valid JSON:
+
+PROJECT: ${p.name}
+TYPE: ${p.sub}
+PIPELINE STAGE: ${p.pipeline||'Unknown'}
+PROBLEM BEING SOLVED: ${p.problem||'Not specified'}
+SUCCESS CRITERIA: ${p.successCriteria||'Not specified'}
+THIS WEEK FOCUS: ${p.focus||'Not set'}
+CURRENT BLOCKER: ${p.blocker||'None stated'}
+COMPLETED TASKS: ${doneTasks}
+PENDING TASKS: ${pendingTasks}
+
+Return ONLY valid JSON:
+{
+  "situation": "2-sentence honest strategic assessment",
+  "momentum": "Strong|Building|Stalling|At Risk",
+  "sessionBrief": "Exactly what to work on in the next 1-2 hour session — be specific and actionable",
+  "nextActions": [
+    { "action": "Specific action", "priority": "P1", "estimate": "1h", "why": "one line rationale" },
+    { "action": "...", "priority": "P2", "estimate": "30min", "why": "..." },
+    { "action": "...", "priority": "P3", "estimate": "2h", "why": "..." }
+  ],
+  "risks": ["Risk 1", "Risk 2"],
+  "weeklyWin": "The single outcome that would make this week a success for this project",
+  "strategicNote": "One non-obvious strategic insight Archie should consider"
+}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({ model:'claude-3-5-sonnet-20241022', max_tokens:1500, messages:[{role:'user',content:userPrompt}] })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || `API error ${res.status}`);
+    let text = data.content?.find(c=>c.type==='text')?.text||'';
+    text = text.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+    const brief = JSON.parse(text);
+    p.aiBrief = brief;
+    p.aiBriefAt = new Date().toISOString();
+    await saveState();
+    if (briefEl) briefEl.innerHTML = _renderProjectBrief(brief, pid);
+    showToast('Project brief ready');
+  } catch(err) {
+    if (briefEl) briefEl.innerHTML = `<div style="font-family:var(--body);font-size:12px;color:var(--accent);padding:12px 0">Brief generation failed: ${err.message}</div>`;
+  }
+}
+
+function _renderProjectBrief(brief, pid) {
+  if (!brief) return '';
+  const momColors = { Strong:'#3d6b36', Building:'#a06820', Stalling:'#b8341c', 'At Risk':'#b8341c' };
+  const momColor = momColors[brief.momentum] || '#a06820';
+  const actionsHTML = (brief.nextActions||[]).map(a=>`
+    <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px dotted var(--rule)">
+      <span style="font-family:var(--mono);font-size:8px;padding:2px 6px;background:${a.priority==='P1'?'var(--accent)':'var(--rule)'};color:${a.priority==='P1'?'#fff':'var(--ink-muted)'};border-radius:3px;flex-shrink:0;margin-top:2px">${a.priority}</span>
+      <div style="flex:1">
+        <div style="font-family:var(--body);font-size:13px;color:var(--ink)">${a.action}</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--ink-muted);margin-top:2px">${a.estimate} · ${a.why}</div>
+      </div>
+    </div>`).join('');
+  const risksHTML = (brief.risks||[]).map(r=>`<div style="font-family:var(--body);font-size:12px;color:var(--ink-soft);padding:4px 0">⚠ ${r}</div>`).join('');
+  return `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <span style="font-family:var(--mono);font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;background:${momColor};color:#fff;border-radius:4px">${brief.momentum||''}</span>
+      <span style="font-family:var(--mono);font-size:9px;color:var(--ink-muted)">Updated ${new Date(state.weeks[currentWeekId]?.projects?.find(p=>true)?.aiBriefAt||Date.now()).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</span>
+    </div>
+    <div style="font-family:var(--body);font-size:13px;color:var(--ink-soft);line-height:1.6;margin-bottom:14px">${brief.situation||''}</div>
+
+    <div style="background:var(--ink);color:var(--paper);border-radius:8px;padding:14px 16px;margin-bottom:14px">
+      <div style="font-family:var(--mono);font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,241,232,0.5);margin-bottom:6px">Next Session Brief</div>
+      <div style="font-family:var(--body);font-size:13px;color:rgba(245,241,232,0.9);line-height:1.5">${brief.sessionBrief||''}</div>
+    </div>
+
+    <div style="font-family:var(--mono);font-size:8px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px">Next Actions</div>
+    ${actionsHTML}
+
+    ${brief.weeklyWin ? `<div style="font-family:var(--body);font-size:12px;color:var(--ink-soft);padding:10px 12px;background:rgba(184,52,28,0.06);border-left:3px solid var(--accent);border-radius:0 4px 4px 0;margin:12px 0"><span style="font-family:var(--mono);font-size:8px;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:3px">Weekly Win</span>${brief.weeklyWin}</div>` : ''}
+    ${risksHTML ? `<div style="font-family:var(--mono);font-size:8px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-muted);margin:10px 0 6px">Risks</div>${risksHTML}` : ''}
+    ${brief.strategicNote ? `<div style="font-family:var(--body);font-size:12px;font-style:italic;color:var(--ink-muted);padding-top:10px;border-top:1px dotted var(--rule);margin-top:10px">"${brief.strategicNote}"</div>` : ''}`;
 }
 
 // ==============================================================
@@ -6515,17 +6657,38 @@ function _renderPlan(habit) {
 
   // Current week calculation (1-indexed based on journey day)
   const currentPlanWeek = Math.min(4, Math.floor(getJourneyDay(habit)/7) + 1);
+  const currentWeekData = (plan.weeklyPlan||[]).find(w=>w.week===currentPlanWeek);
 
-  // Weekly plan
+  // Today's Session brief card
+  const sessionBriefHTML = currentWeekData ? (() => {
+    const sess = currentWeekData.sessionStructure || {};
+    return `<div class="session-brief-card">
+      <div class="sbc-label">Today's Session · Week ${currentPlanWeek} of 4</div>
+      <div class="sbc-theme">${currentWeekData.theme||''}</div>
+      <div class="sbc-focus">${currentWeekData.focus||''}</div>
+      <div class="sbc-structure">
+        ${sess.warmup ? `<div class="sbc-row"><span class="sbc-tag warm">Warm-up</span>${sess.warmup}</div>` : ''}
+        ${sess.main ? `<div class="sbc-row"><span class="sbc-tag main">Main Work</span>${sess.main}</div>` : ''}
+        ${sess.cooldown ? `<div class="sbc-row"><span class="sbc-tag cool">Cool-down</span>${sess.cooldown}</div>` : ''}
+      </div>
+      ${_buildYoutubeLinks(habit.name, currentWeekData.focus, currentWeekData.theme)}
+      <button class="btn" style="background:rgba(245,241,232,0.12);color:var(--paper);border-color:rgba(245,241,232,0.2);font-size:11px" onclick="openCheckin('${habit.id}')">→ Log This Session</button>
+    </div>`;
+  })() : '';
+
+  // Weekly plan — current expanded, others collapsed
   const weeksHTML = (plan.weeklyPlan||[]).map(w=>{
     const isCurrent = w.week === currentPlanWeek;
     const phaseClass = (w.phase||'Foundation').toLowerCase();
     const sess = w.sessionStructure || {};
-    return `<div class="plan-week-card${isCurrent?' current-week':''}">
+    const collapsedClass = isCurrent ? '' : ' collapsed';
+    const toggleAttr = isCurrent ? '' : `onclick="this.classList.toggle('collapsed')"`;
+    return `<div class="plan-week-card${isCurrent?' current-week':''}${collapsedClass}" ${toggleAttr}>
       <div class="pwc-head">
         <span class="pwc-num">Week ${w.week}</span>
         <span class="pwc-theme">${w.theme||''}</span>
         <span class="pwc-phase-tag ${phaseClass}">${w.phase||''}</span>
+        ${!isCurrent ? '<span style="font-family:var(--mono);font-size:8px;color:var(--ink-muted);margin-left:auto">tap to expand</span>' : ''}
       </div>
       <div class="pwc-focus">${w.focus||''}</div>
       ${sess.warmup||sess.main ? `<div class="plan-session-box">
@@ -6568,6 +6731,7 @@ function _renderPlan(habit) {
   const trapHTML = (plan.commonTraps||[]).map(t=>`<div class="plan-trap-item">${t}</div>`).join('');
 
   return `
+    ${sessionBriefHTML}
     ${adaptBanner}
     ${overviewHTML}
     ${progHTML ? `<div style="font-family:var(--mono);font-size:8.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:10px">Journey Milestones</div><div class="plan-progressions">${progHTML}</div>` : ''}
@@ -6578,6 +6742,16 @@ function _renderPlan(habit) {
     ${trapHTML ? `<div style="font-family:var(--mono);font-size:8.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-muted);margin:14px 0 6px">Common Traps to Avoid</div><div class="plan-insights">${trapHTML}</div>` : ''}
     ${ytHTML||learnHTML ? `<div style="font-family:var(--mono);font-size:8.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-muted);margin:14px 0 10px">Curated Resources</div><div class="plan-resources-grid">${ytHTML}${learnHTML}</div>` : ''}
   `;
+}
+
+function _buildYoutubeLinks(habitName, focus, theme) {
+  const queries = [
+    `${habitName} ${theme || ''} tutorial beginner`.trim(),
+    `${habitName} ${(focus||'').split(' ').slice(0,4).join(' ')} drills`.trim(),
+  ];
+  return `<div class="yt-links-row">
+    ${queries.map(q => `<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(q)}" target="_blank" rel="noopener" class="yt-link-btn">▶ ${q}</a>`).join('')}
+  </div>`;
 }
 
 // ---- AI Plan generation ----
